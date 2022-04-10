@@ -1,10 +1,8 @@
-import Home from "./pages/Home.svelte";
-import About from "./pages/About.svelte";
+import Authentication from "./pages/Authentication.svelte";
 
 const routes = {
   // Exact path
-  "/": Home,
-  "/about": About,
+  "/auth": Authentication,
 };
 
 export default routes;
