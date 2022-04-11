@@ -28,7 +28,7 @@
   ];
 </script>
 
-<div class="bg-white p-10 my-5 flex justify-between rounded-2xl shadow-xl">
+<div class="bg-white p-10 my-5 flex justify-between rounded-2xl shadow-md">
   {#each data as { value, day }}
     <div class="flex flex-col items-center justify-center">
       <div class="slider-wrapper ">
@@ -60,5 +60,10 @@
     margin: 0;
     transform-origin: 75px 75px;
     transform: rotate(-90deg);
+  }
+  ::-webkit-slider-thumb {
+    @apply bg-transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
   }
 </style>
