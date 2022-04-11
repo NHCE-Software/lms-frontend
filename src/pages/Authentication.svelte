@@ -2,7 +2,7 @@
   let mode = "signin";
 </script>
 
-<section class="grid grid-cols-3 min-h-screen">
+<section class="grid grid-cols-1 lg:grid-cols-3 min-h-screen">
   <div class="p-10">
     <div class="flex gap-5 cursor-pointer items-center ">
       <div
@@ -28,13 +28,13 @@
         <label for="">Email</label>
         <input
           type="text"
-          class="p-4 rounded-lg bg-white text-black text-xl"
+          class="p-4 rounded-lg bg-white text-black "
           placeholder="Email"
         />
         <label for="">Password</label>
         <input
           type="password"
-          class="p-4 rounded-lg bg-white text-black text-xl"
+          class="p-4 rounded-lg bg-white text-black "
           placeholder="Password"
         />
         <button
