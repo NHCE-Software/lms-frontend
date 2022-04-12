@@ -58,6 +58,7 @@
 </script>
 
 <input type="checkbox" id="map-modal" class="modal-toggle" />
+
 <div class="modal ">
   <div class="modal-box max-w-5xl bg-white">
     <div class="flex gap-3 flex-col">
@@ -78,7 +79,7 @@
                 }
               });
               chosen = newChosen;
-              console.log(chosen);
+              //  console.log(chosen);
             }}
             class="select select-bordered w-full max-w-xs bg-white"
           >
@@ -95,33 +96,41 @@
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label
         on:click={() => {
-          console.log(chosen);
-          console.log(data);
+          //console.log(chosen);
+          //console.log(data);
           let mapper = Object.assign(
             {},
             ...chosen.map((x) => ({ [x.old]: x.new }))
           );
-          console.log(mapper);
           let data2 = data.map((item) => {
             let newItem = {};
             for (let key in item) {
               if (mapper[key] === "Drop") {
                 continue;
               } else {
-                newItem[mapper[key]] = item[key];
+                //console.log(item[key]);
+                if (newItem[mapper[key]] != undefined) {
+                  newItem[mapper[key]] = newItem[mapper[key]].concat(
+                    " " + item[key]
+                  );
+                } else {
+                  newItem[mapper[key]] = item[key];
+                }
               }
             }
             return newItem;
           });
-          console.log(data);
-          console.log(data2);
+          //console.log(data);
+          //console.log(data2);
           data = [...data2];
           cols = Object.keys(data[0]);
           initChosen(1);
         }}
-        class="btn bg-blue-500 text-white">Map</label
+        class="btn bg-blue-500 border-none text-white">Map</label
       >
-      <label for="map-modal" class="btn bg-blue-500 text-white">close</label>
+      <label for="map-modal" class="btn border-none bg-blue-500 text-white"
+        >close</label
+      >
     </div>
   </div>
 </div>
@@ -129,10 +138,31 @@
 <section class="grid min-h-screen h-full grid-cols-5">
   <Navbar />
   <div class="col-span-4 m-10">
-    <label for="map-modal" class="btn modal-button">open modal</label>
+    <div class="flex justify-between">
+      {#if file}
+        <div class="text-2xl text-blue-500 font-bold">
+          {file[0].name}
+        </div>
+      {:else}
+        <input
+          class="file:bg-blue-100 file:text-blue-600 file:border-none file:px-4 file:py-3  file:rounded-full file:mr-5 hover:file:bg-blue-200 file:transition-all file:font-semibold"
+          bind:files={file}
+          type="file"
+          name=""
+          id=""
+        />
+      {/if}
 
-    <input bind:files={file} type="file" name="" id="" />
-    <div class="divTable">
+      <div>
+        <label
+          for="map-modal"
+          class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
+          >Map Data</label
+        >
+      </div>
+    </div>
+
+    <div class="divTable mt-10">
       <div class="divTableHeading">
         <div class="divTableRow">
           <div class="divTableCell" />
