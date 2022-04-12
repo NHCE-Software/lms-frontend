@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "daisyui": "^2.13.6",
+    "papaparse": "^5.3.2",
     "sirv-cli": "^2.0.0",
     "svelte-spa-router": "^3.2.0",
     "svelte-table": "^0.3.4"
