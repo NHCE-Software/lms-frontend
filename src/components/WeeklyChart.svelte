@@ -62,7 +62,7 @@
     transform: rotate(-90deg);
   }
   ::-webkit-slider-thumb {
-    @apply bg-transparent;
+    background-color: #37cdbe;
     cursor: pointer;
     -webkit-appearance: none;
   }

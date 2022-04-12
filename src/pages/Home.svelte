@@ -5,9 +5,8 @@
   import Stats from "../components/Stats.svelte";
   import WeeklyChart from "../components/WeeklyChart.svelte";
   import Navbar from "../components/Navbar.svelte";
-  $: {
-    console.log(selectedStoryUID);
-  }
+  import UserWorkTable from "../components/UserWorkTable.svelte";
+
   let data = {
     users: [
       {
@@ -20,26 +19,81 @@
       },
     ],
   };
+
+  let selectedUserLeadData = [
+    {
+      statusid: "stausid1",
+      status: "Hot",
+      source: "source",
+      location: "location",
+      name: "123",
+      email: "email",
+      phone: "phone",
+    },
+    {
+      statusid: "stausid",
+      status: "Cold",
+      source: "source",
+      location: "location",
+      name: "wer123",
+      email: "email",
+      phone: "phone",
+    },
+    {
+      statusid: "stausid",
+      status: "Cold",
+      source: "source",
+      location: "location",
+      name: "sdfg",
+      email: "email",
+      phone: "phone",
+    },
+    {
+      statusid: "stausid",
+      status: "Awaiting",
+      source: "source",
+      location: "location",
+      name: "jkgh",
+      email: "email",
+      phone: "phone",
+    },
+  ];
   let selectedStoryUID = data.users[0].uid;
+  let selectedStatusID = "";
+  let search = "";
+
+  let searchedLeadData = [];
+  $: {
+    searchedLeadData =
+      search.length === 0
+        ? [...selectedUserLeadData]
+        : selectedUserLeadData.filter((obj) =>
+            Object.values(obj).some((val) => val.includes(search))
+          );
+    searchedLeadData = [...searchedLeadData];
+    console.log(searchedLeadData);
+  }
 </script>
 
 <input type="checkbox" checked id="assigned-modal" class="modal-toggle" />
 <div class="modal">
   <div class="modal-box bg-white max-w-6xl flex flex-col gap-5">
     <div class="flex gap-10">
-      <div class="border w-full rounded-lg p-3">
-        <input type="text" placeholder="Search" />
+      <div class="border w-full rounded-lg">
+        <input
+          bind:value={search}
+          type="text"
+          class="outline-none p-3"
+          placeholder="Search"
+        />
       </div>
       <input type="date" id="birthday" class="w-full" name="birthday" />
       <input type="date" id="birthday" class="w-full" name="birthday" />
-      <select class="select  max-w-xs bg-white text-black border">
-        <option>Hot</option>
-        <option>Cold</option>
-        <option>Awaiting</option>
-      </select>
     </div>
 
-    <div class="h-full" />
+    <div class="h-full">
+      <UserWorkTable bind:selectedStatusID data={searchedLeadData} />
+    </div>
 
     <div class="modal-action">
       <label
@@ -56,8 +110,7 @@
   <div class="modal-box">
     <h3 class="font-bold text-lg">Congratulations random Interner user!</h3>
     <p class="py-4">
-      You've been selected for a chance to get one year of subscription to use
-      Wikipedia for free!
+      {selectedStatusID}
     </p>
     <div class="modal-action">
       <label for="my-modal2" class="btn">Yay!</label>
