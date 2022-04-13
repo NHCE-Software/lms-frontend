@@ -2,35 +2,10 @@
   import Papa from "papaparse";
   import Navbar from "../components/Navbar.svelte";
   let file;
-  let cols = ["col1", "col2", "col3", "col4"];
+  let cols = [];
   let predef = ["Name", "Phone", "Email", "City", "State", "Course"];
   let chosen = [];
-  let data = [
-    {
-      col1: "col1data",
-      col2: "col2data",
-      col3: "col4data",
-      col4: "col71data",
-    },
-    {
-      col1: "nro",
-      col2: "nro",
-      col3: "nro",
-      col4: "nro",
-    },
-    {
-      col1: "nro",
-      col2: "nro",
-      col3: "nro",
-      col4: "nro",
-    },
-    {
-      col1: "nro",
-      col2: "nro",
-      col3: "nro",
-      col4: "nro",
-    },
-  ];
+  let data = [];
 
   $: {
     file && console.log(file[0]);
@@ -58,7 +33,6 @@
 </script>
 
 <input type="checkbox" id="map-modal" class="modal-toggle" />
-
 <div class="modal ">
   <div class="modal-box max-w-5xl bg-white">
     <div class="flex gap-3 flex-col">
@@ -152,37 +126,70 @@
           id=""
         />
       {/if}
-
-      <div>
-        <label
-          for="map-modal"
-          class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
-          >Map Data</label
-        >
-      </div>
+      {#if cols.length != 0}
+        <div class="flex items-center">
+          <label
+            for="map-modal"
+            class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
+            >Map Data</label
+          >
+          <div
+            on:click={() => {
+              if (confirm("Confirm transformation? This cannot be undone.")) {
+                //server call
+                // insert
+                console.log(data);
+              }
+            }}
+            class="p-3 rounded-full hover:bg-blue-100 transition-all hover:text-blue-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+        </div>
+      {/if}
     </div>
+    {#if cols.length != 0}
+      <div class="divTable mt-10">
+        <div class="divTableHeading">
+          <div class="divTableRow">
+            <div class="divTableCell" />
+            {#each cols as col}
+              <div class="divTableCell">{col}</div>
+            {/each}
+          </div>
+        </div>
 
-    <div class="divTable mt-10">
-      <div class="divTableHeading">
-        <div class="divTableRow">
-          <div class="divTableCell" />
-          {#each cols as col}
-            <div class="divTableCell">{col}</div>
+        <div class="divTableBody">
+          {#each data as row, i}
+            <div class="divTableRow">
+              <div class="divTableCell">{i + 1}</div>
+              {#each cols as col}
+                <div class="divTableCell">{row[col]}</div>
+              {/each}
+            </div>
           {/each}
         </div>
       </div>
-
-      <div class="divTableBody">
-        {#each data as row, i}
-          <div class="divTableRow">
-            <div class="divTableCell">{i + 1}</div>
-            {#each cols as col}
-              <div class="divTableCell">{row[col]}</div>
-            {/each}
-          </div>
-        {/each}
+    {:else}
+      <div
+        class="text-center text-blue-500 opacity-20 text-7xl flex h-full justify-center items-center"
+      >
+        Load CSV to get started
       </div>
-    </div>
+    {/if}
   </div>
 </section>
 
