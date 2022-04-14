@@ -9,20 +9,18 @@
       <div class="divTableCell">Name</div>
       <div class="divTableCell ">Email</div>
       <div class="divTableCell">Password</div>
-      <div class="divTableCell">Source Assigned</div>
       <div class="divTableCell">Role</div>
       <div class="divTableCell">Actions</div>
     </div>
   </div>
 
   <div class="divTableBody">
-    {#each data as { name, email, source, role }, i}
+    {#each data as { name, email, role }, i}
       <div class="divTableRow">
         <div class="divTableCell">{i + 1}</div>
         <div class="divTableCell">{name}</div>
         <div class="divTableCell">{email}</div>
         <div class="divTableCell">Reset Password</div>
-        <div class="divTableCell">{source}</div>
         <div class="divTableCell">{role}</div>
         <div class="divTableCell">
           <div class="flex gap-2">

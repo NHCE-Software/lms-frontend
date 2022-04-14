@@ -2,7 +2,7 @@
   import { push } from "svelte-spa-router";
 </script>
 
-<div class="bg-white p-5 flex flex-col m-5 rounded-2xl shadow-xl">
+<div class="bg-white p-5 flex flex-col  rounded-2xl shadow-xl">
   <div class="text-2xl my-4 text-center text-blue-500 font-bold">
     Lead Management System
   </div>

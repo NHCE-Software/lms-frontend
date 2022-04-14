@@ -7,7 +7,6 @@
       {
         name: "Danush",
         email: "email@dannyboi.com",
-        source: "college dunia",
         role: "Caller",
       },
     ],
@@ -35,15 +34,7 @@
         name=""
         id=""
       />
-      <label for="" class="tracking-wide opacity-50">Source</label>
 
-      <input
-        type="text"
-        class="w-full p-2 border rounded-lg"
-        placeholder="Source Assigned"
-        name=""
-        id=""
-      />
       <label for="" class="tracking-wide opacity-50">Role</label>
 
       <select class="p-2 rounded-lg border" name="" id="">
@@ -67,7 +58,7 @@
   </div>
 </div>
 
-<section class="grid min-h-screen h-full grid-cols-5">
+<section class="grid min-h-screen h-full grid-cols-5 p-5">
   <Navbar />
   <div class="col-span-4 col-start-2 m-10">
     <div class="flex justify-between">

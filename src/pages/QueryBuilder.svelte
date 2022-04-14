@@ -109,13 +109,66 @@
   </div>
 </div>
 
-<section class="grid min-h-screen h-full grid-cols-5">
+<section class="grid min-h-screen h-full grid-cols-5 p-5">
   <Navbar />
   <div class="col-span-4 m-10">
-    <div class="flex justify-between">
+    <form
+      on:submit={() => {
+        if (confirm("Confirm transformation? This cannot be undone.")) {
+          //server call
+          // insert
+          console.log(data);
+        }
+      }}
+      class="flex justify-between"
+    >
       {#if file}
-        <div class="text-2xl text-blue-500 font-bold">
-          {file[0].name}
+        <div class="flex gap-3 items-center">
+          <svg
+            on:click={() => {
+              file = undefined;
+              cols = [];
+              chosen = [];
+              data = [];
+            }}
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-red-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+          <div class="text-2xl text-blue-500 font-bold">
+            {file[0].name}
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+          <div>
+            <input
+              required
+              type="text"
+              placeholder="Source name"
+              class="p-3 rounded-xl"
+            />
+          </div>
         </div>
       {:else}
         <input
@@ -133,14 +186,8 @@
             class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
             >Map Data</label
           >
-          <div
-            on:click={() => {
-              if (confirm("Confirm transformation? This cannot be undone.")) {
-                //server call
-                // insert
-                console.log(data);
-              }
-            }}
+          <button
+            type="submit"
             class="p-3 rounded-full hover:bg-blue-100 transition-all hover:text-blue-600"
           >
             <svg
@@ -157,10 +204,10 @@
                 d="M5 13l4 4L19 7"
               />
             </svg>
-          </div>
+          </button>
         </div>
       {/if}
-    </div>
+    </form>
     {#if cols.length != 0}
       <div class="divTable mt-10">
         <div class="divTableHeading">

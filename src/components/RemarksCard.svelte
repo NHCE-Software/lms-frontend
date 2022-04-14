@@ -1,18 +1,23 @@
 <script>
+  export let remark;
+  // remarks:
+  //     {
+  //       remark: "remark",
+  //       date: "date",
+  //       followup: "date",
+  //       updatedby: "user",
+  //     },
 </script>
 
 <div class="p-4 border rounded-2xl">
   <div>
-    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, saepe
-    asperiores. Quo ad nostrum reprehenderit nihil nemo, earum delectus tempore
-    dolor libero, asperiores quia nobis neque dignissimos, incidunt obcaecati?
-    Nobis.
+    {remark.remark}
   </div>
   <div class="my-3 mb-0 font-semibold flex justify-between">
-    <div>updated by User 3</div>
-    <div>11/11/11</div>
+    <div>updated by {remark.updatedby}</div>
+    <div>{remark.date}</div>
   </div>
-  <div class="text-blue-600 font-semibold">Follow up: 12/11/11</div>
+  <div class="text-blue-600 font-semibold">Follow up: {remark.followup}</div>
 </div>
 
 <style>

@@ -31,6 +31,31 @@
       },
     ],
   };
+  let selectedLeadData = {
+    leadid: "bro",
+    name: "123",
+    email: "email",
+    phone: "phone",
+    city: "city",
+    status: "Hot",
+    source: [
+      "source1",
+      "source2",
+      "source2",
+      "source2",
+      "source2",
+      "source2",
+      "source2",
+    ],
+    remarks: [
+      {
+        remark: "remark",
+        date: "date",
+        followup: "date",
+        updatedby: "user",
+      },
+    ],
+  };
   import Navbar from "../components/Navbar.svelte";
 </script>
 
@@ -76,6 +101,7 @@
         <option value="hot">Hot</option>
         <option value="hot">Cold</option>
         <option value="hot">Awaiting</option>
+        <option value="hot">Closed</option>
       </select>
     </form>
     <div class="modal-action">
@@ -109,7 +135,7 @@
   </div>
 </div>
 
-<section class="grid min-h-screen h-full grid-cols-5">
+<section class="grid min-h-screen h-full grid-cols-5 p-5">
   <Navbar />
   <div class="col-span-3 m-10">
     <div class="flex justify-between">
@@ -124,12 +150,14 @@
         Add Leads
       </label>
     </div>
-    <div class="overflow-auto mt-10">
+    <div class="overflow-auto mt-10 ">
       <CallerLeadsTable bind:selectedLeadID data={data.leads} />
     </div>
   </div>
-  <div class="bg-white col-span-1 p-5 m-2 my-5 rounded-xl shadow-xl ">
-    <div class="text-center text-2xl mt-2 ">Lead Name</div>
+  <div
+    class="bg-white col-span-1 rounded-xl shadow-xl flex flex-col max-h-screen h-full p-5 "
+  >
+    <div class="text-center text-2xl mt-2 ">{selectedLeadData.name}</div>
     <div class="flex flex-wrap justify-center gap-5 mt-3">
       <div
         class="text-center opacity-50 flex items-center gap-3 justify-center"
@@ -155,7 +183,7 @@
             />
           </svg>
         </div>
-        <div>Locatiom</div>
+        <div>{selectedLeadData.city}</div>
       </div>
       <div
         class="text-center opacity-50 flex items-center gap-3 justify-center"
@@ -176,7 +204,7 @@
             />
           </svg>
         </div>
-        <div>Phone</div>
+        <div>{selectedLeadData.phone}</div>
       </div>
       <div
         class="text-center opacity-50 flex items-center gap-3 justify-center"
@@ -197,7 +225,15 @@
             />
           </svg>
         </div>
-        <div>Email</div>
+        <div>{selectedLeadData.email}</div>
+      </div>
+    </div>
+    <div class="">
+      <div class="text-2xl font-semibold opacity-50">Sources</div>
+      <div class="flex gap-3 overflow-auto">
+        {#each selectedLeadData.source as source}
+          <div class="p-3 border rounded-xl flex-none">{source}</div>
+        {/each}
       </div>
     </div>
     <div class="mt-5">
@@ -217,38 +253,35 @@
             clip-rule="evenodd"
           />
         </svg>
-        Hot Lead
+        {selectedLeadData.status} Lead
       </div>
     </div>
-    <div class="mt-5">
+    <div class="  h-2/3 flex flex-col ">
       <div class="text-2xl font-semibold opacity-50">Remarks</div>
-      <div class="flex flex-col gap-3 overflow-auto p-3 h-99 ">
-        <RemarksCard />
-        <RemarksCard />
-        <RemarksCard />
+      <div class=" overflow-auto flex flex-col p-3 gap-3 ">
+        {#each selectedLeadData.remarks as remark}
+          <RemarksCard {remark} />
+        {/each}
       </div>
-      <div class="flex gap-3 justify-center mt-5">
-        <label
-          for="addremarksmodal"
-          class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-        >
-          Add Remarks
-        </label>
-        <label
-          for="editmodal"
-          class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-        >
-          Edit Leads Info
-        </label>
-      </div>
+    </div>
+    <div class="flex gap-3 justify-center m-2 ">
+      <label
+        for="addremarksmodal"
+        class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
+      >
+        Add Remarks
+      </label>
+      <label
+        for="editmodal"
+        class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
+      >
+        Edit Leads Info
+      </label>
     </div>
   </div>
 </section>
 
 <style>
-  .h-99 {
-    height: 50vh;
-  }
   ::-webkit-scrollbar {
     height: 8px;
     width: 8px;

@@ -125,11 +125,6 @@
     {selectedStatusID}
 
     <div class="text-2xl font-semibold opacity-50">Remarks</div>
-    <div class="flex flex-col gap-3 overflow-auto p-3 h-99 ">
-      <RemarksCard />
-      <RemarksCard />
-      <RemarksCard />
-    </div>
 
     <div class="modal-action">
       <label for="my-modal2" class="btn">Close</label>
