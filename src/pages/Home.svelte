@@ -4,6 +4,7 @@
   import Stories from "../components/Stories.svelte";
   import Stats from "../components/Stats.svelte";
   import WeeklyChart from "../components/WeeklyChart.svelte";
+  import RemarksCard from "../components/RemarksCard.svelte";
   import Navbar from "../components/Navbar.svelte";
   import UserWorkTable from "../components/UserWorkTable.svelte";
 
@@ -75,7 +76,7 @@
   }
 </script>
 
-<input type="checkbox" checked id="assigned-modal" class="modal-toggle" />
+<input type="checkbox" id="assigned-modal" class="modal-toggle" />
 <div class="modal">
   <div class="modal-box bg-white max-w-6xl flex flex-col gap-5">
     <div class="flex gap-10">
@@ -87,8 +88,21 @@
           placeholder="Search"
         />
       </div>
-      <input type="date" id="birthday" class="w-full" name="birthday" />
-      <input type="date" id="birthday" class="w-full" name="birthday" />
+      <label for="">From:</label>
+      <input
+        type="date"
+        id="birthday"
+        class="w-full border px-5 rounded-2xl"
+        name="birthday"
+      />
+      <label for="">To:</label>
+
+      <input
+        type="date"
+        id="birthday"
+        class="w-full border px-5 rounded-2xl"
+        name="birthday"
+      />
     </div>
 
     <div class="h-full">
@@ -107,13 +121,18 @@
 
 <input type="checkbox" id="my-modal2" class="modal-toggle" />
 <div class="modal">
-  <div class="modal-box">
-    <h3 class="font-bold text-lg">Congratulations random Interner user!</h3>
-    <p class="py-4">
-      {selectedStatusID}
-    </p>
+  <div class="modal-box bg-white  ">
+    {selectedStatusID}
+
+    <div class="text-2xl font-semibold opacity-50">Remarks</div>
+    <div class="flex flex-col gap-3 overflow-auto p-3 h-99 ">
+      <RemarksCard />
+      <RemarksCard />
+      <RemarksCard />
+    </div>
+
     <div class="modal-action">
-      <label for="my-modal2" class="btn">Yay!</label>
+      <label for="my-modal2" class="btn">Close</label>
     </div>
   </div>
 </div>
