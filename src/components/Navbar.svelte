@@ -21,6 +21,7 @@
       >
         Add Leads
       </div>
+
       <div on:click={() => push("/lead-details")} class="p-3 border rounded-xl">
         Caller Dashboard
       </div>

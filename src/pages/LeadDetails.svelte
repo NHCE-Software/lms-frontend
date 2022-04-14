@@ -8,6 +8,7 @@
       {
         leadid: "bro",
         name: "123",
+        followup: "followup",
         email: "email",
         phone: "phone",
         city: "city",
@@ -22,6 +23,7 @@
         name: "123",
         email: "email",
         phone: "phone",
+        followup: "followup",
         city: "city",
         status: "status",
         source: "source",
@@ -140,7 +142,7 @@
   <div class="col-span-3 m-10">
     <div class="flex justify-between">
       <div>
-        <div class="text-3xl">Welcome, Caller</div>
+        <div class="text-3xl">Lead Details</div>
         <div class="text-xl opacity-50">Add, Edit and Remove Leads</div>
       </div>
       <label
@@ -239,7 +241,7 @@
     <div class="mt-5">
       <div class="text-2xl font-semibold opacity-50">Status</div>
       <div
-        class="border rounded-2xl p-3 flex items-center bg-red-100 text-red-500 gap-3 justify-center"
+        class="rounded-2xl p-3 flex items-center bg-red-100 text-red-500 gap-3 justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

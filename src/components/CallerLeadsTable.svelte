@@ -12,13 +12,14 @@
       <div class="divTableCell">Phone</div>
       <div class="divTableCell">City</div>
       <div class="divTableCell">Status</div>
+      <div class="divTableCell">Follow Up</div>
       <div class="divTableCell">Source</div>
-      <div class="divTableCell">Last Loaded by</div>
+      <div class="divTableCell">Loaded by</div>
     </div>
   </div>
 
   <div class="divTableBody">
-    {#each data as { leadid, name, email, phone, city, source, status, loadedby }, i}
+    {#each data as { leadid, followup, name, email, phone, city, source, status, loadedby }, i}
       <div
         on:click={() => (selectedLeadID = leadid)}
         class={`divTableRow ${leadid === selectedLeadID ? "bg-blue-200" : ""}`}
@@ -29,6 +30,7 @@
         <div class="divTableCell">{phone}</div>
         <div class="divTableCell">{city}</div>
         <div class="divTableCell">{status}</div>
+        <div class="divTableCell">{followup}</div>
         <div class="divTableCell">{source}</div>
         <div class="divTableCell">{loadedby}</div>
       </div>

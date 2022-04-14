@@ -132,7 +132,7 @@
   </div>
 </div>
 
-<section class="grid min-h-screen h-full grid-cols-5">
+<section class="grid min-h-screen p-5 h-full grid-cols-5">
   <Navbar />
   <div class="col-span-3 m-10">
     <div class="text-3xl">Ahoy, Shanti ma'am,</div>
@@ -145,7 +145,7 @@
     <Stats />
   </div>
 
-  <div class="bg-white p-5 m-2 my-5 rounded-xl shadow-xl ">
+  <div class="bg-white  m-2  p-5 rounded-xl shadow-xl ">
     <div class="avatar flex justify-center mt-10 ">
       <div class="w-1/2 rounded-full">
         <img src="https://api.lorem.space/image/face?hash=92310" />
