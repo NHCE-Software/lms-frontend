@@ -11,6 +11,7 @@
       <div class="divTableCell ">Email</div>
       <div class="divTableCell">Phone</div>
       <div class="divTableCell">City</div>
+      <div class="divTableCell">Course</div>
       <div class="divTableCell">Status</div>
       <div class="divTableCell">Follow Up</div>
       <div class="divTableCell">Source</div>
@@ -19,8 +20,9 @@
   </div>
 
   <div class="divTableBody">
-    {#each data as { leadid, followup, name, email, phone, city, source, status, loadedby }, i}
-      <div
+    {#each data as { leadid, followup, name, course, email, phone, city, source, status, loadedby }, i}
+      <label
+        for="my-drawer"
         on:click={() => (selectedLeadID = leadid)}
         class={`divTableRow ${leadid === selectedLeadID ? "bg-blue-200" : ""}`}
       >
@@ -29,11 +31,12 @@
         <div class="divTableCell">{email}</div>
         <div class="divTableCell">{phone}</div>
         <div class="divTableCell">{city}</div>
+        <div class="divTableCell">{course}</div>
         <div class="divTableCell">{status}</div>
         <div class="divTableCell">{followup}</div>
         <div class="divTableCell">{source}</div>
         <div class="divTableCell">{loadedby}</div>
-      </div>
+      </label>
     {/each}
   </div>
 </div>

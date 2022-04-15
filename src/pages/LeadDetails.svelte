@@ -2,63 +2,179 @@
   import RemarksCard from "../components/RemarksCard.svelte";
 
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
+  import Navbar from "../components/Navbar.svelte";
   let selectedLeadID;
+  let selectedLeadData;
+  let andMode = true; // andMode = true means AND mode, false means OR mode
+  let filters = {
+    today: false,
+    ondate: "",
+    call1: false,
+    call2: false,
+    call3: false,
+    call4: false,
+    call5: false,
+    greaterthan5: false,
+    hot: false,
+    cold: false,
+    awaiting: false,
+    closed: false,
+  };
+  function applyFilter() {
+    filteredLeads = data.leads.filter((item) => {
+      let allTrues = [];
+      if (filters.today) allTrues.push(item.followup === "Today");
+      if (filters.ondate.length != 0)
+        allTrues.push(item.calls.some((call) => call.date === filters.ondate));
+      if (filters.greaterthan5) allTrues.push(item.calls.length > 5);
+      if (filters.call1) allTrues.push(item.calls.length === 1);
+      if (filters.call2) allTrues.push(item.calls.length === 2);
+      if (filters.call3) allTrues.push(item.calls.length === 3);
+      if (filters.call4) allTrues.push(item.calls.length === 4);
+      if (filters.call5) allTrues.push(item.calls.length === 5);
+      if (filters.hot) allTrues.push(item.status === "Hot");
+      if (filters.cold) allTrues.push(item.status === "Cold");
+      if (filters.closed) allTrues.push(item.status === "Closed");
+      if (filters.awaiting) allTrues.push(item.status === "Awaiting");
+      //console.log(allTrues);
+
+      return andMode
+        ? allTrues.every((item) => item === true)
+        : allTrues.some((item) => item === true);
+    });
+    filteredLeads = [...filteredLeads];
+  }
+  let search;
   let data = {
     leads: [
       {
-        leadid: "bro",
+        leadid: "bro1",
         name: "123",
-        followup: "followup",
         email: "email",
         phone: "phone",
-        city: "city",
-        status: "status",
-        source: "source",
-        loadedby: "user1",
-        loadeduserid: "userid1",
-        city: "city",
+        city: "city2",
+        status: "Cold",
+        course: "course",
+        source: ["source1"],
+        loadedby: ["loadby1"],
+        calls: [
+          {
+            remark: "remark",
+            date: "Someday",
+            followup: "Today",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Today",
+            updatedby: "user",
+          },
+        ],
+      },
+      {
+        leadid: "bro12",
+        name: "asdasd",
+        email: "email",
+        phone: "phone",
+        city: "city2",
+        status: "Cold",
+        course: "course",
+        source: ["source1"],
+        loadedby: ["loadby1"],
+        calls: [
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Toda2y",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Toda2y",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Toda2y",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Toda2y",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Toda2y",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Toda2y",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Toda2y",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Today",
+            updatedby: "user",
+          },
+        ],
       },
       {
         leadid: "bro",
         name: "123",
         email: "email",
         phone: "phone",
-        followup: "followup",
         city: "city",
-        status: "status",
-        source: "source",
-        loadedby: "user",
-        loadeduserid: "userid",
-        city: "city",
+        status: "Hot",
+        course: "course",
+        source: ["source1", "source2"],
+        loadedby: ["loadby1", "loadby2"],
+        calls: [
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Today",
+            updatedby: "user",
+          },
+          {
+            remark: "remark",
+            date: "date",
+            followup: "Tomorrow",
+            updatedby: "user",
+          },
+        ],
       },
     ],
   };
-  let selectedLeadData = {
-    leadid: "bro",
-    name: "123",
-    email: "email",
-    phone: "phone",
-    city: "city",
-    status: "Hot",
-    source: [
-      "source1",
-      "source2",
-      "source2",
-      "source2",
-      "source2",
-      "source2",
-      "source2",
-    ],
-    remarks: [
-      {
-        remark: "remark",
-        date: "date",
-        followup: "date",
-        updatedby: "user",
-      },
-    ],
-  };
-  import Navbar from "../components/Navbar.svelte";
+  data.leads = data.leads.map((item) => {
+    return {
+      ...item,
+      followup: item.calls[item.calls.length - 1].followup,
+    };
+  });
+
+  let filteredLeads = data.leads;
+
+  $: {
+    selectedLeadData = data.leads.find(
+      (item) => item.leadid === selectedLeadID
+    );
+    console.log(filters);
+  }
 </script>
 
 <input type="checkbox" id="editmodal" class="modal-toggle" />
@@ -113,6 +229,103 @@
   </div>
 </div>
 
+<input type="checkbox" id="filtermodal" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box bg-white max-w-xl flex flex-col gap-2">
+    <div class="flex items-center justify-between">
+      <h3 class="text-2xl font-bold opacity-50 my-2">Advanced Filtering</h3>
+      <div class="flex gap-3">
+        <label
+          class={andMode ? "opacity-50" : "text-blue-600 font-semibold"}
+          for="">Or Mode</label
+        >
+        <input type="checkbox" class="toggle" bind:checked={andMode} />
+        <label
+          class={!andMode ? "opacity-50 " : "text-blue-600 font-semibold"}
+          for="">And Mode</label
+        >
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <h3 class="text-xl font-bold opacity-50 my-2">Filter by date</h3>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.today} class="checkbox" />
+        <label for=""> Show Today's Calls</label>
+      </div>
+    </div>
+
+    <div class="items-center gap-3">
+      <label class="flex-1" for=""> Calls Made on:</label>
+      <input
+        type="date"
+        id="birthday"
+        class="w-full border px-5 py-3 rounded-2xl"
+        name="birthday"
+        bind:value={filters.ondate}
+      />
+    </div>
+    <h3 class="text-xl font-bold opacity-50 my-2">Filter by Calls</h3>
+    <div class="flex gap-3 items-center flex-wrap">
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call1} class="checkbox" />
+        <label for="">1 call</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call2} class="checkbox" />
+        <label for="">2 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call3} class="checkbox" />
+        <label for="">3 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call4} class="checkbox" />
+        <label for="">4 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call5} class="checkbox" />
+        <label for="">5 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input
+          type="checkbox"
+          bind:checked={filters.greaterthan5}
+          class="checkbox"
+        />
+        <label for="">More than 5 calls</label>
+      </div>
+    </div>
+    <h3 class="text-xl font-bold opacity-50 my-2">Filter by Status</h3>
+    <div class=" flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.cold} class="checkbox" />
+        <label for="">Cold</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.hot} class="checkbox" />
+        <label for="">Hot</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.closed} class="checkbox" />
+        <label for="">Closed</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input
+          type="checkbox"
+          bind:checked={filters.awaiting}
+          class="checkbox"
+        />
+        <label for="">Awaiting</label>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <label for="" on:click={applyFilter} class="btn">Apply</label>
+      <label for="filtermodal" class="btn">Close</label>
+    </div>
+  </div>
+</div>
+
 <input type="checkbox" id="addremarksmodal" class="modal-toggle" />
 <div class="modal">
   <div class="modal-box bg-white">
@@ -136,152 +349,188 @@
     </div>
   </div>
 </div>
-
-<section class="grid min-h-screen h-full grid-cols-5 p-5">
-  <Navbar />
-  <div class="col-span-3 m-10">
-    <div class="flex justify-between">
-      <div>
-        <div class="text-3xl">Lead Details</div>
-        <div class="text-xl opacity-50">Add, Edit and Remove Leads</div>
-      </div>
-      <label
-        for="addusermodal"
-        class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
-      >
-        Add Leads
-      </label>
-    </div>
-    <div class="overflow-auto mt-10 ">
-      <CallerLeadsTable bind:selectedLeadID data={data.leads} />
-    </div>
-  </div>
-  <div
-    class="bg-white col-span-1 rounded-xl shadow-xl flex flex-col max-h-screen h-full p-5 "
-  >
-    <div class="text-center text-2xl mt-2 ">{selectedLeadData.name}</div>
-    <div class="flex flex-wrap justify-center gap-5 mt-3">
-      <div
-        class="text-center opacity-50 flex items-center gap-3 justify-center"
-      >
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
+<div class="drawer drawer-end">
+  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <section class="grid min-h-screen h-full grid-cols-5 p-5">
+      <Navbar />
+      <div class="col-span-4 m-10">
+        <div class="flex justify-between">
+          <div>
+            <div class="text-3xl">Lead Details</div>
+            <div class="text-xl opacity-50">Add, Edit and Remove Leads</div>
+          </div>
+          <div class="gap-3 flex">
+            <label
+              for="addusermodal"
+              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+            >
+              Add Leads
+            </label>
+            <label
+              for="filtermodal"
+              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+            >
+              Filter
+            </label>
+          </div>
         </div>
-        <div>{selectedLeadData.city}</div>
-      </div>
-      <div
-        class="text-center opacity-50 flex items-center gap-3 justify-center"
-      >
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-            />
-          </svg>
-        </div>
-        <div>{selectedLeadData.phone}</div>
-      </div>
-      <div
-        class="text-center opacity-50 flex items-center gap-3 justify-center"
-      >
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-            />
-          </svg>
-        </div>
-        <div>{selectedLeadData.email}</div>
-      </div>
-    </div>
-    <div class="">
-      <div class="text-2xl font-semibold opacity-50">Sources</div>
-      <div class="flex gap-3 overflow-auto">
-        {#each selectedLeadData.source as source}
-          <div class="p-3 border rounded-xl flex-none">{source}</div>
-        {/each}
-      </div>
-    </div>
-    <div class="mt-5">
-      <div class="text-2xl font-semibold opacity-50">Status</div>
-      <div
-        class="rounded-2xl p-3 flex items-center bg-red-100 text-red-500 gap-3 justify-center"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
-            clip-rule="evenodd"
+        <div class="mt-5">
+          <input
+            bind:value={search}
+            type="text"
+            placeholder="🔭 Search"
+            class="p-3 rounded-xl border w-full"
           />
-        </svg>
-        {selectedLeadData.status} Lead
+        </div>
+        <!-- <div>
+          calls to make today calls made on x day filter with status filter with
+          number of calls made search
+        </div> -->
+        <div class="overflow-auto mt-5">
+          <CallerLeadsTable bind:selectedLeadID data={filteredLeads} />
+        </div>
       </div>
-    </div>
-    <div class="  h-2/3 flex flex-col ">
-      <div class="text-2xl font-semibold opacity-50">Remarks</div>
-      <div class=" overflow-auto flex flex-col p-3 gap-3 ">
-        {#each selectedLeadData.remarks as remark}
-          <RemarksCard {remark} />
-        {/each}
-      </div>
-    </div>
-    <div class="flex gap-3 justify-center m-2 ">
-      <label
-        for="addremarksmodal"
-        class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-      >
-        Add Remarks
-      </label>
-      <label
-        for="editmodal"
-        class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-      >
-        Edit Leads Info
-      </label>
+    </section>
+    <label for="my-drawer" class="btn btn-primary drawer-button"
+      >Open drawer</label
+    >
+  </div>
+  <div class="drawer-side">
+    <label for="my-drawer" class="drawer-overlay" />
+    <div class="bg-white rounded-xl  shadow-xl w-96 p-5  ">
+      {#if selectedLeadData}
+        <div class="h-screen flex flex-col">
+          <div class="text-center text-2xl">
+            {selectedLeadData.name}
+          </div>
+          <div class="flex flex-wrap justify-center gap-5 mt-5">
+            <div
+              class="text-center opacity-50 flex items-center gap-3 justify-center"
+            >
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
+              <div>{selectedLeadData.city}</div>
+            </div>
+            <div
+              class="text-center opacity-50 flex items-center gap-3 justify-center"
+            >
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  />
+                </svg>
+              </div>
+              <div>{selectedLeadData.phone}</div>
+            </div>
+            <div
+              class="text-center opacity-50 flex items-center gap-3 justify-center"
+            >
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                  />
+                </svg>
+              </div>
+              <div>{selectedLeadData.email}</div>
+            </div>
+          </div>
+          <div class="mt-10">
+            <div class="text-2xl font-semibold opacity-50">Sources</div>
+            <div class="flex gap-3 overflow-auto">
+              {#each selectedLeadData.source as source}
+                <div class="p-3 border rounded-xl flex-none">{source}</div>
+              {/each}
+            </div>
+          </div>
+          <div class="mt-5">
+            <div class="text-2xl font-semibold opacity-50">Status</div>
+            <div
+              class="rounded-2xl p-3 flex items-center bg-red-100 text-red-500 gap-3 mt-3 justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              {selectedLeadData.status} Lead
+            </div>
+          </div>
+          <div class="text-2xl mt-5 font-semibold opacity-50">Calls</div>
+          <div class=" flex-1  flex flex-col overflow-auto">
+            <div class=" flex flex-col min-h-min p-3 gap-3 ">
+              {#each selectedLeadData.calls as call}
+                <RemarksCard remark={call} />
+              {/each}
+            </div>
+          </div>
+          <div class="flex gap-3 justify-center mt-auto">
+            <div class="my-10">
+              <label
+                for="addremarksmodal"
+                class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
+              >
+                Add Remarks
+              </label>
+              <label
+                for="editmodal"
+                class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
+              >
+                Edit Leads Info
+              </label>
+            </div>
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
-</section>
+</div>
 
 <style>
   ::-webkit-scrollbar {
