@@ -20,59 +20,106 @@
       },
     ],
   };
-
   let selectedUserLeadData = [
     {
-      statusid: "stausid1",
-      status: "Hot",
-      source: "source",
-      location: "location",
+      leadid: "bro1",
+      name: "yajat",
+      email: "email",
+      phone: "phone",
+      city: "city2",
+      status: "Cold",
+      course: "course",
+      source: ["source1"],
+      loadedby: ["loadby1"],
+      calls: [
+        {
+          remark: "remark",
+          date: "Someday",
+          followup: "Today",
+          updatedby: "user",
+        },
+        {
+          remark: "remark",
+          date: "date",
+          followup: "Today1",
+          updatedby: "user",
+        },
+      ],
+    },
+    {
+      leadid: "bro11",
       name: "123",
       email: "email",
       phone: "phone",
-    },
-    {
-      statusid: "stausid",
+      city: "city2",
       status: "Cold",
-      source: "source",
-      location: "location",
-      name: "wer123",
-      email: "email",
-      phone: "phone",
-    },
-    {
-      statusid: "stausid",
-      status: "Cold",
-      source: "source",
-      location: "location",
-      name: "sdfg",
-      email: "email",
-      phone: "phone",
-    },
-    {
-      statusid: "stausid",
-      status: "Awaiting",
-      source: "source",
-      location: "location",
-      name: "jkgh",
-      email: "email",
-      phone: "phone",
+      course: "course",
+      source: ["source1"],
+      loadedby: ["loadby1"],
+      calls: [
+        {
+          remark: "remark",
+          date: "Someday",
+          followup: "Today",
+          updatedby: "user",
+        },
+        {
+          remark: "remark",
+          date: "Today",
+          followup: "Today1",
+          updatedby: "user",
+        },
+      ],
     },
   ];
-  let selectedStoryUID = data.users[0].uid;
+  let selectedStoryUID;
   let selectedStatusID = "";
   let search = "";
+  let filteredLeadData = selectedUserLeadData;
 
-  let searchedLeadData = [];
-  $: {
-    searchedLeadData =
-      search.length === 0
-        ? [...selectedUserLeadData]
-        : selectedUserLeadData.filter((obj) =>
-            Object.values(obj).some((val) => val.includes(search))
-          );
-    searchedLeadData = [...searchedLeadData];
-    console.log(searchedLeadData);
+  let andMode = true;
+  let filters = {
+    today: false,
+    ondate: "",
+    call1: false,
+    call2: false,
+    call3: false,
+    call4: false,
+    call5: false,
+    greaterthan5: false,
+    hot: false,
+    cold: false,
+    awaiting: false,
+    closed: false,
+  };
+  function applyFilter() {
+    filteredLeadData = selectedUserLeadData.map((item) => {
+      return {
+        ...item,
+        followup: item.calls[item.calls.length - 1].followup,
+      };
+    });
+    filteredLeadData = selectedUserLeadData.filter((item) => {
+      let allTrues = [];
+      if (filters.today) allTrues.push(item.followup === "Today");
+      if (filters.ondate.length != 0)
+        allTrues.push(item.calls.some((call) => call.date === filters.ondate));
+      if (filters.greaterthan5) allTrues.push(item.calls.length > 5);
+      if (filters.call1) allTrues.push(item.calls.length === 1);
+      if (filters.call2) allTrues.push(item.calls.length === 2);
+      if (filters.call3) allTrues.push(item.calls.length === 3);
+      if (filters.call4) allTrues.push(item.calls.length === 4);
+      if (filters.call5) allTrues.push(item.calls.length === 5);
+      if (filters.hot) allTrues.push(item.status === "Hot");
+      if (filters.cold) allTrues.push(item.status === "Cold");
+      if (filters.closed) allTrues.push(item.status === "Closed");
+      if (filters.awaiting) allTrues.push(item.status === "Awaiting");
+      console.log(allTrues);
+      return andMode
+        ? allTrues.every((item) => item === true)
+        : allTrues.some((item) => item === true);
+    });
+    filteredLeadData = [...filteredLeadData];
   }
 </script>
 
@@ -88,25 +135,11 @@
           placeholder="Search"
         />
       </div>
-      <label for="">From:</label>
-      <input
-        type="date"
-        id="birthday"
-        class="w-full border px-5 rounded-2xl"
-        name="birthday"
-      />
-      <label for="">To:</label>
-
-      <input
-        type="date"
-        id="birthday"
-        class="w-full border px-5 rounded-2xl"
-        name="birthday"
-      />
+      <label for="filtermodal-home" class="btn">Ultra Advanced Filter</label>
     </div>
 
     <div class="h-full">
-      <UserWorkTable bind:selectedStatusID data={searchedLeadData} />
+      <UserWorkTable bind:selectedStatusID data={filteredLeadData} />
     </div>
 
     <div class="modal-action">
@@ -119,12 +152,114 @@
   </div>
 </div>
 
+<input type="checkbox" id="filtermodal-home" class="modal-toggle z-30" />
+<div class="modal">
+  <div class="modal-box bg-white max-w-xl flex flex-col gap-2">
+    <div class="flex items-center justify-between">
+      <h3 class="text-2xl font-bold opacity-50 my-2">Advanced Filtering</h3>
+      <div class="flex gap-3">
+        <label
+          class={andMode ? "opacity-50" : "text-blue-600 font-semibold"}
+          for="">Or Mode</label
+        >
+        <input type="checkbox" class="toggle" bind:checked={andMode} />
+        <label
+          class={!andMode ? "opacity-50 " : "text-blue-600 font-semibold"}
+          for="">And Mode</label
+        >
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <h3 class="text-xl font-bold opacity-50 my-2">Filter by date</h3>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.today} class="checkbox" />
+        <label for=""> Show Today's Calls</label>
+      </div>
+    </div>
+
+    <div class="items-center gap-3">
+      <label class="flex-1" for=""> Calls Made on:</label>
+      <input
+        type="date"
+        id="birthday"
+        class="w-full border px-5 py-3 rounded-2xl"
+        name="birthday"
+        bind:value={filters.ondate}
+      />
+    </div>
+    <h3 class="text-xl font-bold opacity-50 my-2">Filter by Calls</h3>
+    <div class="flex gap-3 items-center flex-wrap">
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call1} class="checkbox" />
+        <label for="">1 call</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call2} class="checkbox" />
+        <label for="">2 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call3} class="checkbox" />
+        <label for="">3 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call4} class="checkbox" />
+        <label for="">4 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.call5} class="checkbox" />
+        <label for="">5 calls</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input
+          type="checkbox"
+          bind:checked={filters.greaterthan5}
+          class="checkbox"
+        />
+        <label for="">More than 5 calls</label>
+      </div>
+    </div>
+    <h3 class="text-xl font-bold opacity-50 my-2">Filter by Status</h3>
+    <div class=" flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.cold} class="checkbox" />
+        <label for="">Cold</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.hot} class="checkbox" />
+        <label for="">Hot</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" bind:checked={filters.closed} class="checkbox" />
+        <label for="">Closed</label>
+      </div>
+      <div class="flex items-center gap-3">
+        <input
+          type="checkbox"
+          bind:checked={filters.awaiting}
+          class="checkbox"
+        />
+        <label for="">Awaiting</label>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <label for="" on:click={applyFilter} class="btn">Apply</label>
+      <label for="filtermodal-home" class="btn">Close</label>
+    </div>
+  </div>
+</div>
+
 <input type="checkbox" id="my-modal2" class="modal-toggle" />
 <div class="modal">
   <div class="modal-box bg-white  ">
     {selectedStatusID}
 
     <div class="text-2xl font-semibold opacity-50">Remarks</div>
+    {#if selectedStatusID}
+      {#each selectedUserLeadData.find((item) => item.leadid === selectedStatusID).calls as call}
+        <RemarksCard remark={call} />
+      {/each}
+    {/if}
 
     <div class="modal-action">
       <label for="my-modal2" class="btn">Close</label>

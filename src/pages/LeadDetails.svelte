@@ -44,7 +44,6 @@
     });
     filteredLeads = [...filteredLeads];
   }
-  let search;
   let data = {
     leads: [
       {
@@ -175,6 +174,13 @@
     );
     console.log(filters);
   }
+  let search = "";
+  let searchedLeads = filteredLeads;
+  $: {
+    searchedLeads = filteredLeads.filter((item) => {
+      return item.name.toLowerCase().includes(search.toLowerCase());
+    });
+  }
 </script>
 
 <input type="checkbox" id="editmodal" class="modal-toggle" />
@@ -206,11 +212,11 @@
         name=""
         id=""
       />
-      <label for="" class="tracking-wide opacity-50">Email</label>
+      <label for="" class="tracking-wide opacity-50">Course</label>
       <input
         type="text"
         class="w-full p-2  border rounded-lg"
-        placeholder="Email"
+        placeholder="Course"
         name=""
         id=""
       />
@@ -388,7 +394,10 @@
           number of calls made search
         </div> -->
         <div class="overflow-auto mt-5">
-          <CallerLeadsTable bind:selectedLeadID data={filteredLeads} />
+          <CallerLeadsTable
+            bind:selectedLeadID
+            data={searchedLeads.length === 0 ? filteredLeads : searchedLeads}
+          />
         </div>
       </div>
     </section>
