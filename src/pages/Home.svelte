@@ -27,7 +27,7 @@
       email: "email",
       phone: "phone",
       city: "city2",
-      status: "Cold",
+      status: "Hot",
       course: "course",
       source: ["source1"],
       loadedby: ["loadby1"],
@@ -76,6 +76,13 @@
   let selectedStatusID = "";
   let search = "";
   let filteredLeadData = selectedUserLeadData;
+  let searchedLeads = filteredLeadData;
+
+  $: {
+    searchedLeads = filteredLeadData.filter((item) => {
+      return item.name.toLowerCase().includes(search.toLowerCase());
+    });
+  }
 
   let andMode = true;
   let filters = {
@@ -139,7 +146,10 @@
     </div>
 
     <div class="h-full">
-      <UserWorkTable bind:selectedStatusID data={filteredLeadData} />
+      <UserWorkTable
+        bind:selectedStatusID
+        data={search.length === 0 ? filteredLeadData : searchedLeads}
+      />
     </div>
 
     <div class="modal-action">
