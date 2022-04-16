@@ -12,6 +12,7 @@ const routes = {
   "/add-user": AddUser,
   "/add-lead": AddLead,
   "/query-builder": QueryBuilder,
+  "/lead-details/:selectedLeadID": LeadDetails,
   "/lead-details": LeadDetails,
   "/fill-form": FillForm,
   "/home": Home,

@@ -4,11 +4,14 @@
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
   import { push } from "svelte-spa-router";
-  let selectedLeadID;
+  export let params = {};
+  export let selectedLeadID = params.selectedLeadID || "";
+  console.log(selectedLeadID);
   let selectedLeadData;
   let andMode = true; // andMode = true means AND mode, false means OR mode
   let filters = {
     today: false,
+    course: [],
     ondate: "",
     call1: false,
     call2: false,
@@ -37,6 +40,13 @@
       if (filters.cold) allTrues.push(item.status === "Cold");
       if (filters.closed) allTrues.push(item.status === "Closed");
       if (filters.awaiting) allTrues.push(item.status === "Awaiting");
+      if (filters.course.length != 0) {
+        allTrues.push(
+          andMode
+            ? item.course.every((course) => filters.course.includes(course))
+            : item.course.some((course) => filters.course.includes(course))
+        );
+      }
       //console.log(allTrues);
 
       return andMode
@@ -54,7 +64,7 @@
         phone: "phone",
         city: "city2",
         status: "Cold",
-        course: "course",
+        course: ["course"],
         source: ["source1"],
         loadedby: ["loadby1"],
         calls: [
@@ -79,7 +89,7 @@
         phone: "phone",
         city: "city2",
         status: "Cold",
-        course: "course",
+        course: ["course"],
         source: ["source1"],
         loadedby: ["loadby1"],
         calls: [
@@ -140,7 +150,7 @@
         phone: "phone",
         city: "city",
         status: "Hot",
-        course: "course",
+        course: ["course"],
         source: ["source1", "source2"],
         loadedby: ["loadby1", "loadby2"],
         calls: [
@@ -322,6 +332,25 @@
           class="checkbox"
         />
         <label for="">Awaiting</label>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <div class="text-xl font-bold opacity-50 my-2">Filter by Course</div>
+      <div class="flex gap-2 justify-between flex-wrap">
+        {#each courses as c}
+          <div class="flex items-center gap-3">
+            <input
+              type="checkbox"
+              on:change={(e) => {
+                if (e.target.checked) filters.course.push(c);
+                else
+                  filters.course = filters.course.filter((item) => item !== c);
+              }}
+              class="checkbox"
+            />
+            <label for="">{c}</label>
+          </div>
+        {/each}
       </div>
     </div>
 

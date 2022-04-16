@@ -6,6 +6,7 @@
   import RemarksCard from "../components/RemarksCard.svelte";
   import Navbar from "../components/Navbar.svelte";
   import UserWorkTable from "../components/UserWorkTable.svelte";
+  import { courses } from "../constants";
 
   let data = {
     users: [
@@ -27,7 +28,7 @@
       phone: "phone",
       city: "city2",
       status: "Hot",
-      course: "course",
+      course: ["CIVIL", "MECH"],
       source: ["source1"],
       loadedby: ["loadby1"],
       calls: [
@@ -52,7 +53,7 @@
       phone: "phone",
       city: "city2",
       status: "Cold",
-      course: "course",
+      course: ["CSE"],
       source: ["source1"],
       loadedby: ["loadby1"],
       calls: [
@@ -87,6 +88,7 @@
   let filters = {
     today: false,
     ondate: "",
+    course: [],
     call1: false,
     call2: false,
     call3: false,
@@ -120,6 +122,15 @@
       if (filters.cold) allTrues.push(item.status === "Cold");
       if (filters.closed) allTrues.push(item.status === "Closed");
       if (filters.awaiting) allTrues.push(item.status === "Awaiting");
+      if (filters.course.length != 0) {
+        console.log(item.course, filters.course);
+        allTrues.push(
+          andMode
+            ? item.course.every((course) => filters.course.includes(course))
+            : item.course.some((course) => filters.course.includes(course))
+        );
+      }
+
       console.log(allTrues);
       return andMode
         ? allTrues.every((item) => item === true)
@@ -248,6 +259,25 @@
           class="checkbox"
         />
         <label for="">Awaiting</label>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <div class="text-xl font-bold opacity-50 my-2">Filter by Course</div>
+      <div class="flex gap-2 justify-between">
+        {#each courses as c}
+          <div class="flex items-center gap-3">
+            <input
+              type="checkbox"
+              on:change={(e) => {
+                if (e.target.checked) filters.course.push(c);
+                else
+                  filters.course = filters.course.filter((item) => item !== c);
+              }}
+              class="checkbox"
+            />
+            <label for="">{c}</label>
+          </div>
+        {/each}
       </div>
     </div>
 

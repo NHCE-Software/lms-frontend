@@ -1,7 +1,59 @@
 <script>
+  import { pop, push } from "svelte-spa-router";
+
   import Navbar from "../components/Navbar.svelte";
   import { status, courses } from "../constants";
+  let userExists = true;
+  // modify userExists after check call from modal
 </script>
+
+<input
+  type="checkbox"
+  checked={userExists}
+  id="search-user-modal"
+  class="modal-toggle"
+/>
+<div class="modal">
+  <div class="modal-box bg-white max-w-6xl ">
+    <div class="text-2xl opacity-50 font-semibold">
+      Check if User Already Exists
+    </div>
+    <form action="" class="my-5 ">
+      <div class="flex gap-3 w-full ">
+        <div class="w-full">
+          <label for="">Email</label>
+          <input
+            type="text"
+            placeholder="Type here"
+            class="input w-full input-bordered "
+          />
+        </div>
+        <div class="w-full">
+          <label for="">Phone Number</label>
+          <input
+            type="text"
+            placeholder="Type here"
+            class="input w-full input-bordered "
+          />
+        </div>
+      </div>
+      <div class="flex justify-between items-center">
+        <div>
+          <button class="btn mt-3" on:click={() => pop()}>Go Back</button>
+          <button type="submit" class="btn mt-3">Check user</button>
+        </div>
+        <div
+          on:click={() => {
+            push("/lead-details/" + "bro");
+          }}
+          class="cursor-pointer px-3 py-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all"
+        >
+          User Exists! Go to user
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 <section class="grid min-h-screen p-5 h-full grid-cols-5">
   <Navbar />
