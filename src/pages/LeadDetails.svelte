@@ -1,8 +1,9 @@
 <script>
   import RemarksCard from "../components/RemarksCard.svelte";
-
+  import { courses, status } from "../constants";
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
+  import { push } from "svelte-spa-router";
   let selectedLeadID;
   let selectedLeadData;
   let andMode = true; // andMode = true means AND mode, false means OR mode
@@ -213,19 +214,18 @@
         id=""
       />
       <label for="" class="tracking-wide opacity-50">Course</label>
-      <input
-        type="text"
-        class="w-full p-2  border rounded-lg"
-        placeholder="Course"
-        name=""
-        id=""
-      />
+      <select id="course" class="select w-full">
+        <option disabled selected>Pick Course</option>
+        {#each courses as course}
+          <option value={course}>{course}</option>
+        {/each}
+      </select>
       <label for="" class="tracking-wide opacity-50">Status</label>
-      <select class="p-2 border rounded-xl" name="" id="">
-        <option value="hot">Hot</option>
-        <option value="hot">Cold</option>
-        <option value="hot">Awaiting</option>
-        <option value="hot">Closed</option>
+      <select id="course" class="select w-full">
+        <option disabled selected>Pick Status</option>
+        {#each status as s}
+          <option value={s}>{s}</option>
+        {/each}
       </select>
     </form>
     <div class="modal-action">
@@ -367,12 +367,12 @@
             <div class="text-xl opacity-50">Add, Edit and Remove Leads</div>
           </div>
           <div class="gap-3 flex">
-            <label
-              for="addusermodal"
+            <div
+              on:click={() => push("/add-lead")}
               class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
             >
-              Add Leads
-            </label>
+              Add Lead
+            </div>
             <label
               for="filtermodal"
               class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
@@ -401,9 +401,6 @@
         </div>
       </div>
     </section>
-    <label for="my-drawer" class="btn btn-primary drawer-button"
-      >Open drawer</label
-    >
   </div>
   <div class="drawer-side">
     <label for="my-drawer" class="drawer-overlay" />

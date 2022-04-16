@@ -1,6 +1,5 @@
 <script>
   import LoadedCard from "../components/LoadedCard.svelte";
-
   import Stories from "../components/Stories.svelte";
   import Stats from "../components/Stats.svelte";
   import WeeklyChart from "../components/WeeklyChart.svelte";

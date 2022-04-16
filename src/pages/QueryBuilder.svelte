@@ -3,7 +3,7 @@
   import Navbar from "../components/Navbar.svelte";
   let file;
   let cols = [];
-  let predef = ["Name", "Phone", "Email", "City", "State", "Course"];
+  let predef = ["Name", "Phone", "Email", "City", "Course"];
   let chosen = [];
   let data = [];
 
