@@ -4,6 +4,7 @@ import QueryBuilder from "./pages/QueryBuilder.svelte";
 import LeadDetails from "./pages/LeadDetails.svelte";
 import AddUser from "./pages/AddUser.svelte";
 import AddLead from "./pages/AddLead.svelte";
+import FillForm from "./pages/FillForm.svelte";
 
 const routes = {
   // Exact path
@@ -12,6 +13,7 @@ const routes = {
   "/add-lead": AddLead,
   "/query-builder": QueryBuilder,
   "/lead-details": LeadDetails,
+  "/fill-form": FillForm,
   "/home": Home,
 };
 
