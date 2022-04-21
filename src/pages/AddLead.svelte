@@ -26,7 +26,7 @@
           <input
             type="text"
             placeholder="Type here"
-            class="input w-full input-bordered "
+            class="input w-full input-bordered bg-white "
           />
         </div>
         <div class="w-full">
@@ -34,7 +34,7 @@
           <input
             type="text"
             placeholder="Type here"
-            class="input w-full input-bordered "
+            class="input w-full input-bordered bg-white "
           />
         </div>
       </div>
@@ -70,7 +70,7 @@
           id="name"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full "
+          class="input input-bordered w-full bg-white"
         />
         <label for="course" class="label">
           <span class="label-text">Course Interested</span>
@@ -102,7 +102,7 @@
           id="city"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full "
+          class="input input-bordered w-full bg-white "
         />
         <label for="email" class="label">
           <span class="label-text">Email</span>
@@ -111,7 +111,7 @@
           id="email"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full "
+          class="input input-bordered w-full bg-white"
         />
         <label for="phno" class="label">
           <span class="label-text">Phone Number</span>
@@ -120,12 +120,12 @@
           id="phno"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full "
+          class="input input-bordered w-full bg-white"
         />
         <label for="status" class="label">
           <span class="label-text">Status</span>
         </label>
-        <select id="status" class="select w-full ">
+        <select id="status" class="select w-full bg-white ">
           <option disabled selected>Pick status</option>
           {#each status as s}
             <option value={s}>{s}</option>

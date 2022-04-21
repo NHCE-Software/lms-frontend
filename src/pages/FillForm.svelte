@@ -8,7 +8,7 @@
   let box2;
   let box3;
   let box4;
-  let code = "33";
+  let code;
   let selectedCourse = [];
   $: {
     console.log(selectedCourse);
@@ -31,7 +31,7 @@
     <form class="flex flex-col w-full gap-3 max-w-md" action="">
       <label class="mt-3" for="">Name</label>
       <input
-        class="input p-3 w-full "
+        class="input p-3 w-full bg-white "
         type="text"
         placeholder="What should we call you?"
       />
@@ -57,11 +57,19 @@
       </div>
 
       <label class="mt-3" for="">Email</label>
-      <input class="input p-3 w-full " type="text" placeholder="Email" />
+      <input
+        class="input p-3 w-full bg-white"
+        type="text"
+        placeholder="Email"
+      />
       <label class="mt-3" for="">Phone number</label>
-      <input class="input p-3 w-full " type="text" placeholder="Phone Number" />
+      <input
+        class="input p-3 w-full bg-white"
+        type="text"
+        placeholder="Phone Number"
+      />
       <label class="mt-3" for="">City</label>
-      <input class="input p-3 w-full " type="text" placeholder="City" />
+      <input class="input p-3 w-full bg-white" type="text" placeholder="City" />
     </form>
   {:else}
     <form

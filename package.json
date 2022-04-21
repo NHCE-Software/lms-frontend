@@ -22,9 +22,12 @@
     "tailwindcss": "^3.0.23"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.10",
     "daisyui": "^2.13.6",
+    "graphql": "^16.3.0",
     "papaparse": "^5.3.2",
     "sirv-cli": "^2.0.0",
+    "svelte-apollo": "^0.5.0",
     "svelte-spa-router": "^3.2.0",
     "svelte-table": "^0.3.4"
   }

@@ -7,6 +7,7 @@
   export let params = {};
   export let selectedLeadID = params.selectedLeadID || "";
   console.log(selectedLeadID);
+  let selectedCourse = [];
   let selectedLeadData;
   let andMode = true; // andMode = true means AND mode, false means OR mode
   let filters = {
@@ -224,12 +225,25 @@
         id=""
       />
       <label for="" class="tracking-wide opacity-50">Course</label>
-      <select id="course" class="select w-full">
-        <option disabled selected>Pick Course</option>
+      <div class="flex gap-3 flex-wrap">
         {#each courses as course}
-          <option value={course}>{course}</option>
+          <input
+            type="checkbox"
+            on:change={(e) => {
+              if (e.target.checked) {
+                selectedCourse.push(course);
+                selectedCourse = [...selectedCourse];
+              } else {
+                selectedCourse = selectedCourse.filter(
+                  (item) => item !== course
+                );
+                selectedCourse = [...selectedCourse];
+              }
+            }}
+            class="checkbox"
+          />{course}
         {/each}
-      </select>
+      </div>
       <label for="" class="tracking-wide opacity-50">Status</label>
       <select id="course" class="select w-full">
         <option disabled selected>Pick Status</option>
@@ -510,6 +524,16 @@
             </div>
           </div>
           <div class="mt-10">
+            <div class="text-2xl font-semibold opacity-50">
+              Interested Courses
+            </div>
+            <div class="flex gap-3 overflow-auto">
+              {#each selectedLeadData.course as c}
+                <div class="p-3 border rounded-xl flex-none">{c}</div>
+              {/each}
+            </div>
+          </div>
+          <div class="mt-5">
             <div class="text-2xl font-semibold opacity-50">Sources</div>
             <div class="flex gap-3 overflow-auto">
               {#each selectedLeadData.source as source}
