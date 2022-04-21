@@ -1,5 +1,17 @@
 <script>
   import { push } from "svelte-spa-router";
+  const role = localStorage.getItem("role");
+  const routes =
+    role && role.toLowerCase() === "admin"
+      ? [
+          { path: "/home", name: "Admin Dashboard" },
+          { path: "/add-user", name: "Users " },
+          { path: "/lead-details", name: "Lead Details" },
+        ]
+      : [
+          { path: "/query-builder", name: "Load Leads" },
+          { path: "/lead-details", name: "Lead Details" },
+        ];
 </script>
 
 <div class="bg-white p-5 flex flex-col  rounded-2xl shadow-xl">
@@ -9,22 +21,12 @@
   <div class="flex flex-col  h-full ">
     <div class="mt-10 mb-3 opacity-50">Navigation</div>
     <div class="flex flex-col gap-3  h-full">
-      <div on:click={() => push("/home")} class="p-3 border rounded-xl">
-        Admin Dashboard
-      </div>
-      <div on:click={() => push("/add-user")} class="p-3 border rounded-xl">
-        Add Users
-      </div>
-      <div
-        on:click={() => push("/query-builder")}
-        class="p-3 border rounded-xl"
-      >
-        Add Leads
-      </div>
+      {#each routes as r}
+        <div on:click={() => push(r.path)} class="p-3 border rounded-xl">
+          {r.name}
+        </div>
+      {/each}
 
-      <div on:click={() => push("/lead-details")} class="p-3 border rounded-xl">
-        Caller Dashboard
-      </div>
       <div class="p-3 border rounded-xl mt-auto">Profile</div>
     </div>
   </div>

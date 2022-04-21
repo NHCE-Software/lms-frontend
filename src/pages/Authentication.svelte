@@ -1,38 +1,48 @@
 <script>
   import { gql } from "@apollo/client/core";
   import { mutation } from "svelte-apollo";
-  import { ApolloClient, InMemoryCache } from "@apollo/client";
-  import { setClient } from "svelte-apollo";
+  import { push } from "svelte-spa-router";
+
   let email, password;
-
-  let client = new ApolloClient({
-    uri: "http://localhost:3000/graphql",
-    cache: new InMemoryCache(),
-  });
-
-  setClient(client);
-
+  let loading = false;
   const SIGNIN = gql`
     mutation SignIn($email: String!, $password: String!) {
       signIn(email: $email, password: $password)
     }
   `;
   const SIGNIN_MUTATION = mutation(SIGNIN);
+  async function signIn() {
+    loading = true;
+    const { error, data } = await SIGNIN_MUTATION({
+      variables: { email, password },
+    });
+    if (error) return console.log(error);
+    else {
+      loading = false;
+      if (data.signIn.role === "admin") {
+        localStorage.setItem("token", data.signIn.token);
+        localStorage.setItem("role", data.signIn.role);
+        push("/home");
+      }
+    }
+  }
 </script>
 
 <section class="grid grid-cols-1 lg:grid-cols-3 min-h-screen">
   <div class="p-10">
-    <div class="flex h-full justify-center items-center flex-col w-full ">
-      <img class=" w-1/2 mx-auto" src="assets/logo.png" alt="" srcset="" />
-      <div class="mt-5 font-bold text-5xl">Welcome to LMS</div>
-      <div class="leading-loose">powered by 3 Coders</div>
+    <div class="flex h-full  justify-center items-center flex-col w-full ">
+      <div class="text-center mb-auto">
+        <img
+          class=" w-full p-3 mx-auto"
+          src="assets/logo.png"
+          alt=""
+          srcset=""
+        />
+        <div class="mt-5 font-bold text-5xl">Welcome to LMS</div>
+        <div class="leading-loose">powered by 3 Coders</div>
+      </div>
       <form
-        on:submit|preventDefault={async () => {
-          const { loading, error, data } = await SIGNIN_MUTATION({
-            variables: { email, password },
-          });
-          console.log(loading, error, data);
-        }}
+        on:submit|preventDefault={signIn}
         class="flex gap-2 flex-col mt-5 w-full "
       >
         <label for="">Email</label>
@@ -50,10 +60,11 @@
           placeholder="Password"
         />
         <button
+          disabled={loading}
           type="submit"
           class="p-4 rounded-lg font-bold mt-5 bg-blue-500 text-white text-xl"
         >
-          Sign In
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
     </div>

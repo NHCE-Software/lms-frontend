@@ -2,6 +2,9 @@
   import { roles } from "../constants";
   import Navbar from "../components/Navbar.svelte";
   import UserDashboardTable from "../components/UserDashboardTable.svelte";
+  import { gql } from "@apollo/client";
+  import { mutation } from "svelte-apollo";
+  import swal from "sweetalert";
 
   let data = {
     loadedusers: [
@@ -13,13 +16,56 @@
       },
     ],
   };
-
+  let newUser = {
+    name: "",
+    password: "",
+    email: "",
+    role: "",
+  };
   let selectedUserID = "";
   let selectedUser = {};
   $: {
     selectedUser = data.loadedusers.find(
       (user) => user.userid === selectedUserID
     );
+  }
+  let ADDUSER = gql`
+    mutation UserCreateOne($record: CreateOneUserInput!) {
+      userCreateOne(record: $record) {
+        record {
+          name
+          email
+          role
+        }
+      }
+    }
+  `;
+  let ADDUSER_MUTATION = mutation(ADDUSER);
+  async function addUser() {
+    try {
+      let { error, data } = await ADDUSER_MUTATION({
+        variables: { record: { ...newUser, role: newUser.role.toLowerCase() } },
+      });
+      console.log(error, data);
+      if (data) {
+        swal("Done!", "User has been created successfully", "success");
+      }
+      if (error) {
+        swal(
+          "Umm...",
+          "Something went wrong. This may happen because are trying enter a duplicate email, check all the fields and try again.",
+          "success"
+        );
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+      swal(
+        "Umm...",
+        "Something went wrong. This may happen because are trying enter a duplicate email, check all the fields and try again.",
+        "error"
+      );
+    }
   }
 </script>
 
@@ -30,6 +76,7 @@
     <form action="" class="gap-2 flex flex-col my-4">
       <label for="" class="tracking-wide opacity-50">Name</label>
       <input
+        bind:value={newUser.name}
         type="text"
         class="w-full p-2 border rounded-lg"
         placeholder="Name"
@@ -38,6 +85,7 @@
       />
       <label for="" class="tracking-wide opacity-50">Email</label>
       <input
+        bind:value={newUser.email}
         type="text"
         class="w-full p-2  border rounded-lg"
         placeholder="Email"
@@ -47,7 +95,13 @@
 
       <label for="" class="tracking-wide opacity-50">Role</label>
 
-      <select class="p-2 rounded-lg border" name="" id="">
+      <select
+        bind:value={newUser.role}
+        class="p-2 rounded-lg border"
+        name=""
+        id=""
+      >
+        <option disabled selected value="">Select Role</option>
         {#each roles as role}
           <option>{role}</option>
         {/each}
@@ -55,6 +109,7 @@
       <label for="" class="tracking-wide opacity-50">Password</label>
 
       <input
+        bind:value={newUser.password}
         type="text"
         class="w-full p-2  border rounded-lg"
         placeholder="Password"
@@ -63,7 +118,8 @@
       />
     </form>
     <div class="modal-action">
-      <label for="addusermodal" class="btn">Add User</label>
+      <div on:click={addUser} class="btn">Add User</div>
+      <label for="addusermodal" class="btn">Close</label>
     </div>
   </div>
 </div>

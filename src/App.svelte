@@ -1,17 +1,29 @@
 <script>
-  import { onMount } from "svelte";
-
   import Router from "svelte-spa-router";
   import routes from "./routes.js";
-
-  import { ApolloClient, InMemoryCache } from "@apollo/client";
+  import {
+    ApolloClient,
+    HttpLink,
+    ApolloLink,
+    InMemoryCache,
+    concat,
+  } from "@apollo/client";
+  const httpLink = new HttpLink({ uri: "http://localhost:3000/graphql" });
   import { setClient } from "svelte-apollo";
-  let client;
-  onMount(() => {
-    client = new ApolloClient({
-      uri: "http://localhost:3000/graphql",
-      cache: new InMemoryCache(),
-    });
+
+  const authMiddleware = new ApolloLink((operation, forward) => {
+    // add the authorization to the headers
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        authorization: localStorage.getItem("token") || null,
+      },
+    }));
+    return forward(operation);
+  });
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: concat(authMiddleware, httpLink),
   });
   setClient(client);
 </script>
