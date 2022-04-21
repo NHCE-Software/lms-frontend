@@ -3,8 +3,9 @@
 
   import Navbar from "../components/Navbar.svelte";
   import { status, courses } from "../constants";
-  let userExists = true;
+  let userExists = false;
   // modify userExists after check call from modal
+  let selectedCourse = [];
 </script>
 
 <input
@@ -74,12 +75,25 @@
         <label for="course" class="label">
           <span class="label-text">Course Interested</span>
         </label>
-        <select id="course" class="select w-full">
-          <option disabled selected>Pick Course</option>
+        <div class="flex gap-3 flex-wrap">
           {#each courses as course}
-            <option value={course}>{course}</option>
+            <input
+              type="checkbox"
+              on:change={(e) => {
+                if (e.target.checked) {
+                  selectedCourse.push(course);
+                  selectedCourse = [...selectedCourse];
+                } else {
+                  selectedCourse = selectedCourse.filter(
+                    (item) => item !== course
+                  );
+                  selectedCourse = [...selectedCourse];
+                }
+              }}
+              class="checkbox"
+            />{course}
           {/each}
-        </select>
+        </div>
 
         <label for="city" class="label">
           <span class="label-text">City</span>

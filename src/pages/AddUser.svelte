@@ -1,16 +1,26 @@
 <script>
+  import { roles } from "../constants";
   import Navbar from "../components/Navbar.svelte";
   import UserDashboardTable from "../components/UserDashboardTable.svelte";
-  let roles = ["Caller", "Admin"];
+
   let data = {
     loadedusers: [
       {
+        userid: "userid",
         name: "Danush",
         email: "email@dannyboi.com",
-        role: "Caller",
+        role: "Admin",
       },
     ],
   };
+
+  let selectedUserID = "";
+  let selectedUser = {};
+  $: {
+    selectedUser = data.loadedusers.find(
+      (user) => user.userid === selectedUserID
+    );
+  }
 </script>
 
 <input type="checkbox" id="addusermodal" class="modal-toggle" />
@@ -53,7 +63,63 @@
       />
     </form>
     <div class="modal-action">
-      <label for="addusermodal" class="btn">Yay!</label>
+      <label for="addusermodal" class="btn">Add User</label>
+    </div>
+  </div>
+</div>
+
+<input type="checkbox" id="editusermodal" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box bg-white">
+    <h3 class="font-bold text-lg">Edit User</h3>
+    {#if selectedUser}
+      <form action="" class="gap-2 flex flex-col my-4">
+        <label for="" class="tracking-wide opacity-50">Name</label>
+        <input
+          type="text"
+          class="w-full p-2 border rounded-lg"
+          placeholder="Name"
+          bind:value={selectedUser.name}
+          name=""
+          id=""
+        />
+        <label for="" class="tracking-wide opacity-50">Email</label>
+        <input
+          type="text"
+          class="w-full p-2  border rounded-lg"
+          placeholder="Email"
+          name=""
+          id=""
+          bind:value={selectedUser.email}
+        />
+
+        <label for="" class="tracking-wide opacity-50">Role</label>
+
+        <select
+          bind:value={selectedUser.role}
+          class="p-2 rounded-lg border"
+          name=""
+          id=""
+        >
+          {#each roles as role}
+            <option>{role}</option>
+          {/each}
+        </select>
+        <label for="" class="tracking-wide opacity-50">Password</label>
+
+        <input
+          type="text"
+          class="w-full p-2  border rounded-lg"
+          placeholder="Password"
+          name=""
+          id=""
+        />
+      </form>
+    {/if}
+    <div class="modal-action">
+      <!-- svelte-ignore a11y-label-has-associated-control -->
+      <label class="btn">Confirm Update</label>
+      <label for="editusermodal" class="btn">Close</label>
     </div>
   </div>
 </div>
@@ -74,7 +140,7 @@
       </label>
     </div>
     <div class="overflow-auto mt-10">
-      <UserDashboardTable data={data.loadedusers} />
+      <UserDashboardTable bind:selectedUserID data={data.loadedusers} />
     </div>
   </div>
 </section>
