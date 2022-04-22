@@ -7,8 +7,36 @@
   import Navbar from "../components/Navbar.svelte";
   import UserWorkTable from "../components/UserWorkTable.svelte";
   import { courses } from "../constants";
+  import { gql } from "@apollo/client";
+  import { mutation, query } from "svelte-apollo";
+  import { onMount } from "svelte";
 
-  let data = {
+  onMount(() => {
+    getUsers();
+  });
+
+  let GETUSERS = gql`
+    query UserMany {
+      userMany {
+        _id
+      }
+    }
+  `;
+
+  let GETUSERS_QUERY = query(GETUSERS);
+
+  async function getUsers() {
+    const { loading, data, errors } = $GETUSERS_QUERY;
+    console.log($GETUSERS_QUERY);
+    // contextData.users = data.usersMany.map((item) => {
+    //   return {
+    //     ...item,
+    //     avatarURL: "https://api.lorem.space/image/face?hash=92310",
+    //   };
+    // });
+  }
+
+  let contextData = {
     users: [
       {
         avatarURL: "https://api.lorem.space/image/face?hash=92310",
@@ -314,7 +342,7 @@
     <div class="text-xl opacity-50">
       You have <span class="text-blue-500">3</span> new leads
     </div>
-    <Stories users={data.users} bind:selectedStoryUID />
+    <Stories users={contextData.users} bind:selectedStoryUID />
     <WeeklyChart />
     <Stats />
   </div>

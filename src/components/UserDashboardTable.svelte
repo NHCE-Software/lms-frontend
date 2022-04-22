@@ -1,6 +1,7 @@
 <script>
   export let data = [];
   export let selectedUserID = "";
+  export let removeUser = () => {};
 </script>
 
 <div class="divTable">
@@ -49,9 +50,7 @@
             </label>
             <div
               on:click={() => {
-                if (confirm("Deleting " + name + ". A-firm?")) {
-                  // delete user id - network call
-                }
+                removeUser(_id);
               }}
             >
               <svg

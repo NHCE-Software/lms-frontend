@@ -84,12 +84,74 @@
     }
   `;
   let GETUSERS_MUTATION = mutation(GETUSERS);
-
   async function getAllUsers() {
     const { loading, error, data } = await GETUSERS_MUTATION();
-    console.log(data.userMany);
     contextData.loadedusers = data.userMany;
-    console.log(data);
+  }
+
+  let REMOVEUSER = gql`
+    mutation Mutation($filter: FilterRemoveOneUserInput) {
+      userRemoveOne(filter: $filter) {
+        record {
+          name
+        }
+      }
+    }
+  `;
+  let REMOVEUSER_MUTATION = mutation(REMOVEUSER);
+  async function removeUser(userid) {
+    console.log(userid);
+    if (
+      confirm(
+        "Deleting " +
+          contextData.loadedusers.find((item) => item._id === userid).name +
+          " Confirm delete?"
+      )
+    ) {
+      const { loading, errors, data } = await REMOVEUSER_MUTATION({
+        variables: { filter: { _id: userid } },
+      });
+      if (data)
+        swal(
+          "Successfully Deleted",
+          "The user is deleted from the database",
+          "success"
+        );
+      else swal("Error", "Oops, Something went wrong", "error");
+
+      getAllUsers();
+    }
+  }
+  let EDITUSER = gql`
+    mutation UserUpdateById($id: MongoID!, $record: UpdateByIdUserInput!) {
+      userUpdateById(_id: $id, record: $record) {
+        record {
+          name
+        }
+      }
+    }
+  `;
+  let EDITUSER_MUTATION = mutation(EDITUSER);
+  async function editUser() {
+    console.log("bro what", selectedUserID);
+    const { loading, data, error } = await EDITUSER_MUTATION({
+      variables: {
+        id: selectedUserID,
+        record: {
+          name: selectedUser.name,
+          password: selectedUser.password,
+          email: selectedUser.email,
+          role: selectedUser.role,
+        },
+      },
+    });
+    if (data) {
+      swal("Successfully Edited", "The changes have been saved", "success");
+      getAllUsers();
+    } else {
+      swal("Error", "Oops, Something went wrong", "error");
+      console.log(error);
+    }
   }
 </script>
 
@@ -198,7 +260,7 @@
     {/if}
     <div class="modal-action">
       <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label class="btn">Confirm Update</label>
+      <label on:click={editUser} class="btn">Confirm Update</label>
       <label for="editusermodal" class="btn">Close</label>
     </div>
   </div>
@@ -220,7 +282,11 @@
       </label>
     </div>
     <div class="overflow-auto mt-10">
-      <UserDashboardTable bind:selectedUserID data={contextData.loadedusers} />
+      <UserDashboardTable
+        {removeUser}
+        bind:selectedUserID
+        data={contextData.loadedusers}
+      />
     </div>
   </div>
 </section>

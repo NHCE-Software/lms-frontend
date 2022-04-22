@@ -24,6 +24,7 @@
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: concat(authMiddleware, httpLink),
+    notifyOnNetworkStatusChange: true,
   });
   setClient(client);
 </script>
