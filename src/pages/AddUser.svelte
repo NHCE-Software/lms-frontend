@@ -5,8 +5,12 @@
   import { gql } from "@apollo/client";
   import { mutation } from "svelte-apollo";
   import swal from "sweetalert";
+  import { onMount } from "svelte";
+  onMount(() => {
+    getAllUsers();
+  });
 
-  let data = {
+  let contextData = {
     loadedusers: [
       {
         userid: "userid",
@@ -22,12 +26,13 @@
     email: "",
     role: "",
   };
-  let selectedUserID = "";
+  export let selectedUserID = "";
   let selectedUser = {};
   $: {
-    selectedUser = data.loadedusers.find(
-      (user) => user.userid === selectedUserID
+    selectedUser = contextData.loadedusers.find(
+      (user) => user._id === selectedUserID
     );
+    console.log(selectedUser);
   }
   let ADDUSER = gql`
     mutation UserCreateOne($record: CreateOneUserInput!) {
@@ -49,6 +54,7 @@
       console.log(error, data);
       if (data) {
         swal("Done!", "User has been created successfully", "success");
+        getAllUsers();
       }
       if (error) {
         swal(
@@ -66,6 +72,24 @@
         "error"
       );
     }
+  }
+  let GETUSERS = gql`
+    query UserMany {
+      userMany {
+        name
+        email
+        role
+        _id
+      }
+    }
+  `;
+  let GETUSERS_MUTATION = mutation(GETUSERS);
+
+  async function getAllUsers() {
+    const { loading, error, data } = await GETUSERS_MUTATION();
+    console.log(data.userMany);
+    contextData.loadedusers = data.userMany;
+    console.log(data);
   }
 </script>
 
@@ -196,7 +220,7 @@
       </label>
     </div>
     <div class="overflow-auto mt-10">
-      <UserDashboardTable bind:selectedUserID data={data.loadedusers} />
+      <UserDashboardTable bind:selectedUserID data={contextData.loadedusers} />
     </div>
   </div>
 </section>

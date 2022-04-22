@@ -16,7 +16,7 @@
   </div>
 
   <div class="divTableBody">
-    {#each data as { name, userid, email, role }, i}
+    {#each data as { name, _id, email, role }, i}
       <div class="divTableRow">
         <div class="divTableCell">{i + 1}</div>
         <div class="divTableCell">{name}</div>
@@ -27,7 +27,8 @@
           <div class="flex gap-2">
             <label
               on:click={() => {
-                selectedUserID = userid;
+                console.log("changing id", _id);
+                selectedUserID = _id;
               }}
               for="editusermodal"
             >
