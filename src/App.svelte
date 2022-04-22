@@ -1,6 +1,7 @@
 <script>
   import Router from "svelte-spa-router";
   import routes from "./routes.js";
+
   import {
     ApolloClient,
     HttpLink,
@@ -24,7 +25,6 @@
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: concat(authMiddleware, httpLink),
-    notifyOnNetworkStatusChange: true,
   });
   setClient(client);
 </script>

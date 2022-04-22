@@ -8,32 +8,35 @@
   import UserWorkTable from "../components/UserWorkTable.svelte";
   import { courses } from "../constants";
   import { gql } from "@apollo/client";
-  import { mutation, query } from "svelte-apollo";
+  import { mutation, query, getClient } from "svelte-apollo";
   import { onMount } from "svelte";
 
-  onMount(() => {
-    getUsers();
+  onMount(async () => {
+    await getUsers();
   });
 
   let GETUSERS = gql`
     query UserMany {
       userMany {
+        role
+        email
+        name
         _id
       }
     }
   `;
-
   let GETUSERS_QUERY = query(GETUSERS);
 
   async function getUsers() {
-    const { loading, data, errors } = $GETUSERS_QUERY;
-    console.log($GETUSERS_QUERY);
-    // contextData.users = data.usersMany.map((item) => {
-    //   return {
-    //     ...item,
-    //     avatarURL: "https://api.lorem.space/image/face?hash=92310",
-    //   };
-    // });
+    let { error, data } = await GETUSERS_QUERY.result();
+    console.log(error, data);
+    if (data)
+      contextData.users = data.userMany.map((item) => {
+        return {
+          ...item,
+          avatarURL: "https://api.lorem.space/image/face?hash=92310",
+        };
+      });
   }
 
   let contextData = {

@@ -4,16 +4,16 @@
 </script>
 
 <div>
-  <div class="my-4 mb-2 font-bold opacity-50">Stories</div>
+  <div class="my-4 mb-2 font-bold opacity-50 ">Stories</div>
 
-  <div class="flex gap-5 mb-5">
-    {#each users as { avatarURL, uid }}
-      {#if uid === selectedStoryUID}
+  <div class="flex gap-5 mb-5 overflow-auto py-4">
+    {#each users as { avatarURL, _id }}
+      {#if _id === selectedStoryUID}
         <div
           on:click={() => {
-            selectedStoryUID = uid;
+            selectedStoryUID = _id;
           }}
-          class="avatar"
+          class="avatar flex-none"
         >
           <div class="w-20 rounded-full border-2 border-blue-500">
             <img src={avatarURL} />
@@ -22,9 +22,9 @@
       {:else}
         <div
           on:click={() => {
-            selectedStoryUID = uid;
+            selectedStoryUID = _id;
           }}
-          class="avatar"
+          class="avatar flex-none"
         >
           <div class="w-20 rounded-full">
             <img src={avatarURL} />
@@ -63,6 +63,6 @@
   ::-webkit-scrollbar-thumb {
     border-radius: 100px;
     border: 10px solid rgba(0, 0, 0, 0.18);
-    background-color: #5532ff;
+    background-color: #327aff;
   }
 </style>
