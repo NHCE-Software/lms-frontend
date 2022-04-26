@@ -90,12 +90,8 @@
   }
 
   let REMOVEUSER = gql`
-    mutation Mutation($filter: FilterRemoveOneUserInput) {
-      userRemoveOne(filter: $filter) {
-        record {
-          name
-        }
-      }
+    mutation Mutation($filter: JSON) {
+      userRemoveOne(filter: $filter)
     }
   `;
   let REMOVEUSER_MUTATION = mutation(REMOVEUSER);
@@ -111,11 +107,18 @@
       const { loading, errors, data } = await REMOVEUSER_MUTATION({
         variables: { filter: { _id: userid } },
       });
-      if (data)
+      console.log(data);
+      if (data && data.userRemoveOne.message === "successful")
         swal(
           "Successfully Deleted",
           "The user is deleted from the database",
           "success"
+        );
+      else if (data && data.userRemoveOne.message === "deleteblocked")
+        swal(
+          "Can Not Delete LoggedIn Admin",
+          "You are trying to delete yourself",
+          "error"
         );
       else swal("Error", "Oops, Something went wrong", "error");
 
@@ -123,8 +126,11 @@
     }
   }
   let EDITUSER = gql`
-    mutation UserUpdateById($id: MongoID!, $record: UpdateByIdUserInput!) {
-      userUpdateById(_id: $id, record: $record) {
+    mutation Mutation(
+      $record: UpdateOneUserInput!
+      $filter: FilterUpdateOneUserInput
+    ) {
+      userUpdateOne(record: $record, filter: $filter) {
         record {
           name
         }
@@ -133,10 +139,10 @@
   `;
   let EDITUSER_MUTATION = mutation(EDITUSER);
   async function editUser() {
-    console.log("bro what", selectedUserID);
+    console.log("bro what", selectedUser);
     const { loading, data, error } = await EDITUSER_MUTATION({
       variables: {
-        id: selectedUserID,
+        filter: { _id: selectedUserID },
         record: {
           name: selectedUser.name,
           password: selectedUser.password,
@@ -145,6 +151,7 @@
         },
       },
     });
+
     if (data) {
       swal("Successfully Edited", "The changes have been saved", "success");
       getAllUsers();
@@ -250,6 +257,7 @@
         <label for="" class="tracking-wide opacity-50">Password</label>
 
         <input
+          bind:value={selectedUser.password}
           type="text"
           class="w-full p-2  border rounded-lg"
           placeholder="Password"

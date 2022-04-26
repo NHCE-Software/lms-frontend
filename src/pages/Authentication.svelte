@@ -24,6 +24,11 @@
         localStorage.setItem("role", data.signIn.role);
         push("/home");
       }
+      if (data.signIn.role === "caller") {
+        localStorage.setItem("token", data.signIn.token);
+        localStorage.setItem("role", data.signIn.role);
+        push("/home");
+      }
     }
   }
 </script>

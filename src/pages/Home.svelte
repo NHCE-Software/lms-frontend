@@ -1,4 +1,5 @@
 <script>
+  // --------------------imports-------------------------------
   import LoadedCard from "../components/LoadedCard.svelte";
   import Stories from "../components/Stories.svelte";
   import Stats from "../components/Stats.svelte";
@@ -8,12 +9,14 @@
   import UserWorkTable from "../components/UserWorkTable.svelte";
   import { courses } from "../constants";
   import { gql } from "@apollo/client";
-  import { mutation, query, getClient } from "svelte-apollo";
+  import { mutation, query } from "svelte-apollo";
   import { onMount } from "svelte";
 
   onMount(async () => {
     await getUsers();
   });
+
+  // ------------------graphql----------------------------------
 
   let GETUSERS = gql`
     query UserMany {
@@ -29,15 +32,54 @@
 
   async function getUsers() {
     let { error, data } = await GETUSERS_QUERY.result();
-    console.log(error, data);
-    if (data)
+    console.log("this is nro", error, data);
+    if (data) {
       contextData.users = data.userMany.map((item) => {
         return {
           ...item,
           avatarURL: "https://api.lorem.space/image/face?hash=92310",
         };
       });
+
+      contextData.users = [...contextData.users];
+    }
   }
+
+  let GETLEADDATA = gql`
+    query LeadMany($filter: FilterFindManyLeadInput) {
+      leadMany(filter: $filter) {
+        name
+        loadedby
+        email
+        city
+        phonenumber
+        status
+        course
+        calls {
+          call
+          remark
+          updatedby
+          followup
+          _id
+          updatedAt
+          createdAt
+        }
+        _id
+      }
+    }
+  `;
+  let GETLEADDATA_QUERY = query(GETLEADDATA);
+  async function getLeadData() {
+    let { error, data } = await GETLEADDATA_QUERY.result();
+    console.log("lead data", data);
+    if (data) {
+      filteredLeadData = data.leadMany;
+      selectedUserLeadData = data.leadMany;
+    }
+    //console.log(selectedUserLeadData, searchedLeads);
+  }
+
+  // --------------------State declaration-------------------------
 
   let contextData = {
     users: [
@@ -53,7 +95,7 @@
   };
   let selectedUserLeadData = [
     {
-      leadid: "bro1",
+      _id: "bro1",
       name: "yajat",
       email: "email",
       phone: "phone",
@@ -78,7 +120,7 @@
       ],
     },
     {
-      leadid: "bro11",
+      _id: "bro11",
       name: "123",
       email: "email",
       phone: "phone",
@@ -105,16 +147,10 @@
   ];
   let selectedStoryUID;
   let selectedStatusID = "";
+  console.log(contextData.users);
   let search = "";
   let filteredLeadData = selectedUserLeadData;
   let searchedLeads = filteredLeadData;
-
-  $: {
-    searchedLeads = filteredLeadData.filter((item) => {
-      return item.name.toLowerCase().includes(search.toLowerCase());
-    });
-  }
-
   let andMode = true;
   let filters = {
     today: false,
@@ -131,13 +167,29 @@
     awaiting: false,
     closed: false,
   };
+
+  // ----------------------Reactive changes--------------------------
+  $: {
+    console.log(selectedStoryUID);
+    // network call
+  }
+  $: {
+    searchedLeads = filteredLeadData.filter((item) => {
+      return item.name.toLowerCase().includes(search.toLowerCase());
+    });
+  }
+  // -------------------------helper functions------------------------
   function applyFilter() {
     filteredLeadData = selectedUserLeadData.map((item) => {
       return {
         ...item,
-        followup: item.calls[item.calls.length - 1].followup,
+        followup:
+          item.calls && item.calls.length > 1
+            ? item.calls[item.calls.length - 1].followup
+            : undefined,
       };
     });
+    console.log("this is filter", filteredLeadData);
     filteredLeadData = selectedUserLeadData.filter((item) => {
       let allTrues = [];
       if (filters.today) allTrues.push(item.followup === "Today");
@@ -169,7 +221,12 @@
     });
     filteredLeadData = [...filteredLeadData];
   }
+  async function changeSelectedLeadData() {
+    await getLeadData();
+  }
 </script>
+
+<!-- ----------------------------------html---------------------------------------- -->
 
 <input type="checkbox" id="assigned-modal" class="modal-toggle" />
 <div class="modal">
@@ -179,7 +236,7 @@
         <input
           bind:value={search}
           type="text"
-          class="outline-none p-3"
+          class="outline-none p-3 w-full"
           placeholder="Search"
         />
       </div>
@@ -326,7 +383,7 @@
 
     <div class="text-2xl font-semibold opacity-50">Remarks</div>
     {#if selectedStatusID}
-      {#each selectedUserLeadData.find((item) => item.leadid === selectedStatusID).calls as call}
+      {#each filteredLeadData.find((item) => item._id === selectedStatusID).calls as call}
         <RemarksCard remark={call} />
       {/each}
     {/if}
@@ -351,42 +408,46 @@
   </div>
 
   <div class="bg-white  m-2  p-5 rounded-xl shadow-xl ">
-    <div class="avatar flex justify-center mt-10 ">
-      <div class="w-1/2 rounded-full">
-        <img src="https://api.lorem.space/image/face?hash=92310" />
+    {#if selectedStoryUID}
+      <div class="avatar flex justify-center mt-10 ">
+        <div class="w-1/2 rounded-full">
+          <img src="https://api.lorem.space/image/face?hash=92310" />
+        </div>
       </div>
-    </div>
-    <div class="text-center text-2xl mt-5 ">Mr. Siva Balan</div>
-    <div class="text-center opacity-50">Online</div>
-    <div class="mt-10 opacity-50 mb-4">Work Completed Today</div>
-    <div class="flex overflow-auto  gap-5 ">
-      <div class="rounded-2xl flex-none p-5 w-fit border my-2">
-        <div class="text-3xl">56</div>
-        <div class="">Calls made today</div>
+      <div class="text-center text-2xl mt-5 ">
+        {contextData.users.find((item) => item._id === selectedStoryUID).name}
       </div>
-      <div class="rounded-2xl flex-none p-5 w-fit border my-2">
-        <div class="text-3xl">56</div>
-        <div class="">Hot calls today</div>
+      <div class="mt-10 opacity-50 mb-4">Work Status</div>
+      <div class="grid grid-cols-2 gap-2 ">
+        <div class="rounded-2xl flex-none p-5 w-fit border my-2">
+          <div class="text-3xl">56</div>
+          <div class="">Calls made today</div>
+        </div>
+        <div class="rounded-2xl flex-none p-5 w-fit border my-2">
+          <div class="text-3xl">56</div>
+          <div class="">Hot calls today</div>
+        </div>
+        <div class="rounded-2xl flex-none p-5 w-fit border my-2">
+          <div class="text-3xl">156</div>
+          <div class="">Cold calls today</div>
+        </div>
+        <label
+          for="assigned-modal"
+          on:click={changeSelectedLeadData}
+          class="rounded-2xl flex-none flex  items-center justify-center p-5 w-fit border my-2 text-center bg-blue-300   text-blue-600   transition-all cursor-pointer hover:text-blue-600"
+        >
+          <div class="text-2xl ">View all calls</div>
+        </label>
       </div>
-      <div class="rounded-2xl flex-none p-5 w-fit border my-2">
-        <div class="text-3xl">156</div>
-        <div class="">Cold calls today</div>
+    {:else}
+      <div class="opacity-10 text-2xl font-bold">
+        Select story to get started
       </div>
-    </div>
-
-    <div class="mt-6 opacity-50 mb-4">Details of the Calls made Today</div>
-    <div class="flex flex-col overflow-auto gap-3">
-      <LoadedCard />
-      <LoadedCard />
-      <label
-        for="assigned-modal"
-        class="text-right transition-all cursor-pointer hover:text-blue-600"
-        >view more</label
-      >
-    </div>
+    {/if}
   </div>
 </section>
 
+<!-- ----------------------------------css---------------------------------------- -->
 <style>
   .slider-wrapper {
     display: inline-block;

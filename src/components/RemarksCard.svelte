@@ -15,7 +15,7 @@
   </div>
   <div class="my-3 mb-0 font-semibold flex justify-between">
     <div>updated by {remark.updatedby}</div>
-    <div>{remark.date}</div>
+    <div>{Date(remark.createdAt).toLocaleLowerCase()}</div>
   </div>
   <div class="text-blue-600 font-semibold">Follow up: {remark.followup}</div>
 </div>

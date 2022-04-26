@@ -19,11 +19,11 @@
   </div>
 
   <div class="divTableBody">
-    {#each data as { leadid, status, source, city, name, email, course, phone }, i}
+    {#each data as { _id, status, source, city, name, email, course, phonenumber }, i}
       <div class="divTableRow">
         <div class="divTableCell">{i + 1}</div>
         <div class="divTableCell">{name}</div>
-        <div class="divTableCell">{phone}</div>
+        <div class="divTableCell">{phonenumber}</div>
         <div class="divTableCell">{email}</div>
         <div class="divTableCell">{city}</div>
         <div class="divTableCell">{source}</div>
@@ -31,7 +31,7 @@
 
         <label
           on:click={() => {
-            selectedStatusID = leadid;
+            selectedStatusID = _id;
           }}
           for="my-modal2"
           class="divTableCell">{status}</label

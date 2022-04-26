@@ -59,7 +59,7 @@
   let data = {
     leads: [
       {
-        leadid: "bro1",
+        _id: "bro1",
         name: "123",
         email: "email",
         phone: "phone",
@@ -84,7 +84,7 @@
         ],
       },
       {
-        leadid: "bro12",
+        _id: "bro12",
         name: "asdasd",
         email: "email",
         phone: "phone",
@@ -145,7 +145,7 @@
         ],
       },
       {
-        leadid: "bro",
+        _id: "bro",
         name: "123",
         email: "email",
         phone: "phone",
@@ -181,9 +181,7 @@
   let filteredLeads = data.leads;
 
   $: {
-    selectedLeadData = data.leads.find(
-      (item) => item.leadid === selectedLeadID
-    );
+    selectedLeadData = data.leads.find((item) => item._id === selectedLeadID);
     console.log(filters);
   }
   let search = "";
@@ -378,7 +376,7 @@
 <input type="checkbox" id="addremarksmodal" class="modal-toggle" />
 <div class="modal">
   <div class="modal-box bg-white">
-    <h3 class="font-bold text-lg">Add Remarks</h3>
+    <h3 class="font-bold text-lg">Add Calls</h3>
     <form action="" class="gap-2 flex flex-col my-4">
       <label for="">Remarks</label>
       <textarea
@@ -575,7 +573,7 @@
                 for="addremarksmodal"
                 class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
               >
-                Add Remarks
+                Add Calls
               </label>
               <label
                 for="editmodal"
