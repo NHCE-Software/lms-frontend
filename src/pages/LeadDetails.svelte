@@ -4,11 +4,137 @@
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
   import { push } from "svelte-spa-router";
+  import { gql } from "@apollo/client";
+  import { mutation } from "svelte-apollo";
+  import { onMount } from "svelte";
   export let params = {};
   export let selectedLeadID = params.selectedLeadID || "";
-  console.log(selectedLeadID);
-  let selectedCourse = [];
+  onMount(async () => {
+    await getLeads();
+  });
+  // -------------------graphql-------------------------------
+  let GETLEADS = gql`
+    query GetLeads {
+      getLeads {
+        name
+        loadedby
+        email
+        city
+        phonenumber
+        status
+        course
+        source
+        calls {
+          call
+          remark
+          updatedby
+          updatedbyname
+          followup
+          _id
+          updatedAt
+          createdAt
+        }
+        _id
+        createdByUser {
+          name
+        }
+      }
+    }
+  `;
+  let GETLEADS_MUTATION = mutation(GETLEADS);
+  async function getLeads() {
+    try {
+      let { error, data } = await GETLEADS_MUTATION();
+      if (data) {
+        console.log(data);
+
+        contextData.leads = data.getLeads;
+        contextData.leads = contextData.leads.map((item) => {
+          return { ...item, loadedby: item.createdByUser.name };
+        });
+        console.log("this is getLeads", contextData.leads);
+      }
+      if (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  let ADDCALL = gql`
+    mutation AddCall($record: JSON) {
+      addCall(record: $record)
+    }
+  `;
+  let ADDCALL_MUTATION = mutation(ADDCALL);
+  async function addCall() {
+    let { errors, data } = await ADDCALL_MUTATION({
+      variables: {
+        record: {
+          remark: newCall.remark,
+          followup: newCall.followup,
+          leadid: selectedLeadID,
+        },
+      },
+    });
+    //console.log(data);
+    if (errors) {
+      swal("Error", "Something went wrong", "error");
+      return console.log(errors);
+    }
+    if (data && data.addCall.message === "success") {
+      swal("Done", "Added call remark to lead successfully", "success");
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
+    getLeads();
+  }
+
+  let EDITLEAD = gql`
+    mutation Mutation(
+      $record: UpdateOneLeadInput!
+      $filter: FilterUpdateOneLeadInput
+    ) {
+      leadUpdateOne(record: $record, filter: $filter) {
+        record {
+          name
+        }
+      }
+    }
+  `;
+  let EDITLEAD_MUTATION = mutation(EDITLEAD);
+  async function editLead() {
+    let { errors, data } = await EDITLEAD_MUTATION({
+      variables: {
+        record: {
+          name: selectedLeadData.name,
+          email: selectedLeadData.email,
+          city: selectedLeadData.city,
+          phonenumber: selectedLeadData.phonenumber,
+          status: selectedLeadData.status,
+          course: selectedLeadData.course,
+        },
+        filter: {
+          _id: selectedLeadID,
+        },
+      },
+    });
+    if (errors) {
+      swal("Error", "Something went wrong", "error");
+      return console.log(errors);
+    }
+    if (data && data.leadUpdateOne.record.name === selectedLeadData.name) {
+      swal("Done", "Lead updated successfully", "success");
+    } else {
+      swal("Error", "Something went wrong", "error");
+    }
+    getLeads();
+  }
+  // ----------------------------state declaration-----------------------------------------
+
   let selectedLeadData;
+  let search = "";
   let andMode = true; // andMode = true means AND mode, false means OR mode
   let filters = {
     today: false,
@@ -25,38 +151,7 @@
     awaiting: false,
     closed: false,
   };
-  function applyFilter() {
-    filteredLeads = data.leads.filter((item) => {
-      let allTrues = [];
-      if (filters.today) allTrues.push(item.followup === "Today");
-      if (filters.ondate.length != 0)
-        allTrues.push(item.calls.some((call) => call.date === filters.ondate));
-      if (filters.greaterthan5) allTrues.push(item.calls.length > 5);
-      if (filters.call1) allTrues.push(item.calls.length === 1);
-      if (filters.call2) allTrues.push(item.calls.length === 2);
-      if (filters.call3) allTrues.push(item.calls.length === 3);
-      if (filters.call4) allTrues.push(item.calls.length === 4);
-      if (filters.call5) allTrues.push(item.calls.length === 5);
-      if (filters.hot) allTrues.push(item.status === "Hot");
-      if (filters.cold) allTrues.push(item.status === "Cold");
-      if (filters.closed) allTrues.push(item.status === "Closed");
-      if (filters.awaiting) allTrues.push(item.status === "Awaiting");
-      if (filters.course.length != 0) {
-        allTrues.push(
-          andMode
-            ? item.course.every((course) => filters.course.includes(course))
-            : item.course.some((course) => filters.course.includes(course))
-        );
-      }
-      //console.log(allTrues);
-
-      return andMode
-        ? allTrues.every((item) => item === true)
-        : allTrues.some((item) => item === true);
-    });
-    filteredLeads = [...filteredLeads];
-  }
-  let data = {
+  let contextData = {
     leads: [
       {
         _id: "bro1",
@@ -171,21 +266,65 @@
       },
     ],
   };
-  data.leads = data.leads.map((item) => {
+  contextData.leads = contextData.leads.map((item) => {
     return {
       ...item,
       followup: item.calls[item.calls.length - 1].followup,
     };
   });
+  let filteredLeads = contextData.leads;
 
-  let filteredLeads = data.leads;
+  let searchedLeads = filteredLeads;
+  let newCall = {
+    remark: "",
+    followup: "",
+  };
+
+  // ----------------------------helper functions-----------------------------------------
+  function applyFilter() {
+    filteredLeads = contextData.leads.filter((item) => {
+      let allTrues = [];
+      if (filters.today) allTrues.push(item.followup === "Today");
+      if (filters.ondate.length != 0)
+        allTrues.push(item.calls.some((call) => call.date === filters.ondate));
+      if (filters.greaterthan5) allTrues.push(item.calls.length > 5);
+      if (filters.call1) allTrues.push(item.calls.length === 1);
+      if (filters.call2) allTrues.push(item.calls.length === 2);
+      if (filters.call3) allTrues.push(item.calls.length === 3);
+      if (filters.call4) allTrues.push(item.calls.length === 4);
+      if (filters.call5) allTrues.push(item.calls.length === 5);
+      if (filters.hot) allTrues.push(item.status === "Hot");
+      if (filters.cold) allTrues.push(item.status === "Cold");
+      if (filters.closed) allTrues.push(item.status === "Closed");
+      if (filters.awaiting) allTrues.push(item.status === "Awaiting");
+      if (filters.course.length != 0) {
+        allTrues.push(
+          andMode
+            ? item.course.every((course) => filters.course.includes(course))
+            : item.course.some((course) => filters.course.includes(course))
+        );
+      }
+      //console.log(allTrues);
+
+      return andMode
+        ? allTrues.every((item) => item === true)
+        : allTrues.some((item) => item === true);
+    });
+    filteredLeads = [...filteredLeads];
+  }
+
+  // ----------------------------reactive changes-----------------------------------------
 
   $: {
-    selectedLeadData = data.leads.find((item) => item._id === selectedLeadID);
-    console.log(filters);
+    filteredLeads = contextData.leads;
   }
-  let search = "";
-  let searchedLeads = filteredLeads;
+  $: {
+    selectedLeadData = contextData.leads.find(
+      (item) => item._id === selectedLeadID
+    );
+    console.log("this is selectedLeadData", selectedLeadData);
+  }
+
   $: {
     searchedLeads = filteredLeads.filter((item) => {
       return item.name.toLowerCase().includes(search.toLowerCase());
@@ -195,66 +334,77 @@
 
 <input type="checkbox" id="editmodal" class="modal-toggle" />
 <div class="modal">
-  <div class="modal-box bg-white">
-    <h3 class="font-bold text-lg">Edit Leads</h3>
-    <form action="" class="gap-2 flex flex-col my-4">
-      <label for="" class="tracking-wide opacity-50">Email</label>
-      <input
-        type="text"
-        class="w-full p-2  border rounded-lg"
-        placeholder="Email"
-        name=""
-        id=""
-      />
-      <label for="" class="tracking-wide opacity-50">City</label>
-      <input
-        type="text"
-        class="w-full p-2  border rounded-lg"
-        placeholder="City"
-        name=""
-        id=""
-      />
-      <label for="" class="tracking-wide opacity-50">Phone</label>
-      <input
-        type="text"
-        class="w-full p-2  border rounded-lg"
-        placeholder="Phone"
-        name=""
-        id=""
-      />
-      <label for="" class="tracking-wide opacity-50">Course</label>
-      <div class="flex gap-3 flex-wrap">
-        {#each courses as course}
-          <input
-            type="checkbox"
-            on:change={(e) => {
-              if (e.target.checked) {
-                selectedCourse.push(course);
-                selectedCourse = [...selectedCourse];
-              } else {
-                selectedCourse = selectedCourse.filter(
-                  (item) => item !== course
-                );
-                selectedCourse = [...selectedCourse];
-              }
-            }}
-            class="checkbox"
-          />{course}
-        {/each}
+  {#if selectedLeadData}
+    <div class="modal-box bg-white">
+      <h3 class="font-bold text-lg">Edit Leads</h3>
+      <form class="gap-2 flex flex-col my-4">
+        <label for="" class="tracking-wide opacity-50">Email</label>
+        <input
+          bind:value={selectedLeadData.email}
+          type="text"
+          class="w-full p-2  border rounded-lg"
+          placeholder="Email"
+          name=""
+          id=""
+        />
+        <label for="" class="tracking-wide opacity-50">City</label>
+        <input
+          bind:value={selectedLeadData.city}
+          type="text"
+          class="w-full p-2  border rounded-lg"
+          placeholder="City"
+          name=""
+          id=""
+        />
+        <label for="" class="tracking-wide opacity-50">Phone</label>
+        <input
+          bind:value={selectedLeadData.phonenumber}
+          type="text"
+          class="w-full p-2  border rounded-lg"
+          placeholder="Phone"
+          name=""
+          id=""
+        />
+        <label for="" class="tracking-wide opacity-50">Course</label>
+        <div class="flex gap-3 flex-wrap">
+          {#each courses as course}
+            <input
+              checked={selectedLeadData.course.includes(course)}
+              type="checkbox"
+              on:change={(e) => {
+                if (e.target.checked) {
+                  selectedLeadData.course.push(course);
+                  selectedLeadData.course = [...selectedLeadData.course];
+                } else {
+                  selectedLeadData.course = selectedLeadData.course.filter(
+                    (item) => item !== course
+                  );
+                  selectedLeadData.course = [...selectedLeadData.course];
+                }
+                console.log(selectedLeadData.course);
+              }}
+              class="checkbox"
+            />{course}
+          {/each}
+        </div>
+        <label for="" class="tracking-wide  opacity-50">Status</label>
+        <select
+          bind:value={selectedLeadData.status}
+          id="course"
+          class="select select-bordered bg-white text-black w-full"
+        >
+          <option disabled>Pick Status</option>
+          {#each status as s}
+            <option selected={selectedLeadData.status} value={s}>{s}</option>
+          {/each}
+        </select>
+      </form>
+      <div class="modal-action">
+        <label on:click={editLead} for="" class="btn">Save</label>
+        <label for="editmodal" class="btn">Close</label>
       </div>
-      <label for="" class="tracking-wide opacity-50">Status</label>
-      <select id="course" class="select w-full">
-        <option disabled selected>Pick Status</option>
-        {#each status as s}
-          <option value={s}>{s}</option>
-        {/each}
-      </select>
-    </form>
-    <div class="modal-action">
-      <label for="" class="btn">Save</label>
-      <label for="editmodal" class="btn">Close</label>
     </div>
-  </div>
+  {/if}
 </div>
 
 <input type="checkbox" id="filtermodal" class="modal-toggle" />
@@ -376,10 +526,11 @@
 <input type="checkbox" id="addremarksmodal" class="modal-toggle" />
 <div class="modal">
   <div class="modal-box bg-white">
-    <h3 class="font-bold text-lg">Add Calls</h3>
+    <h3 class="font-bold text-lg">Add Call</h3>
     <form action="" class="gap-2 flex flex-col my-4">
       <label for="">Remarks</label>
       <textarea
+        bind:value={newCall.remark}
         name=""
         placeholder="Start typing here..."
         class="border rounded-lg p-3"
@@ -389,9 +540,16 @@
       />
       <label for="">Follow Up Call</label>
 
-      <input type="date" class="border rounded-xl p-3" name="" id="" />
+      <input
+        type="date"
+        bind:value={newCall.followup}
+        class="border rounded-xl p-3"
+        name=""
+        id=""
+      />
     </form>
     <div class="modal-action">
+      <div on:click={addCall} class="btn">Close</div>
       <label for="addremarksmodal" class="btn">Close</label>
     </div>
   </div>
@@ -497,7 +655,7 @@
                   />
                 </svg>
               </div>
-              <div>{selectedLeadData.phone}</div>
+              <div>{selectedLeadData.phonenumber}</div>
             </div>
             <div
               class="text-center opacity-50 flex items-center gap-3 justify-center"
@@ -573,7 +731,7 @@
                 for="addremarksmodal"
                 class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
               >
-                Add Calls
+                Add Call
               </label>
               <label
                 for="editmodal"

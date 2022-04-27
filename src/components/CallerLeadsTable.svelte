@@ -20,22 +20,22 @@
   </div>
 
   <div class="divTableBody">
-    {#each data as { _id, followup, name, course, email, phone, city, source, status, loadedby }, i}
+    {#each data as { _id, followup, name, course, email, phonenumber, city, source, status, loadedby }, i}
       <label
         for="my-drawer"
         on:click={() => (selectedLeadID = _id)}
         class={`divTableRow ${_id === selectedLeadID ? "bg-blue-200" : ""}`}
       >
         <div class="divTableCell">{i + 1}</div>
-        <div class="divTableCell">{name}</div>
-        <div class="divTableCell">{email}</div>
-        <div class="divTableCell">{phone}</div>
-        <div class="divTableCell">{city}</div>
-        <div class="divTableCell">{course}</div>
-        <div class="divTableCell">{status}</div>
-        <div class="divTableCell">{followup}</div>
-        <div class="divTableCell">{source}</div>
-        <div class="divTableCell">{loadedby}</div>
+        <div class="divTableCell">{name || "-"}</div>
+        <div class="divTableCell">{email || "-"}</div>
+        <div class="divTableCell">{phonenumber || "-"}</div>
+        <div class="divTableCell">{city || "-"}</div>
+        <div class="divTableCell">{course || "-"}</div>
+        <div class="divTableCell">{status || "-"}</div>
+        <div class="divTableCell">{followup || "-"}</div>
+        <div class="divTableCell">{source || "-"}</div>
+        <div class="divTableCell">{loadedby || "-"}</div>
       </label>
     {/each}
   </div>

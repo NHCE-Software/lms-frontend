@@ -1,5 +1,6 @@
 <script>
   export let remark;
+  console.log(remark);
   // remarks:
   //     {
   //       remark: "remark",
@@ -14,10 +15,12 @@
     {remark.remark}
   </div>
   <div class="my-3 mb-0 font-semibold flex justify-between">
-    <div>updated by {remark.updatedby}</div>
-    <div>{Date(remark.createdAt).toLocaleLowerCase()}</div>
+    <div>updated by {remark.updatedbyname}</div>
+    <div>{new Date(remark.createdAt).toLocaleDateString("en-GB")}</div>
   </div>
-  <div class="text-blue-600 font-semibold">Follow up: {remark.followup}</div>
+  <div class="text-blue-600 font-semibold">
+    Follow up: {new Date(remark.followup).toLocaleDateString("en-GB")}
+  </div>
 </div>
 
 <style>
