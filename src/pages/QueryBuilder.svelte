@@ -1,9 +1,17 @@
 <script>
+  import { gql } from "@apollo/client/core";
+
   import Papa from "papaparse";
+  import { mutation } from "svelte-apollo";
+  import { replace } from "svelte-spa-router";
   import Navbar from "../components/Navbar.svelte";
+  import { courses } from "../constants";
   let file;
+  let source;
   let cols = [];
-  let predef = ["Name", "Phone", "Email", "City", "Course"];
+  let predef = ["name", "phonenumber", "email", "city", "course"];
+  let allCoursesInCSV = [];
+  let coursesMapper = [];
   let chosen = [];
   let data = [];
 
@@ -21,6 +29,11 @@
         },
       });
   }
+  $: {
+    if (cols.includes("course")) {
+      allCoursesInCSV = [...new Set(data.map((item) => item.course))];
+    }
+  }
   function initChosen(mode) {
     if (cols.length != 0)
       chosen = cols.map((col) => ({
@@ -29,6 +42,33 @@
       }));
 
     console.log("this is chosen", chosen);
+  }
+
+  let INSERTLEAD = gql`
+    mutation Mutation($record: [JSON]) {
+      addleads(record: $record)
+    }
+  `;
+  let INSERTLEAD_MUTATION = mutation(INSERTLEAD);
+
+  async function insertAllLeads() {
+    if (confirm("Confirm transformation? This cannot be undone.")) {
+      //server call
+      // insert
+
+      data = data.map((item) => {
+        return { ...item, source: source };
+      });
+      console.log(data);
+      let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
+      console.log(res.data);
+      if (res.data.addleads.message) {
+        swal("Added Lead", "We are good to go", "success");
+        replace("/lead-details");
+      } else {
+        swal("Oops", "Something went wrong", "error");
+      }
+    }
   }
 </script>
 
@@ -69,6 +109,7 @@
     <div class="modal-action">
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label
+        for="map-modal"
         on:click={() => {
           //console.log(chosen);
           //console.log(data);
@@ -108,18 +149,67 @@
     </div>
   </div>
 </div>
+<input type="checkbox" id="map-course-modal" class="modal-toggle" />
+<div class="modal ">
+  <div class="modal-box max-w-5xl bg-white">
+    <div class="flex gap-3 flex-col">
+      {#each allCoursesInCSV as cc}
+        <div
+          class="flex items-center  w-full justify-between border p-2 rounded-2xl px-5"
+        >
+          <div class="">{cc}</div>
+          <select
+            on:change={(e) => {
+              let x = coursesMapper.find((item) => item.old === cc);
+              if (x) {
+                x.new = e.target.value;
+              } else {
+                coursesMapper.push({ old: cc, new: e.target.value });
+              }
+              console.log(coursesMapper);
+            }}
+            class="select select-bordered w-full max-w-xs bg-white"
+          >
+            <option disabled selected>Choose attribute</option>
+            {#each courses as c}
+              <option value={c}>{c}</option>
+            {/each}
+          </select>
+        </div>
+      {/each}
+    </div>
+    <div class="modal-action">
+      <div
+        on:click={() => {
+          let mapper = Object.assign(
+            {},
+            ...coursesMapper.map((x) => ({ [x.old]: x.new }))
+          );
+          console.log(mapper);
+          data = data.map((item) => {
+            if (item.course && mapper[item.course]) {
+              item.course = mapper[item.course];
+            }
+            return item;
+          });
+        }}
+        class="btn"
+      >
+        Replace Courses
+      </div>
+      <label
+        for="map-course-modal"
+        class="btn border-none bg-blue-500 text-white">close</label
+      >
+    </div>
+  </div>
+</div>
 
 <section class="grid min-h-screen h-full grid-cols-5 p-5">
   <Navbar />
   <div class="col-span-4 m-10">
     <form
-      on:submit={() => {
-        if (confirm("Confirm transformation? This cannot be undone.")) {
-          //server call
-          // insert
-          console.log(data);
-        }
-      }}
+      on:submit|preventDefault={insertAllLeads}
       class="flex justify-between"
     >
       {#if file}
@@ -164,6 +254,7 @@
           <div>
             <input
               required
+              bind:value={source}
               type="text"
               placeholder="Source name"
               class="p-3 rounded-xl"
@@ -186,6 +277,14 @@
             class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
             >Map Data</label
           >
+          {#if cols.includes("course")}
+            <label
+              for="map-course-modal"
+              class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
+              >Map Course Data</label
+            >
+          {/if}
+
           <button
             type="submit"
             class="p-3 rounded-full hover:bg-blue-100 transition-all hover:text-blue-600"

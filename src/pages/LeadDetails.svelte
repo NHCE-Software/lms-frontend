@@ -37,6 +37,7 @@
         _id
         createdByUser {
           name
+          _id
         }
       }
     }
@@ -46,13 +47,21 @@
     try {
       let { error, data } = await GETLEADS_MUTATION();
       if (data) {
-        console.log(data);
+        console.log("BROOOOOOOOOOO", data);
 
         contextData.leads = data.getLeads;
         contextData.leads = contextData.leads.map((item) => {
-          return { ...item, loadedby: item.createdByUser.name };
+          return { ...item, loadedbyname: item.createdByUser.name };
         });
-        console.log("this is getLeads", contextData.leads);
+        contextData.leads = contextData.leads.map((item) => {
+          if (item.calls.length > 0)
+            return {
+              ...item,
+              followup: item.calls[item.calls.length - 1].followup,
+            };
+          else return item;
+        });
+        //console.log("this is getLeads", contextData.leads);
       }
       if (error) {
         console.log(error);
@@ -266,12 +275,7 @@
       },
     ],
   };
-  contextData.leads = contextData.leads.map((item) => {
-    return {
-      ...item,
-      followup: item.calls[item.calls.length - 1].followup,
-    };
-  });
+
   let filteredLeads = contextData.leads;
 
   let searchedLeads = filteredLeads;
