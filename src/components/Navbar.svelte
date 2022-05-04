@@ -27,7 +27,15 @@
         </div>
       {/each}
 
-      <div class="p-3 border rounded-xl mt-auto">Profile</div>
+      <div
+        on:click={() => {
+          localStorage.clear();
+          push("/auth");
+        }}
+        class=" btn p-3 border-none mt-auto text-center bg-red-300 text-red-600"
+      >
+        Log out
+      </div>
     </div>
   </div>
 </div>

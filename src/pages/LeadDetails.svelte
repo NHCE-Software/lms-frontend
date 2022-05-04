@@ -18,6 +18,7 @@
       getLeads {
         name
         loadedby
+        loadedbyname
         email
         city
         phonenumber
@@ -50,9 +51,7 @@
         console.log("BROOOOOOOOOOO", data);
 
         contextData.leads = data.getLeads;
-        contextData.leads = contextData.leads.map((item) => {
-          return { ...item, loadedbyname: item.createdByUser.name };
-        });
+
         contextData.leads = contextData.leads.map((item) => {
           if (item.calls.length > 0)
             return {

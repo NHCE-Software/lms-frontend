@@ -15,69 +15,13 @@
   onMount(async () => {
     await getUsers();
   });
-
-  // ------------------graphql----------------------------------
-
-  let GETUSERS = gql`
-    query UserMany {
-      userMany {
-        role
-        email
-        name
-        _id
-      }
-    }
-  `;
-  let GETUSERS_QUERY = query(GETUSERS);
-
-  async function getUsers() {
-    let { error, data } = await GETUSERS_QUERY.result();
-    console.log("this is nro", error, data);
-    if (data) {
-      contextData.users = data.userMany.map((item) => {
-        return {
-          ...item,
-          avatarURL: "https://api.lorem.space/image/face?hash=92310",
-        };
-      });
-
-      contextData.users = [...contextData.users];
-    }
-  }
-
-  let GETLEADDATA = gql`
-    query LeadMany($filter: FilterFindManyLeadInput) {
-      leadMany(filter: $filter) {
-        name
-        loadedby
-        email
-        city
-        phonenumber
-        status
-        course
-        calls {
-          call
-          remark
-          updatedby
-          followup
-          _id
-          updatedAt
-          createdAt
-        }
-        _id
-      }
-    }
-  `;
-  let GETLEADDATA_QUERY = query(GETLEADDATA);
-  async function getLeadData() {
-    let { error, data } = await GETLEADDATA_QUERY.result();
-    console.log("lead data", data);
-    if (data) {
-      filteredLeadData = data.leadMany;
-      selectedUserLeadData = data.leadMany;
-    }
-    //console.log(selectedUserLeadData, searchedLeads);
-  }
+  let options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  let prnDt = "" + new Date().toLocaleTimeString("en-us", options);
 
   // --------------------State declaration-------------------------
 
@@ -167,6 +111,75 @@
     awaiting: false,
     closed: false,
   };
+
+  // ------------------graphql----------------------------------
+
+  let GETUSERS = gql`
+    query UserMany {
+      userMany {
+        role
+        email
+        name
+        _id
+      }
+    }
+  `;
+  let GETUSERS_QUERY = query(GETUSERS);
+
+  async function getUsers() {
+    let { error, data } = await GETUSERS_QUERY.result();
+    console.log("this is nro", error, data);
+    if (data) {
+      contextData.users = data.userMany.map((item) => {
+        return {
+          ...item,
+          avatarURL: "https://api.lorem.space/image/face?hash=92310",
+        };
+      });
+
+      contextData.users = [...contextData.users];
+    }
+  }
+
+  let GETLEADDATA = gql`
+    query LeadMany($filter: FilterFindManyLeadInput) {
+      leadMany(filter: $filter) {
+        name
+        loadedby
+        email
+        city
+        phonenumber
+        status
+        course
+        calls {
+          call
+          remark
+          updatedby
+          followup
+          _id
+          updatedAt
+          createdAt
+        }
+        _id
+      }
+    }
+  `;
+  let GETLEADDATA_QUERY = query(GETLEADDATA, {
+    variables: {
+      filter: {
+        _id: selectedStoryUID,
+      },
+    },
+  });
+  async function getLeadData() {
+    let { error, data } = await GETLEADDATA_QUERY.result({});
+    console.log("lead data", data);
+    if (data) {
+      filteredLeadData = data.leadMany;
+      selectedUserLeadData = data.leadMany;
+    }
+    //console.log(selectedUserLeadData, searchedLeads);
+  }
 
   // ----------------------Reactive changes--------------------------
   $: {
@@ -397,11 +410,9 @@
 <section class="grid min-h-screen p-5 h-full grid-cols-5">
   <Navbar />
   <div class="col-span-3 m-10">
-    <div class="text-3xl">Ahoy, Shanti ma'am,</div>
-    <div class="text-xl opacity-50">It's a Monday, 19th Apr, 2022</div>
-    <div class="text-xl opacity-50">
-      You have <span class="text-blue-500">3</span> new leads
-    </div>
+    <div class="text-3xl">Ahoy, Admin,</div>
+    <div class="text-xl opacity-50">It's {prnDt}</div>
+
     <Stories users={contextData.users} bind:selectedStoryUID />
     <WeeklyChart />
     <Stats />

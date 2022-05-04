@@ -19,6 +19,7 @@
     if (error) return console.log(error);
     else {
       loading = false;
+      //localStorage.setItem("name", data.signIn.name);
       if (data.signIn.role === "admin") {
         localStorage.setItem("token", data.signIn.token);
         localStorage.setItem("role", data.signIn.role);
