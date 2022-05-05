@@ -5,7 +5,7 @@
   import { mutation } from "svelte-apollo";
   import { replace } from "svelte-spa-router";
   import Navbar from "../components/Navbar.svelte";
-  import { courses } from "../constants";
+  import { courses, sources } from "../constants";
   let file;
   let source;
   let cols = [];
@@ -205,6 +205,43 @@
   </div>
 </div>
 
+<input type="checkbox" id="sources-modal" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box bg-white  ">
+    <div class="text-xl font-bold my-2">Choose Source for the data</div>
+    <div class="grid grid-cols-2 gap-2">
+      {#each sources as s}
+        {#if source === s}
+          <div
+            class="p-6 border-blue-400 bg-blue-200 border-2 text-blue-600 font-bold rounded-2xl"
+          >
+            {s}
+          </div>
+        {:else}
+          <div
+            on:click={() => {
+              source = s;
+            }}
+            class="p-6 border rounded-2xl"
+          >
+            {s}
+          </div>
+        {/if}
+      {/each}
+
+      <input
+        bind:value={source}
+        type="text"
+        placeholder="custom source"
+        class="p-6 border rounded-2xl"
+      />
+    </div>
+    <div class="modal-action">
+      <label for="sources-modal" class="btn">Close</label>
+    </div>
+  </div>
+</div>
+
 <section class="grid min-h-screen h-full grid-cols-5 p-5">
   <Navbar />
   <div class="col-span-4 m-10">
@@ -252,13 +289,12 @@
             />
           </svg>
           <div>
-            <input
-              required
-              bind:value={source}
-              type="text"
-              placeholder="Source name"
-              class="p-3 rounded-xl"
-            />
+            <label
+              class="px-3 py-2 font-bold bg-blue-600 text-blue-200 rounded-full"
+              for="sources-modal"
+            >
+              Choose source
+            </label>
           </div>
         </div>
       {:else}
