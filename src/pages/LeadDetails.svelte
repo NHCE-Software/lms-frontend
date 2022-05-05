@@ -142,6 +142,7 @@
   // ----------------------------state declaration-----------------------------------------
 
   let selectedLeadData;
+  let searchby = "name";
   let search = "";
   let andMode = true; // andMode = true means AND mode, false means OR mode
   let filters = {
@@ -165,7 +166,7 @@
         _id: "bro1",
         name: "123",
         email: "email",
-        phone: "phone",
+        phonenumber: "phone",
         city: "city2",
         status: "Cold",
         course: ["course"],
@@ -190,7 +191,7 @@
         _id: "bro12",
         name: "asdasd",
         email: "email",
-        phone: "phone",
+        phonenumber: "phone",
         city: "city2",
         status: "Cold",
         course: ["course"],
@@ -251,7 +252,7 @@
         _id: "bro",
         name: "123",
         email: "email",
-        phone: "phone",
+        phonenumber: "phone",
         city: "city",
         status: "Hot",
         course: ["course"],
@@ -330,7 +331,8 @@
 
   $: {
     searchedLeads = filteredLeads.filter((item) => {
-      return item.name.toLowerCase().includes(search.toLowerCase());
+      console.log("this is item", item);
+      return item[searchby].includes(search.toLowerCase());
     });
   }
 </script>
@@ -341,7 +343,15 @@
     <div class="modal-box bg-white">
       <h3 class="font-bold text-lg">Edit Leads</h3>
       <form class="gap-2 flex flex-col my-4">
-        <label for="" class="tracking-wide opacity-50">Email</label>
+        <label for="" class="tracking-wide opacity-50">Name</label>
+        <input
+          bind:value={selectedLeadData.name}
+          type="text"
+          class="w-full p-2  border rounded-lg"
+          placeholder="Name"
+          name=""
+          id=""
+        /><label for="" class="tracking-wide opacity-50">Email</label>
         <input
           bind:value={selectedLeadData.email}
           type="text"
@@ -552,7 +562,7 @@
       />
     </form>
     <div class="modal-action">
-      <div on:click={addCall} class="btn">Close</div>
+      <div on:click={addCall} class="btn">Add Call</div>
       <label for="addremarksmodal" class="btn">Close</label>
     </div>
   </div>
@@ -583,14 +593,47 @@
             </label>
           </div>
         </div>
-        <div class="mt-5">
+        <div class="mt-5 flex  justify-between items-center">
           <input
             bind:value={search}
             type="text"
             placeholder="🔭 Search"
-            class="p-3 rounded-xl border w-full"
+            class="p-3 rounded-xl border w-2/3"
           />
+          <form
+            on:change|preventDefault={(e) => {
+              console.log(e.target.value);
+              searchby = e.target.value;
+            }}
+            class="flex-wrap gap-3 flex"
+          >
+            <input
+              type="radio"
+              name="searchby"
+              class="radio"
+              bind:group={searchby}
+              value={"name"}
+            />
+            Name
+            <input
+              type="radio"
+              class="radio"
+              name="searchby"
+              bind:group={searchby}
+              value={"email"}
+            />
+            Email
+            <input
+              type="radio"
+              class="radio"
+              name="searchby"
+              bind:group={searchby}
+              value={"phonenumber"}
+            />
+            Phone
+          </form>
         </div>
+
         <!-- <div>
           calls to make today calls made on x day filter with status filter with
           number of calls made search

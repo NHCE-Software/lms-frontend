@@ -114,7 +114,7 @@
           class="input input-bordered w-full bg-white"
         />
         <label for="phno" class="label">
-          <span class="label-text">Phone Number</span>
+          <span class="label-text">Calling Phone Number</span>
         </label>
         <input
           id="phno"
@@ -131,6 +131,15 @@
             <option value={s}>{s}</option>
           {/each}
         </select>
+        <label for="callrem" class="label">
+          <span class="label-text">Call Remarks</span>
+        </label>
+        <textarea
+          id="callrem"
+          type="text"
+          placeholder="Type here"
+          class="w-full p-2 textarea bg-white"
+        />
 
         <button type="submit" class="btn mt-5 w-fit">Submit</button>
       </form>

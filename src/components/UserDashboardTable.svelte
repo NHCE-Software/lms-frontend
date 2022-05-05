@@ -10,7 +10,6 @@
       <div class="divTableCell" />
       <div class="divTableCell">Name</div>
       <div class="divTableCell ">Email</div>
-      <div class="divTableCell">Password</div>
       <div class="divTableCell">Role</div>
       <div class="divTableCell">Actions</div>
     </div>
@@ -22,7 +21,7 @@
         <div class="divTableCell">{i + 1}</div>
         <div class="divTableCell">{name}</div>
         <div class="divTableCell">{email}</div>
-        <div class="divTableCell">Reset Password</div>
+
         <div class="divTableCell">{role}</div>
         <div class="divTableCell">
           <div class="flex gap-2">
