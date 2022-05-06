@@ -2,6 +2,7 @@
   import { gql } from "@apollo/client/core";
   import { mutation } from "svelte-apollo";
   import { push } from "svelte-spa-router";
+  import swal from "sweetalert";
 
   let email, password;
   let loading = false;
@@ -12,24 +13,33 @@
   `;
   const SIGNIN_MUTATION = mutation(SIGNIN);
   async function signIn() {
-    loading = true;
-    const { error, data } = await SIGNIN_MUTATION({
-      variables: { email, password },
-    });
-    if (error) return console.log(error);
-    else {
+    try {
+      loading = true;
+      const { error, data } = await SIGNIN_MUTATION({
+        variables: { email, password },
+      });
+      if (error) {
+        //console.log(error);
+        loading = false;
+        swal("Error", error.message, "error");
+      } else {
+        loading = false;
+        //localStorage.setItem("name", data.signIn.name);
+        if (data.signIn.role === "admin") {
+          localStorage.setItem("token", data.signIn.token);
+          localStorage.setItem("role", data.signIn.role);
+          push("/home");
+        }
+        if (data.signIn.role === "caller") {
+          localStorage.setItem("token", data.signIn.token);
+          localStorage.setItem("role", data.signIn.role);
+          push("/lead-details");
+        }
+      }
+    } catch (err) {
       loading = false;
-      //localStorage.setItem("name", data.signIn.name);
-      if (data.signIn.role === "admin") {
-        localStorage.setItem("token", data.signIn.token);
-        localStorage.setItem("role", data.signIn.role);
-        push("/home");
-      }
-      if (data.signIn.role === "caller") {
-        localStorage.setItem("token", data.signIn.token);
-        localStorage.setItem("role", data.signIn.role);
-        push("/lead-details");
-      }
+      swal("Error", err.message, "error");
+      console.log(err);
     }
   }
 </script>

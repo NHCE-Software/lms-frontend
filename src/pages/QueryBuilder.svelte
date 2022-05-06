@@ -1,15 +1,13 @@
 <script>
   import { gql } from "@apollo/client/core";
-
   import Papa from "papaparse";
   import { mutation } from "svelte-apollo";
   import { replace } from "svelte-spa-router";
   import Navbar from "../components/Navbar.svelte";
-  import { courses, sources } from "../constants";
+  import { courses, sources, predef, preloadedMaps } from "../constants";
   let file;
   let source;
   let cols = [];
-  let predef = ["name", "phonenumber", "email", "city", "course"];
   let allCoursesInCSV = [];
   let coursesMapper = [];
   let chosen = [];
@@ -23,8 +21,17 @@
         complete: function (results) {
           console.log(results.data);
           console.log(results.meta.fields);
-          cols = results.meta.fields;
-          data = results.data;
+          cols = results.meta.fields.map((col) => {
+            return col.toLowerCase();
+          });
+
+          data = results.data.map((obj) => {
+            return Object.keys(obj).reduce((accumulator, key) => {
+              accumulator[key.toLowerCase()] = obj[key];
+              return accumulator;
+            }, {});
+          });
+
           initChosen();
         },
       });
@@ -34,11 +41,11 @@
       allCoursesInCSV = [...new Set(data.map((item) => item.course))];
     }
   }
-  function initChosen(mode) {
+  function initChosen() {
     if (cols.length != 0)
       chosen = cols.map((col) => ({
         old: col,
-        new: mode === 1 ? col : "Drop",
+        new: col,
       }));
 
     console.log("this is chosen", chosen);
@@ -53,21 +60,26 @@
 
   async function insertAllLeads() {
     if (confirm("Confirm transformation? This cannot be undone.")) {
-      //server call
-      // insert
-
       data = data.map((item) => {
         return { ...item, source: source };
       });
-      console.log(data);
+      //console.log(data);
       let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
-      console.log(res.data);
+      //console.log(res.data);
       if (res.data.addleads.message) {
         swal("Added Lead", "We are good to go", "success");
         replace("/lead-details");
       } else {
         swal("Oops", "Something went wrong", "error");
       }
+    }
+  }
+  function setSource() {
+    console.log(source);
+    if (
+      confirm(`Are you sure to apply ${source} transformation to the data?`)
+    ) {
+      console.log(preloadedMaps[source.toLowerCase()]);
     }
   }
 </script>
@@ -97,7 +109,7 @@
             }}
             class="select select-bordered w-full max-w-xs bg-white"
           >
-            <option disabled selected>Choose attribute</option>
+            <option disabled>Choose attribute</option>
             <option value="Drop">Drop</option>
             {#each predef as pre}
               <option value={pre}>{pre}</option>
@@ -111,7 +123,7 @@
       <label
         for="map-modal"
         on:click={() => {
-          //console.log(chosen);
+          console.log(chosen);
           //console.log(data);
           let mapper = Object.assign(
             {},
@@ -139,7 +151,7 @@
           //console.log(data2);
           data = [...data2];
           cols = Object.keys(data[0]);
-          initChosen(1);
+          initChosen();
         }}
         class="btn bg-blue-500 border-none text-white">Map</label
       >
@@ -237,6 +249,8 @@
       />
     </div>
     <div class="modal-action">
+      <label for="sources-modal" on:click={setSource} class="btn">Confirm</label
+      >
       <label for="sources-modal" class="btn">Close</label>
     </div>
   </div>
