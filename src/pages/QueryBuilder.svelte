@@ -4,15 +4,132 @@
   import { mutation } from "svelte-apollo";
   import { replace } from "svelte-spa-router";
   import Navbar from "../components/Navbar.svelte";
-  import { courses, sources, predef, preloadedMaps } from "../constants";
+  import {
+    courses,
+    sources,
+    predef,
+    preloadedMaps,
+    preloadedMapsCourses,
+  } from "../constants";
   let file;
-  let source;
+  let source = "";
   let cols = [];
   let allCoursesInCSV = [];
   let coursesMapper = [];
   let chosen = [];
   let data = [];
+  let chosenMapper = {};
 
+  function initChosen() {
+    if (cols.length != 0)
+      chosen = cols.map((col) => ({
+        old: col,
+        new: col,
+      }));
+  }
+
+  let INSERTLEAD = gql`
+    mutation Mutation($record: [JSON]) {
+      addleads(record: $record)
+    }
+  `;
+  let INSERTLEAD_MUTATION = mutation(INSERTLEAD);
+
+  async function insertAllLeads() {
+    if (confirm("Confirm transformation? This cannot be undone.")) {
+      data = data.map((item) => {
+        return { ...item, source: source };
+      });
+      //console.log(data);
+      let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
+      //console.log(res.data);
+      if (res.data.addleads.message) {
+        swal("Added Lead", "We are good to go", "success");
+        replace("/lead-details");
+      } else {
+        swal("Oops", "Something went wrong", "error");
+      }
+    }
+  }
+  function mapData(course) {
+    let data2 = data.map((item) => {
+      let newItem = {};
+      for (let key in item) {
+        if (chosenMapper[key] === "Drop") {
+          continue;
+        } else {
+          //console.log(item[key]);
+          if (newItem[chosenMapper[key]] != undefined) {
+            newItem[chosenMapper[key]] = newItem[chosenMapper[key]].concat(
+              " " + item[key]
+            );
+          } else {
+            newItem[chosenMapper[key]] = item[key];
+          }
+        }
+      }
+      return newItem;
+    });
+    //console.log(data);
+    //console.log(data2);
+    data = [...data2];
+    cols = Object.keys(data[0]);
+    initChosen();
+    if (course) {
+      // map courses
+      console.log(coursesMapper);
+      console.log(preloadedMapsCourses[source.toLowerCase()]);
+      coursesMapper = Object.keys(
+        preloadedMapsCourses[source.toLowerCase()]
+      ).map((key) => {
+        return {
+          old: key,
+          new: preloadedMapsCourses[source.toLowerCase()][key],
+        };
+      });
+      // console.log("temp", temp);
+      mapCourses();
+    }
+  }
+  function mapCourses() {
+    let mapper = Object.assign(
+      {},
+      ...coursesMapper.map((x) => ({
+        [x.old]: x.new,
+      }))
+    );
+    console.log(mapper);
+    data = data.map((item) => {
+      if (item.course && mapper[item.course]) {
+        item.course = mapper[item.course];
+      }
+      return item;
+    });
+  }
+
+  function setSource() {
+    if (
+      sources.includes(source) &&
+      confirm(`Are you sure to apply ${source} transformation to the data?`)
+    ) {
+      console.log(preloadedMaps[source.toLowerCase()]);
+      chosen = chosen.map((item) => {
+        if (preloadedMaps[source.toLowerCase()][item.old]) {
+          return {
+            old: item.old,
+            new: preloadedMaps[source.toLowerCase()][item.old],
+          };
+        } else {
+          return item;
+        }
+      });
+      console.log(chosen);
+    } else if (!sources.includes(source)) {
+      console.log("custom source");
+    } else {
+      source = "";
+    }
+  }
   $: {
     file && console.log(file[0]);
     file &&
@@ -41,46 +158,13 @@
       allCoursesInCSV = [...new Set(data.map((item) => item.course))];
     }
   }
-  function initChosen() {
-    if (cols.length != 0)
-      chosen = cols.map((col) => ({
-        old: col,
-        new: col,
-      }));
-
-    console.log("this is chosen", chosen);
-  }
-
-  let INSERTLEAD = gql`
-    mutation Mutation($record: [JSON]) {
-      addleads(record: $record)
-    }
-  `;
-  let INSERTLEAD_MUTATION = mutation(INSERTLEAD);
-
-  async function insertAllLeads() {
-    if (confirm("Confirm transformation? This cannot be undone.")) {
-      data = data.map((item) => {
-        return { ...item, source: source };
-      });
-      //console.log(data);
-      let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
-      //console.log(res.data);
-      if (res.data.addleads.message) {
-        swal("Added Lead", "We are good to go", "success");
-        replace("/lead-details");
-      } else {
-        swal("Oops", "Something went wrong", "error");
-      }
-    }
-  }
-  function setSource() {
-    console.log(source);
-    if (
-      confirm(`Are you sure to apply ${source} transformation to the data?`)
-    ) {
-      console.log(preloadedMaps[source.toLowerCase()]);
-    }
+  $: {
+    /// console.log("calling mapper for chosen", chosenMapper);
+    chosenMapper = Object.assign(
+      {},
+      ...chosen.map((x) => ({ [x.old]: x.new }))
+    );
+    //onsole.log("updated mapper", chosenMapper);
   }
 </script>
 
@@ -94,6 +178,7 @@
         >
           <div class="">{col}</div>
           <select
+            bind:value={chosenMapper[col]}
             on:change={(e) => {
               let newCol = e.target.value;
               let oldCol = col;
@@ -125,33 +210,8 @@
         on:click={() => {
           console.log(chosen);
           //console.log(data);
-          let mapper = Object.assign(
-            {},
-            ...chosen.map((x) => ({ [x.old]: x.new }))
-          );
-          let data2 = data.map((item) => {
-            let newItem = {};
-            for (let key in item) {
-              if (mapper[key] === "Drop") {
-                continue;
-              } else {
-                //console.log(item[key]);
-                if (newItem[mapper[key]] != undefined) {
-                  newItem[mapper[key]] = newItem[mapper[key]].concat(
-                    " " + item[key]
-                  );
-                } else {
-                  newItem[mapper[key]] = item[key];
-                }
-              }
-            }
-            return newItem;
-          });
-          //console.log(data);
-          //console.log(data2);
-          data = [...data2];
-          cols = Object.keys(data[0]);
-          initChosen();
+
+          mapData();
         }}
         class="btn bg-blue-500 border-none text-white">Map</label
       >
@@ -193,17 +253,7 @@
     <div class="modal-action">
       <div
         on:click={() => {
-          let mapper = Object.assign(
-            {},
-            ...coursesMapper.map((x) => ({ [x.old]: x.new }))
-          );
-          console.log(mapper);
-          data = data.map((item) => {
-            if (item.course && mapper[item.course]) {
-              item.course = mapper[item.course];
-            }
-            return item;
-          });
+          mapCourses();
         }}
         class="btn"
       >
@@ -271,6 +321,7 @@
               cols = [];
               chosen = [];
               data = [];
+              source = "";
             }}
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6 text-red-600"
@@ -303,12 +354,16 @@
             />
           </svg>
           <div>
-            <label
-              class="px-3 py-2 font-bold bg-blue-600 text-blue-200 rounded-full"
-              for="sources-modal"
-            >
-              Choose source
-            </label>
+            {#if !source}
+              <label
+                class="px-3 py-2 font-bold bg-blue-600 text-blue-200 rounded-full"
+                for="sources-modal"
+              >
+                Choose source
+              </label>
+            {:else}
+              <label>{source}</label>
+            {/if}
           </div>
         </div>
       {:else}
@@ -322,15 +377,23 @@
       {/if}
       {#if cols.length != 0}
         <div class="flex items-center">
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          {#if sources.includes(source)}
+            <label
+              on:click={() => mapData(true)}
+              class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
+              >Auto Map</label
+            >
+          {/if}
           <label
             for="map-modal"
-            class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
-            >Map Data</label
+            class="p-2 m-2 border text-red-600 bg-red-100 font-semibold hover:bg-red-200 rounded-full px-5"
+            >Manually Map</label
           >
           {#if cols.includes("course")}
             <label
               for="map-course-modal"
-              class="p-2 m-2 border text-blue-600 bg-blue-100 font-semibold hover:bg-blue-200 rounded-full px-5"
+              class="p-2 m-2 border text-red-600 bg-red-100 font-semibold hover:bg-red-200 rounded-full px-5"
               >Map Course Data</label
             >
           {/if}

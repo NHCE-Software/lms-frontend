@@ -5,10 +5,14 @@ const sources = ["Siksha", "Career 360", "Test123"];
 const predef = ["name", "phonenumber", "email", "city", "course"];
 
 const preloadedMaps = {
-    siksha: [{old: "phone", new: "phonenumber", "course selected" :  "course", }],
+    siksha: {phone:"phonenumber" , "courses selected" : "course"},
+    career360: [],
+    test123: [],
+}
+const preloadedMapsCourses = {
+    siksha: { "MECHANICAL" : "MECH"},
     career360: [],
     test123: [],
 }
 
-
-export  {courses , status, roles , sources , predef , preloadedMaps};
+export  {courses , status, roles , sources , predef , preloadedMaps , preloadedMapsCourses};
