@@ -1,11 +1,78 @@
 <script>
-  import { pop, push } from "svelte-spa-router";
+  import { pop, push, replace } from "svelte-spa-router";
 
   import Navbar from "../components/Navbar.svelte";
-  import { status, courses } from "../constants";
+  import { status, courses, references, sources } from "../constants";
+  import { mutation, query } from "svelte-apollo";
+  import { gql } from "@apollo/client";
+  import swal from "sweetalert";
+
   let userExists = false;
   // modify userExists after check call from modal
+
+  // -------------------------------STATE-------------------------------
+  let leadName = "";
+  let city = "";
+  let address = "";
+  let pphno = "";
+  let sphno = "";
+  let email = "";
+  let source = "";
+  let category = "";
+  let leadStatus = "Not Contacted";
+  let remarks = "";
+  let followup = "";
+  let nameofboard = "";
+  let regnum12 = "";
+
   let selectedCourse = [];
+  let selectedReferences = [];
+
+  // ----------------------------------helper functions---------------------
+  let INSERTLEAD = gql`
+    mutation AddOneLead($record: JSON) {
+      addOneLead(record: $record)
+    }
+  `;
+  let INSERTLEAD_MUTATION = mutation(INSERTLEAD);
+  async function insertLead() {
+    try {
+      const { error, data } = await INSERTLEAD_MUTATION({
+        variables: {
+          record: {
+            name: leadName,
+            email,
+            city,
+            source,
+            phonenumber: pphno,
+            status: leadStatus,
+            course: selectedCourse,
+            phonenumber2: sphno,
+            admcateg: category,
+            address,
+            reference: selectedReferences,
+            nameofboard,
+            regnum12,
+            remark: remarks,
+            followup,
+          },
+        },
+      });
+      if (error) {
+        console.log(error);
+        swal("Error", "Something went wrong", "error");
+      }
+      if (data.addOneLead.message === "success") {
+        swal("Success", "Added Successfully", "success");
+        replace("/lead-details/" + data.addOneLead.id);
+      } else {
+        swal("Error", "Something went wrong", "error");
+      }
+    } catch (error) {
+      console.log(error);
+      swal("Error", "Something went wrong", "error");
+    }
+  }
 </script>
 
 <input
@@ -58,15 +125,20 @@
 
 <section class="grid min-h-screen p-5 h-full grid-cols-5">
   <Navbar />
-  <div class="col-span-3 m-10">
-    <div class="text-2xl  font-semibold">Add Walk-in Lead</div>
+  <div class="col-span-4 m-20 mt-10">
+    <div class="text-2xl  font-semibold">Add Lead</div>
     <div class=" opacity-50 ">Load Single Lead</div>
     <div class="mt-5">
-      <form class="form-control flex flex-col w-full">
+      <form
+        on:submit|preventDefault={insertLead}
+        class="form-control flex flex-col w-full"
+      >
+        <div class="divider">Personal Information</div>
         <label for="name" class="label">
           <span class="label-text">Lead Name</span>
         </label>
         <input
+          bind:value={leadName}
           id="name"
           type="text"
           placeholder="Type here"
@@ -100,45 +172,162 @@
         </label>
         <input
           id="city"
+          bind:value={city}
           type="text"
           placeholder="Type here"
           class="input input-bordered w-full bg-white "
+        />
+
+        <label for="address" class="label">
+          <span class="label-text">Address</span>
+        </label>
+        <textarea
+          id="address"
+          bind:value={address}
+          type="text"
+          placeholder="Type here"
+          class="textarea input-bordered w-full  bg-white "
+        />
+        <label for="nob" class="label">
+          <span class="label-text">Name of Board</span>
+        </label>
+        <input
+          id="nob"
+          bind:value={nameofboard}
+          type="text"
+          placeholder="Type here"
+          class="input input-bordered w-full bg-white "
+        />
+        <label for="regnob" class="label">
+          <span class="label-text">Registration number for 12th board</span>
+        </label>
+        <input
+          id="regnob"
+          bind:value={regnum12}
+          type="text"
+          placeholder="Type here"
+          class="input input-bordered w-full bg-white "
+        />
+        <div class="divider">Contact Information</div>
+        <label for="pphno" class="label">
+          <span class="label-text">Primary Phone Number</span>
+        </label>
+        <input
+          bind:value={pphno}
+          id="pphno"
+          type="text"
+          placeholder="Type here"
+          class="input input-bordered w-full bg-white"
+        />
+        <label for="sphno" class="label">
+          <span class="label-text">Secondary Phone Number</span>
+        </label>
+
+        <input
+          id="sphno"
+          type="text"
+          bind:value={sphno}
+          placeholder="Type here"
+          class="input input-bordered w-full bg-white"
         />
         <label for="email" class="label">
           <span class="label-text">Email</span>
         </label>
         <input
+          bind:value={email}
           id="email"
           type="text"
           placeholder="Type here"
           class="input input-bordered w-full bg-white"
         />
-        <label for="phno" class="label">
-          <span class="label-text">Calling Phone Number</span>
+        <div class="divider">References Information</div>
+        <label for="refs" class="label">
+          <span class="label-text"
+            >How did the lead come to know about NHCE?</span
+          >
         </label>
-        <input
-          id="phno"
-          type="text"
-          placeholder="Type here"
-          class="input input-bordered w-full bg-white"
-        />
+        <div class="gap-5 grid grid-cols-3">
+          {#each references as ref}
+            <div class="flex gap-2 items-center">
+              <input
+                type="checkbox"
+                on:change={(e) => {
+                  if (e.target.checked) {
+                    selectedReferences.push(ref);
+                    selectedReferences = [...selectedReferences];
+                  } else {
+                    selectedReferences = selectedReferences.filter(
+                      (item) => item !== ref
+                    );
+                    selectedReferences = [...selectedReferences];
+                  }
+                  console.log(selectedReferences);
+                }}
+                class="checkbox"
+              />
+              <div>
+                {ref}
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <div class="divider">Admission Information</div>
+
+        <label for="status" class="label">
+          <span class="label-text">Addmission Category</span>
+        </label>
+        <select
+          id="category"
+          class="select input-bordered w-full bg-white"
+          bind:value={category}
+        >
+          <option value="">Select Category</option>
+          <option value="CET">CET</option>
+          <option value="MANAGMENT">MANAGMENT</option>
+        </select>
+
         <label for="status" class="label">
           <span class="label-text">Status</span>
         </label>
-        <select id="status" class="select w-full bg-white ">
+        <select
+          bind:value={leadStatus}
+          id="status"
+          class="select w-full bg-white "
+        >
           <option disabled selected>Pick status</option>
           {#each status as s}
             <option value={s}>{s}</option>
           {/each}
         </select>
+        <label for="source" class="label">
+          <span class="label-text">Status</span>
+        </label>
+        <select bind:value={source} id="source" class="select w-full bg-white ">
+          <option disabled selected>Pick status</option>
+          {#each sources as s}
+            <option value={s}>{s}</option>
+          {/each}
+        </select>
         <label for="callrem" class="label">
-          <span class="label-text">Call Remarks</span>
+          <span class="label-text">Remarks</span>
         </label>
         <textarea
+          bind:value={remarks}
           id="callrem"
           type="text"
           placeholder="Type here"
           class="w-full p-2 textarea bg-white"
+        />
+        <label for="callrem" class="label">
+          <span class="label-text">Follow up Date</span>
+        </label>
+        <input
+          bind:value={followup}
+          type="date"
+          class="border rounded-xl p-3"
+          name=""
+          id=""
         />
 
         <button type="submit" class="btn mt-5 w-fit">Submit</button>
@@ -146,7 +335,7 @@
     </div>
   </div>
 
-  <div class="bg-white  m-2 flex flex-col p-5 rounded-xl shadow-xl ">
+  <!-- <div class="bg-white  m-2 flex flex-col p-5 rounded-xl shadow-xl ">
     <div class="text-2xl opacity-50 font-semibold">Share form</div>
     <div class="opacity-50">Automated Lead Entry</div>
 
@@ -198,7 +387,7 @@
         Close Connection
       </div>
     </div>
-  </div>
+  </div> -->
 </section>
 
 <style>

@@ -1,5 +1,7 @@
 <script>
+  export let selectedTableFormat = [];
   export let data = [];
+
   export let selectedLeadID;
 </script>
 
@@ -7,35 +9,37 @@
   <div class="divTableHeading">
     <div class="divTableRow font-semibold">
       <div class="divTableCell" />
-      <div class="divTableCell">Name</div>
-      <div class="divTableCell ">Email</div>
-      <div class="divTableCell">Phone</div>
-      <div class="divTableCell">City</div>
-      <div class="divTableCell">Course</div>
-      <div class="divTableCell">Status</div>
-      <div class="divTableCell">Follow Up</div>
-      <div class="divTableCell">Source</div>
-      <div class="divTableCell">Loaded by</div>
+      {#each selectedTableFormat as column}
+        {#if column != "_id"}
+          <div class="divTableCell">{column}</div>
+        {/if}
+      {/each}
     </div>
   </div>
 
   <div class="divTableBody">
-    {#each data as { _id, followup, name, course, email, phonenumber, city, source, status, loadedbyname }, i}
+    {#each data as d, i}
       <label
         for="my-drawer"
-        on:click={() => (selectedLeadID = _id)}
-        class={`divTableRow ${_id === selectedLeadID ? "bg-blue-200" : ""}`}
+        on:click={() => (selectedLeadID = d["_id"])}
+        class={`divTableRow ${
+          d["_id"] === selectedLeadID ? "bg-blue-200" : ""
+        }`}
       >
         <div class="divTableCell">{i + 1}</div>
-        <div class="divTableCell">{name || "-"}</div>
-        <div class="divTableCell">{email || "-"}</div>
+
+        {#each selectedTableFormat as column, j}
+          <div class="divTableCell">{d[selectedTableFormat[j]] || "-"}</div>
+        {/each}
+
+        <!-- <div class="divTableCell">{email || "-"}</div>
         <div class="divTableCell">{phonenumber || "-"}</div>
         <div class="divTableCell">{city || "-"}</div>
         <div class="divTableCell">{course || "-"}</div>
         <div class="divTableCell">{status || "-"}</div>
         <div class="divTableCell">{followup || "-"}</div>
         <div class="divTableCell">{source || "-"}</div>
-        <div class="divTableCell">{loadedbyname || "-"}</div>
+        <div class="divTableCell">{loadedbyname || "-"}</div> -->
       </label>
     {/each}
   </div>

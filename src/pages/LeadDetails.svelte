@@ -1,6 +1,6 @@
 <script>
   import RemarksCard from "../components/RemarksCard.svelte";
-  import { courses, status } from "../constants";
+  import { availableColumns, courses, status } from "../constants";
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
   import { push } from "svelte-spa-router";
@@ -48,7 +48,7 @@
     try {
       let { error, data } = await GETLEADS_MUTATION();
       if (data) {
-        console.log("BROOOOOOOOOOO", data);
+        //console.log("BROOOOOOOOOOO", data);
 
         contextData.leads = data.getLeads;
 
@@ -57,6 +57,7 @@
             return {
               ...item,
               followup: item.calls[item.calls.length - 1].followup,
+              lastremark: item.calls[item.calls.length - 1].remark,
             };
           else return item;
         });
@@ -283,12 +284,25 @@
     remark: "",
     followup: "",
   };
+  let selectedTableFormat = [
+    "name",
+    "email",
+    "phonenumber",
+    "city",
+    "status",
+    "course",
+    "source",
+    "loadedbyname",
+    "followup",
+  ];
 
   // ----------------------------helper functions-----------------------------------------
   function applyFilter() {
     filteredLeads = contextData.leads.filter((item) => {
       let allTrues = [];
-      if (filters.today) allTrues.push(item.followup === "Today");
+      let todayDate = new Date().toISOString().slice(0, 10);
+      //console.log(todayDate);
+      if (filters.today) allTrues.push(item.followup === todayDate);
       if (filters.ondate.length != 0)
         allTrues.push(item.calls.some((call) => call.date === filters.ondate));
       if (filters.greaterthan5) allTrues.push(item.calls.length > 5);
@@ -308,8 +322,11 @@
             : item.course.some((course) => filters.course.includes(course))
         );
       }
-      //console.log(allTrues);
 
+      //console.log(allTrues);
+      if (allTrues.length === 0) {
+        return allTrues.every((item) => item === true);
+      }
       return andMode
         ? allTrues.every((item) => item === true)
         : allTrues.some((item) => item === true);
@@ -331,7 +348,7 @@
 
   $: {
     searchedLeads = filteredLeads.filter((item) => {
-      console.log("this is item", item);
+      //console.log("this is item", item);
       return item[searchby].includes(search.toLowerCase());
     });
   }
@@ -418,6 +435,41 @@
       </div>
     </div>
   {/if}
+</div>
+
+<input type="checkbox" id="customizeview" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box bg-white">
+    <h3 class="font-bold text-lg">Customize Views</h3>
+    <div class="my-3">Choose all the columns you want to see</div>
+    <div class="grid grid-cols-3 gap-5">
+      {#each availableColumns as c}
+        <div class="flex items-center gap-2">
+          <input
+            checked={selectedTableFormat.includes(c)}
+            on:change={(e) => {
+              if (e.target.checked) {
+                selectedTableFormat.push(c);
+                selectedTableFormat = [...selectedTableFormat];
+              } else {
+                selectedTableFormat = selectedTableFormat.filter(
+                  (item) => item !== c
+                );
+                selectedTableFormat = [...selectedTableFormat];
+              }
+            }}
+            class="checkbox"
+            type="checkbox"
+          />
+          <div>{c}</div>
+        </div>
+      {/each}
+    </div>
+
+    <div class="modal-action">
+      <label for="customizeview" class="btn">Close</label>
+    </div>
+  </div>
 </div>
 
 <input type="checkbox" id="filtermodal" class="modal-toggle" />
@@ -579,6 +631,12 @@
             <div class="text-xl opacity-50">Add, Edit and Remove Leads</div>
           </div>
           <div class="gap-3 flex">
+            <label
+              for="customizeview"
+              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+            >
+              Customize view
+            </label>
             <div
               on:click={() => push("/add-lead")}
               class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
@@ -641,6 +699,7 @@
         <div class="overflow-auto mt-5">
           <CallerLeadsTable
             bind:selectedLeadID
+            {selectedTableFormat}
             data={searchedLeads.length === 0 ? filteredLeads : searchedLeads}
           />
         </div>

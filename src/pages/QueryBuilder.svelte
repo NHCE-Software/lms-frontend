@@ -42,8 +42,11 @@
       });
       //console.log(data);
       let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
-      //console.log(res.data);
-      if (res.data.addleads.message) {
+      console.log(res.data);
+      if (res.data.addleads === null) {
+        swal("Lead Exists", "No changes were made", "success");
+        replace("/lead-details");
+      } else if (res.data.addleads.message) {
         swal("Added Lead", "We are good to go", "success");
         replace("/lead-details");
       } else {

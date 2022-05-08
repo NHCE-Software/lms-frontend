@@ -11,6 +11,7 @@
       : [
           { path: "/query-builder", name: "Load Leads" },
           { path: "/lead-details", name: "Lead Details" },
+          { path: "/add-lead", name: "Add Lead" },
         ];
 </script>
 

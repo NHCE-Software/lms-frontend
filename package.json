@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
+    "cypress": "^9.6.0",
     "daisyui": "^2.13.6",
     "graphql": "^16.3.0",
     "papaparse": "^5.3.2",
