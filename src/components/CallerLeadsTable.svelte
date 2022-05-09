@@ -1,46 +1,81 @@
 <script>
   export let selectedTableFormat = [];
   export let data = [];
-
   export let selectedLeadID;
+  let currentPage = 0;
+  function splitArray(array, n) {
+    let [...arr] = array;
+    var res = [];
+    while (arr.length) {
+      res.push(arr.splice(0, n));
+    }
+    return res;
+  }
+  let pages;
+  $: {
+    pages = splitArray(data, 1);
+  }
 </script>
 
-<div class="divTable">
-  <div class="divTableHeading">
-    <div class="divTableRow font-semibold">
-      <div class="divTableCell" />
-      {#each selectedTableFormat as column}
-        {#if column != "_id"}
-          <div class="divTableCell">{column}</div>
-        {/if}
+<div class=" h-full min-h-screen flex flex-col">
+  <div class="divTable">
+    <div class="divTableHeading">
+      <div class="divTableRow font-semibold">
+        <div class="divTableCell" />
+        {#each selectedTableFormat as column}
+          {#if column != "_id"}
+            <div class="divTableCell">{column}</div>
+          {/if}
+        {/each}
+      </div>
+    </div>
+
+    <div class="divTableBody">
+      {#each pages[currentPage] as d, i}
+        <label
+          for="my-drawer"
+          on:click={() => (selectedLeadID = d["_id"])}
+          class={`divTableRow ${
+            d["_id"] === selectedLeadID ? "bg-blue-200" : ""
+          }`}
+        >
+          <div class="divTableCell">{i + 1}</div>
+
+          {#each selectedTableFormat as column, j}
+            <div class="divTableCell">{d[selectedTableFormat[j]] || "-"}</div>
+          {/each}
+
+          <!-- <div class="divTableCell">{email || "-"}</div>
+          <div class="divTableCell">{phonenumber || "-"}</div>
+          <div class="divTableCell">{city || "-"}</div>
+          <div class="divTableCell">{course || "-"}</div>
+          <div class="divTableCell">{status || "-"}</div>
+          <div class="divTableCell">{followup || "-"}</div>
+          <div class="divTableCell">{source || "-"}</div>
+          <div class="divTableCell">{loadedbyname || "-"}</div> -->
+        </label>
       {/each}
     </div>
   </div>
-
-  <div class="divTableBody">
-    {#each data as d, i}
-      <label
-        for="my-drawer"
-        on:click={() => (selectedLeadID = d["_id"])}
-        class={`divTableRow ${
-          d["_id"] === selectedLeadID ? "bg-blue-200" : ""
-        }`}
-      >
-        <div class="divTableCell">{i + 1}</div>
-
-        {#each selectedTableFormat as column, j}
-          <div class="divTableCell">{d[selectedTableFormat[j]] || "-"}</div>
-        {/each}
-
-        <!-- <div class="divTableCell">{email || "-"}</div>
-        <div class="divTableCell">{phonenumber || "-"}</div>
-        <div class="divTableCell">{city || "-"}</div>
-        <div class="divTableCell">{course || "-"}</div>
-        <div class="divTableCell">{status || "-"}</div>
-        <div class="divTableCell">{followup || "-"}</div>
-        <div class="divTableCell">{source || "-"}</div>
-        <div class="divTableCell">{loadedbyname || "-"}</div> -->
-      </label>
+  <div
+    class="btn-group mt-auto flex items-center justify-end  py-2  rounded-3xl"
+  >
+    {#each pages as page, i}
+      {#if i == currentPage}
+        <button
+          on:click={() => (currentPage = i)}
+          class="btn  btn-outline-primary btn-active"
+        >
+          {i + 1}
+        </button>
+      {:else}
+        <button
+          on:click={() => (currentPage = i)}
+          class="btn  btn-outline-primary "
+        >
+          {i + 1}
+        </button>
+      {/if}
     {/each}
   </div>
 </div>

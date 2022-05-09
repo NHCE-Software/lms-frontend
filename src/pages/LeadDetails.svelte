@@ -340,7 +340,7 @@
     selectedLeadData = contextData.leads.find(
       (item) => item._id === selectedLeadID
     );
-    console.log("this is selectedLeadData", selectedLeadData);
+    //console.log("this is selectedLeadData", selectedLeadData);
   }
 
   $: {
@@ -684,11 +684,6 @@
             Phone
           </form>
         </div>
-
-        <!-- <div>
-          calls to make today calls made on x day filter with status filter with
-          number of calls made search
-        </div> -->
         <div class="overflow-auto mt-5">
           <CallerLeadsTable
             bind:selectedLeadID
