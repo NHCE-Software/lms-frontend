@@ -7,7 +7,7 @@
   import RemarksCard from "../components/RemarksCard.svelte";
   import Navbar from "../components/Navbar.svelte";
   import UserWorkTable from "../components/UserWorkTable.svelte";
-  import { courses } from "../constants";
+  import { courses, status } from "../constants";
   import { gql } from "@apollo/client";
   import { mutation, query } from "svelte-apollo";
   import { onMount } from "svelte";
@@ -214,10 +214,10 @@
       if (filters.call3) allTrues.push(item.calls.length === 3);
       if (filters.call4) allTrues.push(item.calls.length === 4);
       if (filters.call5) allTrues.push(item.calls.length === 5);
-      if (filters.hot) allTrues.push(item.status === "Hot");
-      if (filters.cold) allTrues.push(item.status === "Cold");
-      if (filters.closed) allTrues.push(item.status === "Closed");
-      if (filters.awaiting) allTrues.push(item.status === "Awaiting");
+      if (filters.status.length != 0) {
+        allTrues.push(filters.status.includes(item.status));
+      }
+
       if (filters.course.length != 0) {
         console.log(item.course, filters.course);
         allTrues.push(
@@ -341,26 +341,22 @@
     </div>
     <h3 class="text-xl font-bold opacity-50 my-2">Filter by Status</h3>
     <div class=" flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.cold} class="checkbox" />
-        <label for="">Cold</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.hot} class="checkbox" />
-        <label for="">Hot</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.closed} class="checkbox" />
-        <label for="">Closed</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input
-          type="checkbox"
-          bind:checked={filters.awaiting}
-          class="checkbox"
-        />
-        <label for="">Awaiting</label>
-      </div>
+      {#each status as s}
+        <div class="flex items-center gap-3">
+          <input
+            type="checkbox"
+            on:change={(e) => {
+              if (e.target.checked) {
+                filters.status.push(s);
+              } else {
+                filters.status = filters.status.filter((item) => item !== s);
+              }
+            }}
+            class="checkbox"
+          />
+          <label for="">{s}</label>
+        </div>
+      {/each}
     </div>
     <div class="flex flex-col">
       <div class="text-xl font-bold opacity-50 my-2">Filter by Course</div>
