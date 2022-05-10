@@ -345,8 +345,13 @@
 
   $: {
     searchedLeads = filteredLeads.filter((item) => {
-      //console.log("this is item", item);
-      return item[searchby].includes(search.toLowerCase());
+      //console.log(search, item[searchby].includes(search.toLowerCase()));
+      //console.log(search, "==", item[searchby], search === item[searchby]);
+      console.log(item[searchby].trim());
+      return item[searchby]
+        .trim()
+        .toLowerCase()
+        .includes(search.toLowerCase().trim());
     });
   }
 </script>

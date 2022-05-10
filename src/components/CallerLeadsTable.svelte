@@ -13,7 +13,7 @@
   }
   let pages;
   $: {
-    pages = splitArray(data, 1);
+    pages = splitArray(data, 25);
   }
 </script>
 

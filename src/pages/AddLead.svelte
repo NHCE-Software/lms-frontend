@@ -275,7 +275,7 @@
         <div class="divider">Admission Information</div>
 
         <label for="status" class="label">
-          <span class="label-text">Addmission Category</span>
+          <span class="label-text">Admission Category</span>
         </label>
         <select
           id="category"
@@ -287,7 +287,16 @@
           <option value="MANAGMENT">MANAGMENT</option>
         </select>
 
-        <label for="status" class="label">
+        <label for="source" class="label">
+          <span class="label-text">Source</span>
+        </label>
+        <select bind:value={source} id="source" class="select w-full bg-white ">
+          <option disabled selected>Pick status</option>
+          {#each sources as s}
+            <option value={s}>{s}</option>
+          {/each}
+        </select>
+        <label for="source" class="label">
           <span class="label-text">Status</span>
         </label>
         <select
@@ -297,15 +306,6 @@
         >
           <option disabled selected>Pick status</option>
           {#each status as s}
-            <option value={s}>{s}</option>
-          {/each}
-        </select>
-        <label for="source" class="label">
-          <span class="label-text">Status</span>
-        </label>
-        <select bind:value={source} id="source" class="select w-full bg-white ">
-          <option disabled selected>Pick status</option>
-          {#each sources as s}
             <option value={s}>{s}</option>
           {/each}
         </select>

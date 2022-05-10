@@ -166,8 +166,8 @@
   `;
   let GETLEADDATA_QUERY = query(GETLEADDATA, {
     variables: {
-      filter: {
-        _id: selectedStoryUID,
+      record: {
+        callerid: selectedStoryUID,
       },
     },
   });
