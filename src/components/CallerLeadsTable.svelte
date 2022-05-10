@@ -44,15 +44,6 @@
           {#each selectedTableFormat as column, j}
             <div class="divTableCell">{d[selectedTableFormat[j]] || "-"}</div>
           {/each}
-
-          <!-- <div class="divTableCell">{email || "-"}</div>
-          <div class="divTableCell">{phonenumber || "-"}</div>
-          <div class="divTableCell">{city || "-"}</div>
-          <div class="divTableCell">{course || "-"}</div>
-          <div class="divTableCell">{status || "-"}</div>
-          <div class="divTableCell">{followup || "-"}</div>
-          <div class="divTableCell">{source || "-"}</div>
-          <div class="divTableCell">{loadedbyname || "-"}</div> -->
         </label>
       {/each}
     </div>

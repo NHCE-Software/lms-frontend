@@ -5,6 +5,8 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import sveltePreprocess from 'svelte-preprocess';
+import replace from '@rollup/plugin-replace';
+import dotenv from 'dotenv'
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -28,7 +30,7 @@ function serve() {
 		}
 	};
 }
-
+console.log(dotenv.config().parsed)
 export default {
 	input: 'src/main.js',
 	output: {
@@ -38,6 +40,10 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		replace({
+			BASEURL: JSON.stringify(dotenv.config().parsed.BASEURL)
+			,
+		}),
 		svelte({
 			compilerOptions: {
 				// enable run-time checks when not in production

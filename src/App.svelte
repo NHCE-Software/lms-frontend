@@ -9,7 +9,7 @@
     InMemoryCache,
     concat,
   } from "@apollo/client";
-  const httpLink = new HttpLink({ uri: "http://localhost:3000/graphql" });
+  const httpLink = new HttpLink({ uri: BASEURL + "/graphql" });
   import { setClient } from "svelte-apollo";
 
   const authMiddleware = new ApolloLink((operation, forward) => {
