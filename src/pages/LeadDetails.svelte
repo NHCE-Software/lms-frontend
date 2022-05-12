@@ -7,6 +7,8 @@
   import { gql } from "@apollo/client";
   import { mutation } from "svelte-apollo";
   import { onMount } from "svelte";
+  import papaparse from "papaparse";
+  import { element } from "svelte/internal";
   export let params = {};
   export let selectedLeadID = params.selectedLeadID || "";
   onMount(async () => {
@@ -58,6 +60,7 @@
               ...item,
               followup: item.calls[item.calls.length - 1].followup,
               lastremark: item.calls[item.calls.length - 1].remark,
+              callquantity: item.calls.length,
             };
           else return item;
         });
@@ -330,7 +333,12 @@
     });
     filteredLeads = [...filteredLeads];
   }
+  function makeTextFile(text) {
+    let data = new Blob([text], { type: "text/plain" });
 
+    let textFile = URL.createObjectURL(data);
+    return textFile;
+  }
   // ----------------------------reactive changes-----------------------------------------
 
   $: {
@@ -340,7 +348,7 @@
     selectedLeadData = contextData.leads.find(
       (item) => item._id === selectedLeadID
     );
-    //console.log("this is selectedLeadData", selectedLeadData);
+    console.log("this is selectedLeadData", selectedLeadData);
   }
 
   $: {
@@ -478,7 +486,7 @@
 <div class="modal">
   <div class="modal-box bg-white max-w-xl flex flex-col gap-2">
     <div class="flex items-center justify-between">
-      <h3 class="text-2xl font-bold opacity-50 my-2">Advanced Filtering</h3>
+      <h3 class="text-2xl font-bold opacity-20 my-2">Advanced Filtering</h3>
       <div class="flex gap-3">
         <label
           class={andMode ? "opacity-50" : "text-blue-600 font-semibold"}
@@ -493,22 +501,21 @@
     </div>
     <div class="flex items-center justify-between">
       <h3 class="text-xl font-bold opacity-50 my-2">Filter by date</h3>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.today} class="checkbox" />
-        <label for=""> Show Today's Calls</label>
-      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <input type="checkbox" bind:checked={filters.today} class="checkbox" />
+      <label for=""> Show Today's Follow Up Calls</label>
     </div>
 
     <div class="items-center gap-3">
       <label class="flex-1" for=""> Calls Made on:</label>
       <input
         type="date"
-        id="birthday"
         class="w-full border px-5 py-3 rounded-2xl"
-        name="birthday"
         bind:value={filters.ondate}
       />
     </div>
+
     <h3 class="text-xl font-bold opacity-50 my-2">Filter by Calls</h3>
     <div class="flex gap-3 items-center flex-wrap">
       <div class="flex items-center gap-3">
@@ -629,6 +636,35 @@
             <div class="text-xl opacity-50">Add, Edit and Remove Leads</div>
           </div>
           <div class="gap-3 flex">
+            <label
+              for=""
+              on:click={() => {
+                console.log(contextData);
+                let csvdata = contextData.leads.map((item) => {
+                  return {
+                    ...item,
+                    __typename: undefined,
+                    _id: undefined,
+                    calls: JSON.stringify(item.calls),
+                  };
+                });
+
+                let csv = papaparse.unparse(csvdata, {
+                  header: true,
+                  newline: "\r\n",
+                });
+
+                console.log(makeTextFile(csv));
+                let download = document.createElement("a");
+                download.setAttribute("href", makeTextFile(csv));
+                download.setAttribute("download", "test.csv");
+                document.body.appendChild(download);
+                download.click();
+              }}
+              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+            >
+              Export to CSV
+            </label>
             <label
               for="customizeview"
               class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"

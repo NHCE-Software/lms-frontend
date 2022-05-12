@@ -5,6 +5,7 @@ import LeadDetails from "./pages/LeadDetails.svelte";
 import AddUser from "./pages/AddUser.svelte";
 import AddLead from "./pages/AddLead.svelte";
 import FillForm from "./pages/FillForm.svelte";
+import Notification from "./pages/Notification.svelte";
 
 const routes = {
   // Exact path
@@ -15,6 +16,7 @@ const routes = {
   "/lead-details/:selectedLeadID": LeadDetails,
   "/lead-details": LeadDetails,
   "/fill-form": FillForm,
+  "/notification": Notification,
   "/home": Home,
 };
 

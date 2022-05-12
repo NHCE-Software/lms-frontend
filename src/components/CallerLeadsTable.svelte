@@ -1,6 +1,7 @@
 <script>
   export let selectedTableFormat = [];
   export let data = [];
+
   export let selectedLeadID;
   let currentPage = 0;
   function splitArray(array, n) {
@@ -13,6 +14,7 @@
   }
   let pages;
   $: {
+    console.log(data);
     pages = splitArray(data, 25);
   }
 </script>

@@ -16,7 +16,7 @@ const preloadedMapsCourses = {
     test123: [],
 }
 
-const availableColumns = ["name", "loadedbyname", "email", "city", "phonenumber", "status", "course", "source", "calls", "followup", "lastremark"]
+const availableColumns = ["name", "loadedbyname", "email", "city", "phonenumber", "status", "course", "source", "callquantity", "followup", "lastremark"]
 
 
 
