@@ -737,9 +737,11 @@
   </div>
   <div class="drawer-side">
     <label for="my-drawer" class="drawer-overlay" />
-    <div class="bg-white rounded-xl  shadow-xl w-96 p-5  ">
+    <div
+      class="bg-white rounded-xl  shadow-xl w-100 grid grid-cols-2 gap-5  p-5  "
+    >
       {#if selectedLeadData}
-        <div class="h-screen flex flex-col">
+        <div class=" flex mt-5 flex-col border-r-4 rounded-2xl px-2 ">
           <div class="text-center text-2xl">
             {selectedLeadData.name}
           </div>
@@ -851,14 +853,6 @@
               {selectedLeadData.status} Lead
             </div>
           </div>
-          <div class="text-2xl mt-5 font-semibold opacity-50">Calls</div>
-          <div class=" flex-1  flex flex-col overflow-auto">
-            <div class=" flex flex-col min-h-min p-3 gap-3 ">
-              {#each selectedLeadData.calls as call}
-                <RemarksCard remark={call} />
-              {/each}
-            </div>
-          </div>
           <div class="flex gap-3 justify-center mt-auto">
             <div class="my-10">
               <label
@@ -876,12 +870,25 @@
             </div>
           </div>
         </div>
+        <div class="flex flex-col">
+          <div class="text-2xl mt-5 font-semibold opacity-50">Calls</div>
+          <div class=" flex-1  flex flex-col overflow-auto">
+            <div class=" flex flex-col min-h-min p-3 gap-3 ">
+              {#each selectedLeadData.calls as call}
+                <RemarksCard remark={call} />
+              {/each}
+            </div>
+          </div>
+        </div>
       {/if}
     </div>
   </div>
 </div>
 
 <style>
+  .w-100 {
+    width: 700px;
+  }
   ::-webkit-scrollbar {
     height: 8px;
     width: 8px;

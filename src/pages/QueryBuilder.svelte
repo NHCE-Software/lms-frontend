@@ -424,25 +424,26 @@
       {/if}
     </form>
     {#if cols.length != 0}
-      <div class="divTable mt-10">
-        <div class="divTableHeading">
-          <div class="divTableRow">
-            <div class="divTableCell" />
-            {#each cols as col}
-              <div class="divTableCell">{col}</div>
-            {/each}
-          </div>
-        </div>
-
-        <div class="divTableBody">
-          {#each data as row, i}
+      <div class=" flex overflow-auto">
+        <div class="divTable mt-10">
+          <div class="divTableHeading">
             <div class="divTableRow">
-              <div class="divTableCell">{i + 1}</div>
+              <div class="divTableCell" />
               {#each cols as col}
-                <div class="divTableCell">{row[col]}</div>
+                <div class="divTableCell">{col}</div>
               {/each}
             </div>
-          {/each}
+          </div>
+          <div class="divTableBody">
+            {#each data as row, i}
+              <div class="divTableRow">
+                <div class="divTableCell">{i + 1}</div>
+                {#each cols as col}
+                  <div class="divTableCell">{row[col]}</div>
+                {/each}
+              </div>
+            {/each}
+          </div>
         </div>
       </div>
     {:else}
