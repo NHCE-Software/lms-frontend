@@ -1,6 +1,5 @@
 <script>
   // --------------------imports-------------------------------
-  import LoadedCard from "../components/LoadedCard.svelte";
   import Stories from "../components/Stories.svelte";
   import Stats from "../components/Stats.svelte";
   import WeeklyChart from "../components/WeeklyChart.svelte";
@@ -142,8 +141,8 @@
   }
 
   let GETLEADDATA = gql`
-    query LeadMany($filter: FilterFindManyLeadInput) {
-      leadMany(filter: $filter) {
+    query LeadMany($record: JSON) {
+      getLeads(record: $record) {
         name
         loadedby
         email
@@ -164,19 +163,24 @@
       }
     }
   `;
-  let GETLEADDATA_QUERY = query(GETLEADDATA, {
-    variables: {
-      record: {
-        callerid: selectedStoryUID,
+
+  let GETLEADDATA_QUERY;
+  $: {
+    GETLEADDATA_QUERY = query(GETLEADDATA, {
+      variables: {
+        record: {
+          callerid: selectedStoryUID,
+        },
       },
-    },
-  });
+    });
+  }
   async function getLeadData() {
-    let { error, data } = await GETLEADDATA_QUERY.result({});
+    let { error, data } = await GETLEADDATA_QUERY.result();
+    console.log(selectedStoryUID);
     console.log("lead data", data);
     if (data) {
-      filteredLeadData = data.leadMany;
-      selectedUserLeadData = data.leadMany;
+      filteredLeadData = data.getLeads;
+      selectedUserLeadData = data.getLeads;
     }
     //console.log(selectedUserLeadData, searchedLeads);
   }
@@ -410,17 +414,10 @@
     <div class="text-xl opacity-50">It's {prnDt}</div>
 
     <Stories users={contextData.users} bind:selectedStoryUID />
-    <WeeklyChart />
-    <Stats />
   </div>
 
   <div class="bg-white  m-2  p-5 rounded-xl shadow-xl ">
     {#if selectedStoryUID}
-      <div class="avatar flex justify-center mt-10 ">
-        <div class="w-1/2 rounded-full">
-          <img src="https://api.lorem.space/image/face?hash=92310" />
-        </div>
-      </div>
       <div class="text-center text-2xl mt-5 ">
         {contextData.users.find((item) => item._id === selectedStoryUID).name}
       </div>

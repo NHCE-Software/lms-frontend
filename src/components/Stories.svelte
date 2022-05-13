@@ -4,32 +4,26 @@
 </script>
 
 <div>
-  <div class="my-4 mb-2 font-bold opacity-50 ">Stories</div>
-
-  <div class="flex gap-5 mb-5 overflow-auto py-4">
-    {#each users as { avatarURL, _id, role }}
+  <div class="grid grid-cols-2 gap-5 mb-5 overflow-auto py-4">
+    {#each users as { _id, role, name }}
       {#if role === "caller"}
         {#if _id === selectedStoryUID}
           <div
             on:click={() => {
               selectedStoryUID = _id;
             }}
-            class="avatar flex-none"
+            class="px-4 py-8 text-center rounded-2xl  text-blue-800 bg-blue-300 font-bold cursor-pointer"
           >
-            <div class="w-20 rounded-full border-2 border-blue-500">
-              <img src={avatarURL} />
-            </div>
+            <div>{name}</div>
           </div>
         {:else}
           <div
             on:click={() => {
               selectedStoryUID = _id;
             }}
-            class="avatar flex-none"
+            class="px-4 py-8 text-center rounded-2xl bg-white text-black cursor-pointer"
           >
-            <div class="w-20 rounded-full">
-              <img src={avatarURL} />
-            </div>
+            <div>{name}</div>
           </div>
         {/if}
       {/if}

@@ -8,7 +8,6 @@
   import { mutation } from "svelte-apollo";
   import { onMount } from "svelte";
   import papaparse from "papaparse";
-  import { element } from "svelte/internal";
   export let params = {};
   export let selectedLeadID = params.selectedLeadID || "";
   onMount(async () => {
@@ -25,6 +24,7 @@
         city
         phonenumber
         status
+        program
         course
         source
         calls {

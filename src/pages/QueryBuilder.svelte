@@ -151,7 +151,6 @@
               return accumulator;
             }, {});
           });
-
           initChosen();
         },
       });

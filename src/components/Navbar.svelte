@@ -5,7 +5,7 @@
     role && role.toLowerCase() === "admin"
       ? [
           { path: "/home", name: "Admin Dashboard" },
-          { path: "/add-user", name: "Users " },
+          { path: "/add-user", name: "Users" },
           { path: "/lead-details", name: "Lead Details" },
         ]
       : [

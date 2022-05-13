@@ -2,7 +2,7 @@
   import { pop, push, replace } from "svelte-spa-router";
 
   import Navbar from "../components/Navbar.svelte";
-  import { status, courses, references, sources } from "../constants";
+  import { status, courses, references, sources, programs } from "../constants";
   import { mutation, query } from "svelte-apollo";
   import { gql } from "@apollo/client";
   import swal from "sweetalert";
@@ -24,6 +24,7 @@
   let followup = "";
   let nameofboard = "";
   let regnum12 = "";
+  let program = "";
 
   let selectedCourse = [];
   let selectedReferences = [];
@@ -42,6 +43,7 @@
           record: {
             name: leadName,
             email,
+            program,
             city,
             source,
             phonenumber: pphno,
@@ -166,6 +168,19 @@
             />{course}
           {/each}
         </div>
+        <label for="program" class="label">
+          <span class="label-text">Program</span>
+        </label>
+        <select
+          bind:value={program}
+          id="source"
+          class="select w-full bg-white "
+        >
+          <option disabled selected>Pick Program</option>
+          {#each programs as s}
+            <option value={s}>{s}</option>
+          {/each}
+        </select>
 
         <label for="city" class="label">
           <span class="label-text">City</span>
@@ -291,11 +306,12 @@
           <span class="label-text">Source</span>
         </label>
         <select bind:value={source} id="source" class="select w-full bg-white ">
-          <option disabled selected>Pick status</option>
+          <option disabled selected>Pick Source</option>
           {#each sources as s}
             <option value={s}>{s}</option>
           {/each}
         </select>
+
         <label for="source" class="label">
           <span class="label-text">Status</span>
         </label>

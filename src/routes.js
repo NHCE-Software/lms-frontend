@@ -6,11 +6,20 @@ import AddUser from "./pages/AddUser.svelte";
 import AddLead from "./pages/AddLead.svelte";
 import FillForm from "./pages/FillForm.svelte";
 import Notification from "./pages/Notification.svelte";
+import {wrap} from  "svelte-spa-router/wrap"
+
+
+
+
 
 const routes = {
   // Exact path
   "/auth": Authentication,
-  "/add-user": AddUser,
+  "/add-user": wrap( {
+    component: AddUser,
+    // loadingComponent: Loading
+   
+  }),
   "/add-lead": AddLead,
   "/query-builder": QueryBuilder,
   "/lead-details/:selectedLeadID": LeadDetails,
