@@ -6,7 +6,7 @@
   import RemarksCard from "../components/RemarksCard.svelte";
   import Navbar from "../components/Navbar.svelte";
   import UserWorkTable from "../components/UserWorkTable.svelte";
-  import { courses, status } from "../constants";
+  import { courses, noauth, status } from "../constants";
   import { gql } from "@apollo/client";
   import { mutation, query } from "svelte-apollo";
   import { onMount } from "svelte";
@@ -126,17 +126,19 @@
   let GETUSERS_QUERY = query(GETUSERS);
 
   async function getUsers() {
-    let { error, data } = await GETUSERS_QUERY.result();
-    console.log("this is nro", error, data);
-    if (data) {
-      contextData.users = data.userMany.map((item) => {
-        return {
-          ...item,
-          avatarURL: "https://api.lorem.space/image/face?hash=92310",
-        };
-      });
+    try {
+      let { error, data } = await GETUSERS_QUERY.result();
+      if (data) {
+        contextData.users = data.userMany.map((item) => {
+          return {
+            ...item,
+          };
+        });
 
-      contextData.users = [...contextData.users];
+        contextData.users = [...contextData.users];
+      }
+    } catch (error) {
+      if (error && error.message === "You must be an admin") noauth();
     }
   }
 
@@ -158,7 +160,7 @@
           _id
           updatedAt
           createdAt
-        }58
+        }
         _id
       }
     }
@@ -175,13 +177,19 @@
     });
   }
   async function getLeadData() {
-    let { error, data } = await GETLEADDATA_QUERY.result();
-    console.log(selectedStoryUID);
-    console.log("lead data", data);
-    if (data) {
-      filteredLeadData = data.getLeads;
-      selectedUserLeadData = data.getLeads;
+    try {
+      let { error, data } = await GETLEADDATA_QUERY.result();
+      console.log(selectedStoryUID);
+      console.log("lead data", data);
+      if (data) {
+        filteredLeadData = data.getLeads;
+        selectedUserLeadData = data.getLeads;
+      }
+    } catch (error) {
+      console.log(error);
+      if (error && error.message === "You must be an admin") noauth();
     }
+
     //console.log(selectedUserLeadData, searchedLeads);
   }
 

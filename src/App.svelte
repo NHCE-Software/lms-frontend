@@ -1,7 +1,6 @@
 <script>
   import Router from "svelte-spa-router";
   import routes from "./routes.js";
-  import { onError } from "@apollo/link-error";
   import {
     ApolloClient,
     HttpLink,
@@ -11,14 +10,6 @@
   } from "@apollo/client";
   const httpLink = new HttpLink({ uri: BASEURL + "/api/graphql" });
   import { setClient } from "svelte-apollo";
-
-  function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/#/notauth";
-  }
-  const logoutLink = onError(({ networkError }) => {
-    if (networkError.statusCode === 401) logout();
-  });
 
   const authMiddleware = new ApolloLink((operation, forward) => {
     // add the authorization to the headers
@@ -32,7 +23,7 @@
   });
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: concat(authMiddleware, httpLink, logoutLink),
+    link: concat(authMiddleware, httpLink),
   });
   setClient(client);
 </script>

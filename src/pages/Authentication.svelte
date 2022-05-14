@@ -61,7 +61,7 @@
         on:submit|preventDefault={signIn}
         class="flex gap-2 flex-col mt-5 w-full "
       >
-        <label for="">Email</label>
+        <label for="">Username</label>
         <input
           bind:value={email}
           type="text"

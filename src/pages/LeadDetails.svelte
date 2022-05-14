@@ -1,6 +1,6 @@
 <script>
   import RemarksCard from "../components/RemarksCard.svelte";
-  import { availableColumns, courses, status } from "../constants";
+  import { availableColumns, courses, noauth, status } from "../constants";
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
   import { push } from "svelte-spa-router";
@@ -71,6 +71,7 @@
       }
     } catch (error) {
       console.log(error);
+      if (error && error.message === "You must be an admin") noauth();
     }
   }
 
@@ -81,26 +82,30 @@
   `;
   let ADDCALL_MUTATION = mutation(ADDCALL);
   async function addCall() {
-    let { errors, data } = await ADDCALL_MUTATION({
-      variables: {
-        record: {
-          remark: newCall.remark,
-          followup: newCall.followup,
-          leadid: selectedLeadID,
+    try {
+      let { errors, data } = await ADDCALL_MUTATION({
+        variables: {
+          record: {
+            remark: newCall.remark,
+            followup: newCall.followup,
+            leadid: selectedLeadID,
+          },
         },
-      },
-    });
-    //console.log(data);
-    if (errors) {
-      swal("Error", "Something went wrong", "error");
-      return console.log(errors);
+      });
+      //console.log(data);
+      if (errors) {
+        swal("Error", "Something went wrong", "error");
+        return console.log(errors);
+      }
+      if (data && data.addCall.message === "success") {
+        swal("Done", "Added call remark to lead successfully", "success");
+      } else {
+        swal("Error", "Something went wrong", "error");
+      }
+      getLeads();
+    } catch (error) {
+      if (error && error.message === "You must be an admin") noauth();
     }
-    if (data && data.addCall.message === "success") {
-      swal("Done", "Added call remark to lead successfully", "success");
-    } else {
-      swal("Error", "Something went wrong", "error");
-    }
-    getLeads();
   }
 
   let EDITLEAD = gql`
@@ -117,31 +122,35 @@
   `;
   let EDITLEAD_MUTATION = mutation(EDITLEAD);
   async function editLead() {
-    let { errors, data } = await EDITLEAD_MUTATION({
-      variables: {
-        record: {
-          name: selectedLeadData.name,
-          email: selectedLeadData.email,
-          city: selectedLeadData.city,
-          phonenumber: selectedLeadData.phonenumber,
-          status: selectedLeadData.status,
-          course: selectedLeadData.course,
+    try {
+      let { errors, data } = await EDITLEAD_MUTATION({
+        variables: {
+          record: {
+            name: selectedLeadData.name,
+            email: selectedLeadData.email,
+            city: selectedLeadData.city,
+            phonenumber: selectedLeadData.phonenumber,
+            status: selectedLeadData.status,
+            course: selectedLeadData.course,
+          },
+          filter: {
+            _id: selectedLeadID,
+          },
         },
-        filter: {
-          _id: selectedLeadID,
-        },
-      },
-    });
-    if (errors) {
-      swal("Error", "Something went wrong", "error");
-      return console.log(errors);
+      });
+      if (errors) {
+        swal("Error", "Something went wrong", "error");
+        return console.log(errors);
+      }
+      if (data && data.leadUpdateOne.record.name === selectedLeadData.name) {
+        swal("Done", "Lead updated successfully", "success");
+      } else {
+        swal("Error", "Something went wrong", "error");
+      }
+      getLeads();
+    } catch (error) {
+      if (error && error.message === "You must be an admin") noauth();
     }
-    if (data && data.leadUpdateOne.record.name === selectedLeadData.name) {
-      swal("Done", "Lead updated successfully", "success");
-    } else {
-      swal("Error", "Something went wrong", "error");
-    }
-    getLeads();
   }
   // ----------------------------state declaration-----------------------------------------
 

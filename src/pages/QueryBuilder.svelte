@@ -4,6 +4,7 @@
   import { mutation } from "svelte-apollo";
   import { replace } from "svelte-spa-router";
   import Navbar from "../components/Navbar.svelte";
+  import { sanitize } from "string-sanitizer";
   import {
     courses,
     sources,
@@ -74,7 +75,7 @@
       return newItem;
     });
     //console.log(data);
-    //console.log(data2);
+    console.log(data2);
     data = [...data2];
     cols = Object.keys(data[0]);
     initChosen();
@@ -133,24 +134,32 @@
       source = "";
     }
   }
+
   $: {
-    file && console.log(file[0]);
     file &&
       Papa.parse(file[0], {
         header: true,
-        complete: function (results) {
-          console.log(results.data);
-          console.log(results.meta.fields);
-          cols = results.meta.fields.map((col) => {
-            return col.toLowerCase();
+        complete: function (res) {
+          console.log("Parsed");
+          console.log(res.data);
+          cols = res.meta.fields.map((item) => {
+            return sanitize(item.toLowerCase());
           });
+          let acc = {};
+          let tdata = [];
+          for (let index = 0; index < res.data.length; index++) {
+            const element = res.data[index];
+            console.log(Object.keys(element));
+            for (let key of Object.keys(element)) {
+              console.log(key);
+              acc[sanitize(key.toLowerCase())] = element[key];
+            }
+            tdata.push(acc);
+            acc = {};
+          }
+          console.log(tdata);
 
-          data = results.data.map((obj) => {
-            return Object.keys(obj).reduce((accumulator, key) => {
-              accumulator[key.toLowerCase()] = obj[key];
-              return accumulator;
-            }, {});
-          });
+          data = [...tdata];
           initChosen();
         },
       });
@@ -161,12 +170,10 @@
     }
   }
   $: {
-    /// console.log("calling mapper for chosen", chosenMapper);
     chosenMapper = Object.assign(
       {},
       ...chosen.map((x) => ({ [x.old]: x.new }))
     );
-    //onsole.log("updated mapper", chosenMapper);
   }
 </script>
 
