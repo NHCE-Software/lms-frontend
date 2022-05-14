@@ -1,5 +1,6 @@
 <script>
   import { gql } from "@apollo/client/core";
+  import { onMount } from "svelte";
   import { mutation } from "svelte-apollo";
   import { push } from "svelte-spa-router";
   import swal from "sweetalert";
@@ -11,6 +12,12 @@
       signIn(email: $email, password: $password)
     }
   `;
+  onMount(() => {
+    console.log(localStorage.getItem("token"));
+    if (localStorage.getItem("token")) {
+      push("/lead-details");
+    }
+  });
   const SIGNIN_MUTATION = mutation(SIGNIN);
   async function signIn() {
     try {
