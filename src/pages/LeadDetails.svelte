@@ -441,7 +441,7 @@
           </select>
         </div>
         <label for="" class="tracking-wide opacity-50">Course</label>
-        <div class="flex gap-3 flex-wrap">
+        <div class="gap-3 grid grid-col-3">
           {#each courses as course}
             <div class="flex item-center gap-3">
               <input
