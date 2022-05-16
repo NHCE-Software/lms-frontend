@@ -98,6 +98,8 @@
         return console.log(errors);
       }
       if (data && data.addCall.message === "success") {
+        newCall.followup = "";
+        newCall.remark = "";
         swal("Done", "Added call remark to lead successfully", "success");
       } else {
         swal("Error", "Something went wrong", "error");

@@ -1,8 +1,6 @@
 <script>
   // --------------------imports-------------------------------
   import Stories from "../components/Stories.svelte";
-  import Stats from "../components/Stats.svelte";
-  import WeeklyChart from "../components/WeeklyChart.svelte";
   import RemarksCard from "../components/RemarksCard.svelte";
   import Navbar from "../components/Navbar.svelte";
   import UserWorkTable from "../components/UserWorkTable.svelte";
@@ -151,6 +149,7 @@
         city
         phonenumber
         status
+        source
         course
         calls {
           call
@@ -160,6 +159,10 @@
           _id
           updatedAt
           createdAt
+        }
+        createdByUser {
+          name
+          _id
         }
         _id
       }
