@@ -73,7 +73,7 @@
           bind:value={email}
           type="text"
           class="p-4 rounded-lg bg-white text-black "
-          placeholder="Email"
+          placeholder="Username"
         />
         <label for="">Password</label>
         <input

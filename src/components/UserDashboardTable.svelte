@@ -9,7 +9,7 @@
     <div class="divTableRow font-semibold">
       <div class="divTableCell" />
       <div class="divTableCell">Name</div>
-      <div class="divTableCell ">Email</div>
+      <div class="divTableCell ">Username</div>
       <div class="divTableCell">Role</div>
       <div class="divTableCell">Actions</div>
     </div>
