@@ -1,6 +1,12 @@
 <script>
   import RemarksCard from "../components/RemarksCard.svelte";
-  import { availableColumns, courses, noauth, status } from "../constants";
+  import {
+    availableColumns,
+    courses,
+    noauth,
+    programs,
+    status,
+  } from "../constants";
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
   import { push } from "svelte-spa-router";
@@ -134,6 +140,7 @@
             phonenumber: selectedLeadData.phonenumber,
             status: selectedLeadData.status,
             course: selectedLeadData.course,
+            program: selectedLeadData.program,
           },
           filter: {
             _id: selectedLeadID,
@@ -363,15 +370,19 @@
   }
 
   $: {
-    searchedLeads = filteredLeads.filter((item) => {
-      //console.log(search, item[searchby].includes(search.toLowerCase()));
-      //console.log(search, "==", item[searchby], search === item[searchby]);
-      console.log(item[searchby].trim());
-      return item[searchby]
-        .trim()
-        .toLowerCase()
-        .includes(search.toLowerCase().trim());
-    });
+    try {
+      searchedLeads = filteredLeads.filter((item) => {
+        //console.log(search, item[searchby].includes(search.toLowerCase()));
+        //console.log(search, "==", item[searchby], search === item[searchby]);
+        console.log(item[searchby].trim());
+        return item[searchby]
+          .trim()
+          .toLowerCase()
+          .includes(search.toLowerCase().trim());
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 </script>
 
@@ -416,26 +427,42 @@
           name=""
           id=""
         />
+        <label for="" class="tracking-wide opacity-50">Program</label>
+        <div class="flex gap-3 flex-wrap">
+          <select
+            bind:value={selectedLeadData.program}
+            id="course"
+            class="select select-bordered bg-white text-black w-full"
+          >
+            <option disabled>Pick Status</option>
+            {#each programs as s}
+              <option selected={selectedLeadData.program} value={s}>{s}</option>
+            {/each}
+          </select>
+        </div>
         <label for="" class="tracking-wide opacity-50">Course</label>
         <div class="flex gap-3 flex-wrap">
           {#each courses as course}
-            <input
-              checked={selectedLeadData.course.includes(course)}
-              type="checkbox"
-              on:change={(e) => {
-                if (e.target.checked) {
-                  selectedLeadData.course.push(course);
-                  selectedLeadData.course = [...selectedLeadData.course];
-                } else {
-                  selectedLeadData.course = selectedLeadData.course.filter(
-                    (item) => item !== course
-                  );
-                  selectedLeadData.course = [...selectedLeadData.course];
-                }
-                console.log(selectedLeadData.course);
-              }}
-              class="checkbox"
-            />{course}
+            <div class="flex item-center gap-3">
+              <input
+                checked={selectedLeadData.course.includes(course)}
+                type="checkbox"
+                on:change={(e) => {
+                  if (e.target.checked) {
+                    selectedLeadData.course.push(course);
+                    selectedLeadData.course = [...selectedLeadData.course];
+                  } else {
+                    selectedLeadData.course = selectedLeadData.course.filter(
+                      (item) => item !== course
+                    );
+                    selectedLeadData.course = [...selectedLeadData.course];
+                  }
+                  console.log(selectedLeadData.course);
+                }}
+                class="checkbox"
+              />
+              <div>{course}</div>
+            </div>
           {/each}
         </div>
         <label for="" class="tracking-wide  opacity-50">Status</label>

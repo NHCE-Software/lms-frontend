@@ -269,6 +269,11 @@
         />
       </div>
       <label for="filtermodal-home" class="btn">Ultra Advanced Filter</label>
+      <label
+        for="assigned-modal"
+        class="bg-blue-600 black-black px-5 py-3 rounded-xl text-white"
+        >Close</label
+      >
     </div>
 
     <div class="h-full">
