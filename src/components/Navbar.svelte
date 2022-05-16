@@ -1,7 +1,12 @@
 <script>
-  import { push, location } from "svelte-spa-router";
+  import { gql } from "@apollo/client";
+
+  import { mutation } from "svelte-apollo";
+
+  import { push, location, replace } from "svelte-spa-router";
   const role = localStorage.getItem("role");
   console.log($location);
+  let newpass, oldpass, newpassagain;
   const routes =
     role && role.toLowerCase() === "admin"
       ? [
@@ -14,6 +19,43 @@
           { path: "/lead-details", name: "Lead Details" },
           { path: "/add-lead", name: "Add Lead" },
         ];
+  let CHANGEPASSWORD = gql`
+    mutation ChangePass($record: JSON) {
+      changePass(record: $record)
+    }
+  `;
+  let CHANGEPASSWORD_MUTATUION = mutation(CHANGEPASSWORD);
+  async function changePassword() {
+    if (newpass != newpassagain)
+      return swal("Error", "Passwords do not match", "error");
+
+    try {
+      const { error, data } = await CHANGEPASSWORD_MUTATUION({
+        variables: {
+          record: {
+            oldpassword: oldpass,
+            newpassword: newpass,
+          },
+        },
+      });
+      if (error) {
+        console.log(error);
+        swal("Error", "Something went wrong", "error");
+      }
+      if (data.changePass.message === "success") {
+        swal("Success", "Changed Successfully", "success");
+      } else {
+        swal(
+          "Error",
+          "Something went wrong " + data.changePass.message,
+          "error"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      swal("Error", "Something went wrong", "error");
+    }
+  }
 </script>
 
 <input type="checkbox" id="change-pass-modal" class="modal-toggle" />
@@ -30,6 +72,7 @@
             class="input input-bordered"
             name=""
             id=""
+            bind:value={oldpass}
           />
         </div>
         <div class="flex flex-col">
@@ -40,12 +83,14 @@
             class="input input-bordered"
             name=""
             id=""
+            bind:value={newpass}
           />
         </div>
         <div class="flex flex-col">
           <label for="">New Password Again</label>
           <input
             type="text"
+            bind:value={newpassagain}
             placeholder=""
             class="input input-bordered"
             name=""
@@ -55,7 +100,7 @@
       </form>
     </div>
     <div class="modal-action">
-      <div class="btn">Save</div>
+      <div on:click={changePassword} class="btn">Save</div>
       <label for="change-pass-modal" class="btn">Close</label>
     </div>
   </div>

@@ -232,11 +232,11 @@
           name=""
           id=""
         />
-        <label for="" class="tracking-wide opacity-50">Email</label>
+        <label for="" class="tracking-wide opacity-50">Username</label>
         <input
           type="text"
           class="w-full p-2  border rounded-lg"
-          placeholder="Email"
+          placeholder="Username"
           name=""
           id=""
           bind:value={selectedUser.email}

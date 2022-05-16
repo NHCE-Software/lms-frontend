@@ -7,6 +7,7 @@ import AddLead from "./pages/AddLead.svelte";
 import FillForm from "./pages/FillForm.svelte";
 import Notification from "./pages/Notification.svelte";
 import NotAuth from "./pages/NotAuth.svelte";
+import Loading from './components/Loading.svelte';
 import {wrap} from  "svelte-spa-router/wrap"
 
 
@@ -17,10 +18,9 @@ const routes = {
   // Exact path
   "/notauth": NotAuth,
   "/auth": Authentication,
-  "/add-user": wrap( {
+  "/add-user": wrap({
     component: AddUser,
-    // loadingComponent: Loading
-   
+    loadingComponent: Loading
   }),
   "/add-lead": AddLead,
   "/query-builder": QueryBuilder,

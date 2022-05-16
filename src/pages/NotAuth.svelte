@@ -1,1 +1,1 @@
-Not Auth
+<div>Can not view this page.</div>
