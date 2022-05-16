@@ -149,23 +149,26 @@
         <label for="course" class="label">
           <span class="label-text">Course Interested</span>
         </label>
-        <div class="flex gap-3 flex-wrap">
+        <div class="gap-3 grid grid-cols-3">
           {#each courses as course}
-            <input
-              type="checkbox"
-              on:change={(e) => {
-                if (e.target.checked) {
-                  selectedCourse.push(course);
-                  selectedCourse = [...selectedCourse];
-                } else {
-                  selectedCourse = selectedCourse.filter(
-                    (item) => item !== course
-                  );
-                  selectedCourse = [...selectedCourse];
-                }
-              }}
-              class="checkbox"
-            />{course}
+            <div class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                on:change={(e) => {
+                  if (e.target.checked) {
+                    selectedCourse.push(course);
+                    selectedCourse = [...selectedCourse];
+                  } else {
+                    selectedCourse = selectedCourse.filter(
+                      (item) => item !== course
+                    );
+                    selectedCourse = [...selectedCourse];
+                  }
+                }}
+                class="checkbox"
+              />
+              <div>{course}</div>
+            </div>
           {/each}
         </div>
         <label for="program" class="label">
