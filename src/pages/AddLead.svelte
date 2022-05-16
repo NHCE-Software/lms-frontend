@@ -299,7 +299,8 @@
         >
           <option value="">Select Category</option>
           <option value="CET">CET</option>
-          <option value="MANAGMENT">MANAGMENT</option>
+          <option value="MANAGEMENT">MANAGEMENT</option>
+          <option value="LATERAL ENTRY">LATERAL ENTRY</option>
         </select>
 
         <label for="source" class="label">

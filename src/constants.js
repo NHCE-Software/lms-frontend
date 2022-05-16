@@ -1,4 +1,4 @@
-const programs = ["MCA", "BE", "MBA", "BCOM", "BBA"]
+const programs = ["MCA", "BE", "MBA", "BCOM", "BBA", "BCA", "PhD"]
 const courses = ["CSE", "ISE", "MECH", "ECE", "EEE", "CIVIL"];
 const status = ["Hot","Warm", "Cold", "Admitted", "Visited" , "Wrong No.","Not Answering","Not Interested"];
 const roles = ["caller", "admin"];
