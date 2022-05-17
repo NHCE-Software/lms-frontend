@@ -101,7 +101,7 @@ const preloadedMapsCourses = {
     },
 }
 
-const availableColumns = ["name", "loadedbyname", "email", "city", "phonenumber", "status", "course", "source", "callquantity", "followup", "lastremark", "program"]
+const availableColumns = ["name", "createdAt",  "loadedbyname", "email", "city", "phonenumber", "status", "course", "source", "callquantity", "followup", "lastremark", "program"]
 
 function noauth() {
     window.location.replace("/#/noauth")

@@ -1,6 +1,7 @@
 <script>
   export let selectedTableFormat = [];
   export let data = [];
+  let beautyMode = true;
 
   export let selectedLeadID;
   let currentPage = 0;
@@ -17,17 +18,17 @@
   }
   let pages;
   $: {
-    console.log(data);
+    console.log("helo frands", data);
     pages = splitArray(data, 25);
-    console.log("perfect", pages[currentPage]);
+    //console.log("perfect", pages[currentPage]);
   }
 </script>
 
-<div class=" h-full min-h-screen flex flex-col">
+<div class=" overflow-auto h-full min-h-screen flex flex-col">
   <div class="divTable">
     <div class="divTableHeading">
       <div class="divTableRow font-semibold">
-        <div class="divTableCell" />
+        <div class="divTableCell cursor-pointer">x</div>
         {#if selectedTableFormat}
           {#each selectedTableFormat as column}
             {#if column != "_id"}
@@ -51,7 +52,9 @@
             <div class="divTableCell">{i + 1}</div>
 
             {#each selectedTableFormat as column, j}
-              <div class="divTableCell">{d[selectedTableFormat[j]] || "-"}</div>
+              <div class="divTableCell truncate max-w-[1em]">
+                {d[selectedTableFormat[j]] || "-"}
+              </div>
             {/each}
           </label>
         {/each}
@@ -82,6 +85,32 @@
 </div>
 
 <style>
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+
+  /* Tooltip text */
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+  }
+
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+
   .divTable {
     display: table;
     width: 100%;

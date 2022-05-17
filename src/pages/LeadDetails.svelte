@@ -48,6 +48,7 @@
           name
           _id
         }
+        createdAt
       }
     }
   `;
@@ -56,7 +57,7 @@
     try {
       let { error, data } = await GETLEADS_MUTATION();
       if (data) {
-        console.log("data from server", data);
+        //console.log("data from server", data);
 
         contextData.leads = data.getLeads;
 
@@ -67,6 +68,12 @@
               followup: item.calls[item.calls.length - 1].followup,
               lastremark: item.calls[item.calls.length - 1].remark,
               callquantity: item.calls.length,
+              createdAt: new Date(item.createdAt)
+                .toJSON()
+                .slice(0, 10)
+                .split("-")
+                .reverse()
+                .join("/"),
             };
           else return item;
         });
@@ -303,16 +310,23 @@
     followup: "",
   };
   let selectedTableFormat = [
+    "loadedbyname",
     "name",
     "email",
     "phonenumber",
     "city",
-    "status",
+    "createdAt",
     "course",
-    "source",
-    "loadedbyname",
-    "followup",
+    "status",
+    "lastremark",
   ];
+  let modals = {
+    addremarksmodal: false,
+    editLead: false,
+    customizeview: false,
+    filter: false,
+    drawer: false,
+  };
 
   // ----------------------------helper functions-----------------------------------------
   function applyFilter() {
@@ -372,16 +386,15 @@
   $: {
     try {
       searchedLeads = filteredLeads.filter((item) => {
-        if(item[searchby]){
+        if (item[searchby]) {
           return item[searchby]
-          .trim()
-          .toLowerCase()
-          .includes(search.toLowerCase().trim());
+            .trim()
+            .toLowerCase()
+            .includes(search.toLowerCase().trim());
         }
         //console.log(search, item[searchby].includes(search.toLowerCase()));
         //console.log(search, "==", item[searchby], search === item[searchby]);
         //console.log(item[searchby].trim());
-        
       });
     } catch (error) {
       console.log(error);
@@ -389,29 +402,56 @@
   }
 </script>
 
-<input type="checkbox" id="editmodal" class="modal-toggle" />
+<svelte:window
+  on:keydown={(e) => {
+    //console.log(e.key);
+    if (e.key === "Escape") {
+      modals = {
+        addremarksmodal: false,
+        editLead: false,
+        customizeview: false,
+        filter: false,
+        drawer: false,
+      };
+    }
+  }}
+/>
+
+<input
+  type="checkbox"
+  bind:checked={modals.editLead}
+  id="editmodal"
+  class="modal-toggle"
+/>
 <div class="modal">
   {#if selectedLeadData}
-    <div class="modal-box bg-white">
+    <div class="modal-box bg-white max-w-5xl">
       <h3 class="font-bold text-lg">Edit Leads</h3>
       <form class="gap-2 flex flex-col my-4">
-        <label for="" class="tracking-wide opacity-50">Name</label>
-        <input
-          bind:value={selectedLeadData.name}
-          type="text"
-          class="w-full p-2  border rounded-lg"
-          placeholder="Name"
-          name=""
-          id=""
-        /><label for="" class="tracking-wide opacity-50">Email</label>
-        <input
-          bind:value={selectedLeadData.email}
-          type="text"
-          class="w-full p-2  border rounded-lg"
-          placeholder="Email"
-          name=""
-          id=""
-        />
+        <div class="flex gap-2 w-full ">
+          <div class="flex-1">
+            <label for="" class="tracking-wide opacity-50">Name</label>
+            <input
+              bind:value={selectedLeadData.name}
+              type="text"
+              class="w-full p-2  border rounded-lg"
+              placeholder="Name"
+              name=""
+              id=""
+            />
+          </div>
+          <div>
+            <label for="" class="tracking-wide opacity-50">Email</label>
+            <input
+              bind:value={selectedLeadData.email}
+              type="text"
+              class="w-full p-2  border rounded-lg"
+              placeholder="Email"
+              name=""
+              id=""
+            />
+          </div>
+        </div>
         <label for="" class="tracking-wide opacity-50">City</label>
         <input
           bind:value={selectedLeadData.city}
@@ -489,7 +529,12 @@
   {/if}
 </div>
 
-<input type="checkbox" id="customizeview" class="modal-toggle" />
+<input
+  type="checkbox"
+  bind:checked={modals.customizeview}
+  id="customizeview"
+  class="modal-toggle"
+/>
 <div class="modal">
   <div class="modal-box bg-white">
     <h3 class="font-bold text-lg">Customize Views</h3>
@@ -524,7 +569,12 @@
   </div>
 </div>
 
-<input type="checkbox" id="filtermodal" class="modal-toggle" />
+<input
+  type="checkbox"
+  id="filtermodal"
+  bind:checked={modals.filter}
+  class="modal-toggle"
+/>
 <div class="modal">
   <div class="modal-box bg-white max-w-xl flex flex-col gap-2">
     <div class="flex items-center justify-between">
@@ -635,7 +685,12 @@
   </div>
 </div>
 
-<input type="checkbox" id="addremarksmodal" class="modal-toggle" />
+<input
+  type="checkbox"
+  bind:checked={modals.addremarksmodal}
+  id="addremarksmodal"
+  class="modal-toggle"
+/>
 <div class="modal">
   <div class="modal-box bg-white">
     <h3 class="font-bold text-lg">Add Call</h3>
@@ -667,7 +722,12 @@
   </div>
 </div>
 <div class="drawer drawer-end">
-  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+  <input
+    id="my-drawer"
+    bind:checked={modals.drawer}
+    type="checkbox"
+    class="drawer-toggle"
+  />
   <div class="drawer-content">
     <section class="grid min-h-screen h-full grid-cols-5 p-5">
       <Navbar />
@@ -703,25 +763,25 @@
                 document.body.appendChild(download);
                 download.click();
               }}
-              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
             >
               Export to CSV
             </label>
             <label
               for="customizeview"
-              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
             >
               Customize view
             </label>
             <div
               on:click={() => push("/add-lead")}
-              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
             >
               Add Lead
             </div>
             <label
               for="filtermodal"
-              class="px-4 rounded-full h-fit hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
             >
               Filter
             </label>
