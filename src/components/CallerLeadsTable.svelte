@@ -5,12 +5,15 @@
   export let selectedLeadID;
   let currentPage = 0;
   function splitArray(array, n) {
-    let [...arr] = array;
-    var res = [];
-    while (arr.length) {
-      res.push(arr.splice(0, n));
+    if (array) {
+      let [...arr] = array;
+      var res = [];
+      while (arr.length) {
+        res.push(arr.splice(0, n));
+      }
+      return res;
     }
-    return res;
+    return [];
   }
   let pages;
   $: {
