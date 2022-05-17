@@ -16,6 +16,7 @@
   $: {
     console.log(data);
     pages = splitArray(data, 25);
+    console.log("perfect", pages[currentPage]);
   }
 </script>
 
@@ -33,21 +34,23 @@
     </div>
 
     <div class="divTableBody">
-      {#each pages[currentPage] as d, i}
-        <label
-          for="my-drawer"
-          on:click={() => (selectedLeadID = d["_id"])}
-          class={`divTableRow ${
-            d["_id"] === selectedLeadID ? "bg-blue-200" : ""
-          }`}
-        >
-          <div class="divTableCell">{i + 1}</div>
+      {#if pages[currentPage]}
+        {#each pages[currentPage] as d, i}
+          <label
+            for="my-drawer"
+            on:click={() => (selectedLeadID = d["_id"])}
+            class={`divTableRow ${
+              d["_id"] === selectedLeadID ? "bg-blue-200" : ""
+            }`}
+          >
+            <div class="divTableCell">{i + 1}</div>
 
-          {#each selectedTableFormat as column, j}
-            <div class="divTableCell">{d[selectedTableFormat[j]] || "-"}</div>
-          {/each}
-        </label>
-      {/each}
+            {#each selectedTableFormat as column, j}
+              <div class="divTableCell">{d[selectedTableFormat[j]] || "-"}</div>
+            {/each}
+          </label>
+        {/each}
+      {/if}
     </div>
   </div>
   <div

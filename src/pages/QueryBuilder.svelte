@@ -81,7 +81,7 @@
     initChosen();
     if (course) {
       // map courses
-      console.log(coursesMapper);
+      console.log("this is brooooooo", coursesMapper);
       console.log(preloadedMapsCourses[source.toLowerCase()]);
       coursesMapper = Object.keys(
         preloadedMapsCourses[source.toLowerCase()]
@@ -139,6 +139,7 @@
     file &&
       Papa.parse(file[0], {
         header: true,
+        skipEmptyLines: true,
         complete: function (res) {
           console.log("Parsed");
           console.log(res.data);
@@ -151,7 +152,7 @@
             const element = res.data[index];
             console.log(Object.keys(element));
             for (let key of Object.keys(element)) {
-              console.log(key);
+              //console.log(key);
               acc[sanitize(key.toLowerCase())] = element[key];
             }
             tdata.push(acc);
