@@ -374,7 +374,7 @@
       searchedLeads = filteredLeads.filter((item) => {
         //console.log(search, item[searchby].includes(search.toLowerCase()));
         //console.log(search, "==", item[searchby], search === item[searchby]);
-        console.log(item[searchby].trim());
+        //console.log(item[searchby].trim());
         return item[searchby]
           .trim()
           .toLowerCase()
@@ -587,7 +587,7 @@
       </div>
     </div>
     <h3 class="text-xl font-bold opacity-50 my-2">Filter by Status</h3>
-    <div class=" flex  items-center flex-wrap gap-5">
+    <div class="grid grid-cols-3 gap-3">
       {#each status as s}
         <div class="flex items-center gap-3">
           <input
@@ -607,7 +607,7 @@
     </div>
     <div class="flex flex-col">
       <div class="text-xl font-bold opacity-50 my-2">Filter by Course</div>
-      <div class="flex gap-2 justify-between flex-wrap">
+      <div class="grid grid-cols-4 gap-3">
         {#each courses as c}
           <div class="flex items-center gap-3">
             <input
