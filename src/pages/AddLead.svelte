@@ -104,7 +104,8 @@
             type="text"
             placeholder="Type here"
             class="input w-full input-bordered bg-white "
-          />
+            required
+            />
         </div>
       </div>
       <div class="flex justify-between items-center">
@@ -145,6 +146,7 @@
           type="text"
           placeholder="Type here"
           class="input input-bordered w-full bg-white"
+          required
         />
         <label for="course" class="label">
           <span class="label-text">Course Interested</span>
