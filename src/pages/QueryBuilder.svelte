@@ -41,7 +41,7 @@
       data = data.map((item) => {
         return { ...item, source: source };
       });
-      //console.log(data);
+      console.log( "this is what is getting sent", data);
       let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
       console.log(res.data);
       if (res.data.addleads === null) {
@@ -75,7 +75,7 @@
       return newItem;
     });
     //console.log(data);
-    console.log(data2);
+    console.log("this is data2",data2);
     data = [...data2];
     cols = Object.keys(data[0]);
     initChosen();

@@ -20,7 +20,7 @@
   }
 </script>
 
-<div class=" h-full min-h-screen flex flex-col">
+<div class=" h-full min-h-screen flex flex-col overflow-auto">
   <div class="divTable">
     <div class="divTableHeading">
       <div class="divTableRow font-semibold">
@@ -53,10 +53,12 @@
       {/if}
     </div>
   </div>
-  <div
-    class="btn-group mt-auto flex items-center justify-end  py-2  rounded-3xl"
+  
+</div>
+<div
+    class="btn-group mt-auto flex items-center justify-center  py-2  rounded-3xl"
   >
-    {#each pages as page, i}
+    {#each pages as _, i}
       {#if i == currentPage}
         <button
           on:click={() => (currentPage = i)}
@@ -74,7 +76,6 @@
       {/if}
     {/each}
   </div>
-</div>
 
 <style>
   .divTable {

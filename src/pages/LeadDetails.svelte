@@ -56,7 +56,7 @@
     try {
       let { error, data } = await GETLEADS_MUTATION();
       if (data) {
-        //console.log("BROOOOOOOOOOO", data);
+        console.log("data from server", data);
 
         contextData.leads = data.getLeads;
 
@@ -372,13 +372,16 @@
   $: {
     try {
       searchedLeads = filteredLeads.filter((item) => {
-        //console.log(search, item[searchby].includes(search.toLowerCase()));
-        //console.log(search, "==", item[searchby], search === item[searchby]);
-        //console.log(item[searchby].trim());
-        return item[searchby]
+        if(item[searchby]){
+          return item[searchby]
           .trim()
           .toLowerCase()
           .includes(search.toLowerCase().trim());
+        }
+        //console.log(search, item[searchby].includes(search.toLowerCase()));
+        //console.log(search, "==", item[searchby], search === item[searchby]);
+        //console.log(item[searchby].trim());
+        
       });
     } catch (error) {
       console.log(error);
@@ -764,7 +767,7 @@
             Phone
           </form>
         </div>
-        <div class="overflow-auto mt-5">
+        <div class=" mt-5">
           <CallerLeadsTable
             bind:selectedLeadID
             {selectedTableFormat}
