@@ -84,7 +84,7 @@
   class="modal-toggle"
 />
 <div class="modal">
-  <div class="modal-box bg-white max-w-6xl ">
+  <div class="modal-box bg-white shadow-md max-w-6xl ">
     <div class="text-2xl opacity-50 font-semibold">
       Check if User Already Exists
     </div>
@@ -145,7 +145,7 @@
           id="name"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full bg-white"
+          class="input input-bordered  w-full bg-white shadow-md"
           required
         />
         <label for="course" class="label">
@@ -179,7 +179,7 @@
         <select
           bind:value={program}
           id="source"
-          class="select w-full bg-white "
+          class="select w-full bg-white shadow-md "
         >
           <option disabled selected>Pick Program</option>
           {#each programs as s}
@@ -195,7 +195,7 @@
           bind:value={city}
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full bg-white "
+          class="input input-bordered w-full bg-white shadow-md "
         />
 
         <label for="address" class="label">
@@ -206,7 +206,7 @@
           bind:value={address}
           type="text"
           placeholder="Type here"
-          class="textarea input-bordered w-full  bg-white "
+          class="textarea input-bordered w-full  bg-white shadow-md "
         />
         <label for="nob" class="label">
           <span class="label-text">Name of Board</span>
@@ -216,7 +216,7 @@
           bind:value={nameofboard}
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full bg-white "
+          class="input input-bordered w-full bg-white shadow-md "
         />
         <label for="regnob" class="label">
           <span class="label-text">Registration number for 12th board</span>
@@ -226,7 +226,7 @@
           bind:value={regnum12}
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full bg-white "
+          class="input input-bordered w-full bg-white shadow-md "
         />
         <div class="divider">Contact Information</div>
         <label for="pphno" class="label">
@@ -237,7 +237,7 @@
           id="pphno"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full bg-white"
+          class="input input-bordered w-full bg-white shadow-md"
         />
         <label for="sphno" class="label">
           <span class="label-text">Secondary Phone Number</span>
@@ -248,7 +248,7 @@
           type="text"
           bind:value={sphno}
           placeholder="Type here"
-          class="input input-bordered w-full bg-white"
+          class="input input-bordered w-full bg-white shadow-md"
         />
         <label for="email" class="label">
           <span class="label-text">Email</span>
@@ -258,7 +258,7 @@
           id="email"
           type="text"
           placeholder="Type here"
-          class="input input-bordered w-full bg-white"
+          class="input input-bordered w-full bg-white shadow-md"
         />
         <div class="divider">References Information</div>
         <label for="refs" class="label">
@@ -299,7 +299,7 @@
         </label>
         <select
           id="category"
-          class="select input-bordered w-full bg-white"
+          class="select input-bordered w-full bg-white shadow-md"
           bind:value={category}
         >
           <option value="">Select Category</option>
@@ -311,7 +311,7 @@
         <label for="source" class="label">
           <span class="label-text">Source</span>
         </label>
-        <select bind:value={source} id="source" class="select w-full bg-white ">
+        <select bind:value={source} id="source" class="select w-full bg-white shadow-md ">
           <option disabled selected>Pick Source</option>
           {#each sources as s}
             <option value={s}>{s}</option>
@@ -324,7 +324,7 @@
         <select
           bind:value={leadStatus}
           id="status"
-          class="select w-full bg-white "
+          class="select w-full bg-white shadow-md "
         >
           <option disabled selected>Pick status</option>
           {#each status as s}
@@ -339,7 +339,7 @@
           id="callrem"
           type="text"
           placeholder="Type here"
-          class="w-full p-2 textarea bg-white"
+          class="w-full p-2 textarea bg-white shadow-md"
         />
         <label for="callrem" class="label">
           <span class="label-text">Follow up Date</span>
@@ -357,7 +357,7 @@
     </div>
   </div>
 
-  <!-- <div class="bg-white  m-2 flex flex-col p-5 rounded-xl shadow-xl ">
+  <!-- <div class="bg-white shadow-md  m-2 flex flex-col p-5 rounded-xl shadow-xl ">
     <div class="text-2xl opacity-50 font-semibold">Share form</div>
     <div class="opacity-50">Automated Lead Entry</div>
 
