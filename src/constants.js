@@ -9,7 +9,7 @@ const references = ["Relatives", "Friends staying in Bangalore", "Staff","Studen
 const preloadedMaps = {
     siksha: {"mobile":"phonenumber" , "responsetocourse" : "course","firstname":"name","lastname":"name","email":"email","city":"city"},
     "career 360": {"useremail":"email","userphonenumber":"phonenumber","usercity":"city","username":"name"},
-    college_dunia: {"name":"name","email":"email","contact":"phonenumber","city":"city","course":"program","branch":"course"},
+    "college dunia": {"name":"name","email":"email","contact":"phonenumber","city":"city","course":"program","branch":"course"},
     nhcmapp:{"studentname":"name","telstudent": "phonenumber","emailfather":"email","emailmother":"email"}
 }   
 const preloadedMapsCourses = {
@@ -37,7 +37,7 @@ const preloadedMapsCourses = {
 
 },
     "career 360": {},
-    college_dunia:  {"BBA/BBM" : "BBA", "MBA/PGDM": "MBA" },
+    "college dunia":  {"BBA/BBM" : "BBA", "MBA/PGDM": "MBA" },
 }
 
 const availableColumns = ["name", "loadedbyname", "email", "city", "phonenumber", "status", "course", "source", "callquantity", "followup", "lastremark", "program"]
