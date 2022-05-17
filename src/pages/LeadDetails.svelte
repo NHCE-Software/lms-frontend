@@ -428,7 +428,7 @@
     <div class="modal-box bg-white max-w-5xl">
       <h3 class="font-bold text-lg">Edit Leads</h3>
       <form class="gap-2 flex flex-col my-4">
-        <div class="flex gap-2 w-full ">
+        <div class="flex gap-2 w-full">
           <div class="flex-1">
             <label for="" class="tracking-wide opacity-50">Name</label>
             <input
@@ -575,7 +575,7 @@
   bind:checked={modals.filter}
   class="modal-toggle"
 />
-<div class="modal">
+<label for="filtermodal" class="modal">
   <div class="modal-box bg-white max-w-xl flex flex-col gap-2">
     <div class="flex items-center justify-between">
       <h3 class="text-2xl font-bold opacity-20 my-2">Advanced Filtering</h3>
@@ -682,8 +682,8 @@
       <label for="" on:click={applyFilter} class="btn">Apply</label>
       <label for="filtermodal" class="btn">Close</label>
     </div>
-  </div>
-</div>
+  </div></label
+>
 
 <input
   type="checkbox"
@@ -691,7 +691,7 @@
   id="addremarksmodal"
   class="modal-toggle"
 />
-<div class="modal">
+<label for="addremarksmodal" class="modal">
   <div class="modal-box bg-white">
     <h3 class="font-bold text-lg">Add Call</h3>
     <form action="" class="gap-2 flex flex-col my-4">
@@ -720,7 +720,7 @@
       <label for="addremarksmodal" class="btn">Close</label>
     </div>
   </div>
-</div>
+</label>
 <div class="drawer drawer-end">
   <input
     id="my-drawer"
