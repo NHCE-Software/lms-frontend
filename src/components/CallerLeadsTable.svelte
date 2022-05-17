@@ -28,11 +28,13 @@
     <div class="divTableHeading">
       <div class="divTableRow font-semibold">
         <div class="divTableCell" />
-        {#each selectedTableFormat as column}
-          {#if column != "_id"}
-            <div class="divTableCell">{column}</div>
-          {/if}
-        {/each}
+        {#if selectedTableFormat}
+          {#each selectedTableFormat as column}
+            {#if column != "_id"}
+              <div class="divTableCell">{column}</div>
+            {/if}
+          {/each}
+        {/if}
       </div>
     </div>
 
