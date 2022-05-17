@@ -5,12 +5,15 @@
   export let selectedLeadID;
   let currentPage = 0;
   function splitArray(array, n) {
-    let [...arr] = array;
-    var res = [];
-    while (arr.length) {
-      res.push(arr.splice(0, n));
+    if (array) {
+      let [...arr] = array;
+      var res = [];
+      while (arr.length) {
+        res.push(arr.splice(0, n));
+      }
+      return res;
     }
-    return res;
+    return [];
   }
   let pages;
   $: {
@@ -20,16 +23,18 @@
   }
 </script>
 
-<div class=" h-full min-h-screen flex flex-col overflow-auto">
+<div class=" h-full min-h-screen flex flex-col">
   <div class="divTable">
     <div class="divTableHeading">
       <div class="divTableRow font-semibold">
         <div class="divTableCell" />
-        {#each selectedTableFormat as column}
-          {#if column != "_id"}
-            <div class="divTableCell">{column}</div>
-          {/if}
-        {/each}
+        {#if selectedTableFormat}
+          {#each selectedTableFormat as column}
+            {#if column != "_id"}
+              <div class="divTableCell">{column}</div>
+            {/if}
+          {/each}
+        {/if}
       </div>
     </div>
 
@@ -53,12 +58,10 @@
       {/if}
     </div>
   </div>
-  
-</div>
-<div
-    class="btn-group mt-auto flex items-center justify-center  py-2  rounded-3xl"
+  <div
+    class="btn-group mt-auto flex items-center justify-end  py-2  rounded-3xl"
   >
-    {#each pages as _, i}
+    {#each pages as page, i}
       {#if i == currentPage}
         <button
           on:click={() => (currentPage = i)}
@@ -76,6 +79,7 @@
       {/if}
     {/each}
   </div>
+</div>
 
 <style>
   .divTable {
