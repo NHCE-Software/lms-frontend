@@ -1,7 +1,6 @@
 <script>
   export let selectedTableFormat = [];
   export let data = [];
-  let beautyMode = true;
 
   export let selectedLeadID;
   let currentPage = 0;
@@ -18,16 +17,15 @@
   }
   let pages;
   $: {
-    console.log("helo frands", data);
     pages = splitArray(data, 25);
-    //console.log("perfect", pages[currentPage]);
+    console.log("perfect", pages[currentPage]);
   }
 </script>
 
 <div class=" overflow-auto h-full min-h-screen flex flex-col">
   <div class="divTable">
     <div class="divTableHeading">
-      <div class="divTableRow font-semibold">
+      <div class="divTableRow font-bold">
         <div class="divTableCell cursor-pointer">x</div>
         {#if selectedTableFormat}
           {#each selectedTableFormat as column}
@@ -36,14 +34,15 @@
             {/if}
           {/each}
         {/if}
+        <div class="divTableCell cursor-pointer">actions</div>
       </div>
     </div>
 
     <div class="divTableBody">
       {#if pages[currentPage]}
         {#each pages[currentPage] as d, i}
+          <!-- svelte-ignore a11y-label-has-associated-control -->
           <label
-            for="my-drawer"
             on:click={() => (selectedLeadID = d["_id"])}
             class={`divTableRow ${
               d["_id"] === selectedLeadID ? "bg-blue-200" : ""
@@ -56,6 +55,58 @@
                 {d[selectedTableFormat[j]] || "-"}
               </div>
             {/each}
+            <div class="divTableCell truncate  max-w-[1em] gap-3">
+              <div class="flex items-center gap-3">
+                <label for="my-drawer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </label>
+                <label for="addremarksmodal">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                </label>
+                <label for="editmodal">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
+                  </svg>
+                </label>
+              </div>
+            </div>
           </label>
         {/each}
       {/if}
@@ -90,7 +141,6 @@
     display: inline-block;
     border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
   }
-
   /* Tooltip text */
   .tooltip .tooltiptext {
     visibility: hidden;
@@ -100,17 +150,14 @@
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
-
     /* Position the tooltip text - see examples below! */
     position: absolute;
     z-index: 1;
   }
-
   /* Show the tooltip text when you mouse over the tooltip container */
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
-
   .divTable {
     display: table;
     width: 100%;
@@ -118,16 +165,18 @@
   .divTableRow {
     display: table-row;
   }
-
-  .divTableCell,
-  .divTableHead {
+  .divTableCell {
     border: 1px solid #e6e6e6;
-
     display: table-cell;
     @apply p-3;
   }
+  .divTableHead {
+    border: 0;
+    display: table-cell;
+    @apply m-0 rounded-lg;
+  }
   .divTableHeading {
-    @apply bg-blue-100 p-3;
+    @apply bg-blue-700 text-white  p-3;
     display: table-header-group;
   }
   .divTableFoot {

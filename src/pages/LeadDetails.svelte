@@ -693,7 +693,9 @@
 />
 <label for="addremarksmodal" class="modal">
   <div class="modal-box bg-white">
-    <h3 class="font-bold text-lg">Add Call</h3>
+    <h3 class="font-bold text-lg">
+      Add Call for {selectedLeadData ? selectedLeadData["name"] : "-"}
+    </h3>
     <form action="" class="gap-2 flex flex-col my-4">
       <label for="">Remarks</label>
       <textarea
