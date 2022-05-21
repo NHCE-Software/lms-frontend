@@ -386,7 +386,7 @@
     selectedLeadData = contextData.leads.find(
       (item) => item._id === selectedLeadID
     );
-    //console.log("this is selectedLeadData", selectedLeadData);
+    console.log("this is selectedLeadData", selectedLeadData);
   }
 
   $: {
@@ -751,274 +751,311 @@
     </div>
   </div>
 </label>
-<div class="drawer drawer-end">
-  <input
-    id="my-drawer"
-    bind:checked={modals.drawer}
-    type="checkbox"
-    class="drawer-toggle"
-  />
+
+<div class="drawer">
+  <input id="my-drawer2" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content">
-    <section class="grid min-h-screen h-full grid-cols-5 p-5">
-      <Navbar />
-      <div class="col-span-4 m-10">
-        <div class="flex justify-between">
-          <div>
-            <div class="text-3xl">Lead Details</div>
-            <div class="text-xl opacity-50">Add, Edit and Remove Leads</div>
-          </div>
-          <div class="gap-3 flex">
-            <label
-              for=""
-              on:click={() => {
-                console.log(contextData);
-                let csvdata = contextData.leads.map((item) => {
-                  return {
-                    ...item,
-                    __typename: undefined,
-                    _id: undefined,
-                    calls: JSON.stringify(item.calls),
-                  };
-                });
+    <!-- Page content here -->
+    <div class="drawer drawer-end">
+      <input
+        id="my-drawer"
+        bind:checked={modals.drawer}
+        type="checkbox"
+        class="drawer-toggle"
+      />
+      <div class="drawer-content">
+        <section class="grid min-h-screen h-full grid-cols-5 p-5">
+          <div class="col-span-5 m-10">
+            <div class="flex justify-between">
+              <div>
+                <div class="text-3xl flex items-center  gap-5">
+                  <label for="my-drawer2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4 6h16M4 12h8m-8 6h16"
+                      />
+                    </svg>
+                  </label>
+                  <div>
+                    <div>Lead Details</div>
+                    <div class="text-xl opacity-50">
+                      Add, Edit and Remove Leads
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="gap-3 flex">
+                <label
+                  for=""
+                  on:click={() => {
+                    console.log(contextData);
+                    let csvdata = contextData.leads.map((item) => {
+                      return {
+                        ...item,
+                        __typename: undefined,
+                        _id: undefined,
+                        calls: JSON.stringify(item.calls),
+                      };
+                    });
 
-                let csv = papaparse.unparse(csvdata, {
-                  header: true,
-                  newline: "\r\n",
-                });
+                    let csv = papaparse.unparse(csvdata, {
+                      header: true,
+                      newline: "\r\n",
+                    });
 
-                console.log(makeTextFile(csv));
-                let download = document.createElement("a");
-                download.setAttribute("href", makeTextFile(csv));
-                download.setAttribute("download", "test.csv");
-                document.body.appendChild(download);
-                download.click();
-              }}
-              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
-            >
-              Export to CSV
-            </label>
-            <label
-              for="customizeview"
-              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
-            >
-              Customize view
-            </label>
-            <div
-              on:click={() => push("/add-lead")}
-              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
-            >
-              Add Lead
+                    console.log(makeTextFile(csv));
+                    let download = document.createElement("a");
+                    download.setAttribute("href", makeTextFile(csv));
+                    download.setAttribute("download", "test.csv");
+                    document.body.appendChild(download);
+                    download.click();
+                  }}
+                  class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+                >
+                  Export to CSV
+                </label>
+                <label
+                  for="customizeview"
+                  class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+                >
+                  Customize view
+                </label>
+                <div
+                  on:click={() => push("/add-lead")}
+                  class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+                >
+                  Add Lead
+                </div>
+                <label
+                  for="filtermodal"
+                  class={`px-4 rounded-full h-fit cursor-pointer  transition-all  w-fit py-2 font-semibold ${
+                    filterapplied
+                      ? "hover:bg-blue-700 bg-blue-600 text-white"
+                      : "hover:bg-blue-200 bg-blue-100 text-blue-500"
+                  }   `}
+                >
+                  Filter
+                </label>
+              </div>
             </div>
-            <label
-              for="filtermodal"
-              class={`px-4 rounded-full h-fit cursor-pointer  transition-all  w-fit py-2 font-semibold ${
-                filterapplied
-                  ? "hover:bg-blue-700 bg-blue-600 text-white"
-                  : "hover:bg-blue-200 bg-blue-100 text-blue-500"
-              }   `}
-            >
-              Filter
-            </label>
+            <div class="mt-5 flex  justify-between items-center">
+              <input
+                bind:value={search}
+                type="text"
+                placeholder="🔭 Search"
+                class="p-3 rounded-xl border w-2/3"
+              />
+              <form
+                on:change|preventDefault={(e) => {
+                  console.log(e.target.value);
+                  searchby = e.target.value;
+                }}
+                class="flex-wrap gap-3 flex"
+              >
+                <input
+                  type="radio"
+                  name="searchby"
+                  class="radio"
+                  bind:group={searchby}
+                  value={"name"}
+                />
+                Name
+                <input
+                  type="radio"
+                  class="radio"
+                  name="searchby"
+                  bind:group={searchby}
+                  value={"email"}
+                />
+                Email
+                <input
+                  type="radio"
+                  class="radio"
+                  name="searchby"
+                  bind:group={searchby}
+                  value={"phonenumber"}
+                />
+                Phone
+              </form>
+            </div>
+            <div class=" mt-5">
+              {#if loading}
+                <div>Loading</div>
+              {:else}
+                <CallerLeadsTable
+                  bind:selectedLeadID
+                  {selectedTableFormat}
+                  data={searchedLeads.length === 0
+                    ? filteredLeads
+                    : searchedLeads}
+                />
+              {/if}
+            </div>
           </div>
-        </div>
-        <div class="mt-5 flex  justify-between items-center">
-          <input
-            bind:value={search}
-            type="text"
-            placeholder="🔭 Search"
-            class="p-3 rounded-xl border w-2/3"
-          />
-          <form
-            on:change|preventDefault={(e) => {
-              console.log(e.target.value);
-              searchby = e.target.value;
-            }}
-            class="flex-wrap gap-3 flex"
-          >
-            <input
-              type="radio"
-              name="searchby"
-              class="radio"
-              bind:group={searchby}
-              value={"name"}
-            />
-            Name
-            <input
-              type="radio"
-              class="radio"
-              name="searchby"
-              bind:group={searchby}
-              value={"email"}
-            />
-            Email
-            <input
-              type="radio"
-              class="radio"
-              name="searchby"
-              bind:group={searchby}
-              value={"phonenumber"}
-            />
-            Phone
-          </form>
-        </div>
-        <div class=" mt-5">
-          {#if loading}
-            <div>Loading</div>
-          {:else}
-            <CallerLeadsTable
-              bind:selectedLeadID
-              {selectedTableFormat}
-              data={searchedLeads.length === 0 ? filteredLeads : searchedLeads}
-            />
+        </section>
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer" class="drawer-overlay" />
+        <div
+          class="bg-white rounded-xl  shadow-xl w-100 grid grid-cols-2 gap-5  p-5  "
+        >
+          {#if selectedLeadData}
+            <div class=" flex mt-5 flex-col border-r-4 rounded-2xl px-2 ">
+              <div class="text-center text-2xl">
+                {selectedLeadData.name}
+              </div>
+              <div class="flex flex-wrap justify-center gap-5 mt-5">
+                <div
+                  class="text-center opacity-50 flex items-center gap-3 justify-center"
+                >
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div>{selectedLeadData.city}</div>
+                </div>
+                <div
+                  class="text-center opacity-50 flex items-center gap-3 justify-center"
+                >
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                      />
+                    </svg>
+                  </div>
+                  <div>{selectedLeadData.phonenumber}</div>
+                </div>
+                <div
+                  class="text-center opacity-50 flex items-center gap-3 justify-center"
+                >
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                      />
+                    </svg>
+                  </div>
+                  <div>{selectedLeadData.email}</div>
+                </div>
+              </div>
+              <div class="mt-10">
+                <div class="text-2xl font-semibold opacity-50">
+                  Interested Courses
+                </div>
+                <div class="flex gap-3 overflow-auto">
+                  {#each selectedLeadData.course as c}
+                    <div class="p-3 border rounded-xl flex-none">{c}</div>
+                  {/each}
+                </div>
+              </div>
+              <div class="mt-5">
+                <div class="text-2xl font-semibold opacity-50">Program</div>
+                <div
+                  class="rounded-2xl p-3 font-bold flex items-center bg-blue-100 text-blue-500 gap-3 mt-3 justify-center"
+                >
+                  {selectedLeadData.program}
+                </div>
+              </div>
+              <div class="mt-5">
+                <div class="text-2xl font-semibold opacity-50">Sources</div>
+                <div class="flex gap-3 overflow-auto">
+                  {#each selectedLeadData.source as source}
+                    <div class="p-3 border rounded-xl flex-none">{source}</div>
+                  {/each}
+                </div>
+              </div>
+              <div class="mt-5">
+                <div class="text-2xl  font-bold opacity-50">Status</div>
+                <div
+                  class="rounded-2xl p-3 flex items-center bg-blue-100 text-blue-500 gap-3 mt-3 justify-center"
+                >
+                  {selectedLeadData.status}
+                </div>
+              </div>
+
+              <div class="flex gap-3 justify-center mt-auto">
+                <div class="my-10">
+                  <label
+                    for="addremarksmodal"
+                    class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
+                  >
+                    Add Call
+                  </label>
+                  <label
+                    for="editmodal"
+                    class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
+                  >
+                    Edit Leads Info
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <div class="text-2xl mt-5 font-semibold opacity-50">Calls</div>
+              <div class=" flex-1  flex flex-col overflow-auto">
+                <div class=" flex flex-col min-h-min p-3 gap-3 ">
+                  {#each selectedLeadData.calls as call}
+                    <RemarksCard remark={call} />
+                  {/each}
+                </div>
+              </div>
+            </div>
           {/if}
         </div>
       </div>
-    </section>
+    </div>
   </div>
   <div class="drawer-side">
-    <label for="my-drawer" class="drawer-overlay" />
-    <div
-      class="bg-white rounded-xl  shadow-xl w-100 grid grid-cols-2 gap-5  p-5  "
-    >
-      {#if selectedLeadData}
-        <div class=" flex mt-5 flex-col border-r-4 rounded-2xl px-2 ">
-          <div class="text-center text-2xl">
-            {selectedLeadData.name}
-          </div>
-          <div class="flex flex-wrap justify-center gap-5 mt-5">
-            <div
-              class="text-center opacity-50 flex items-center gap-3 justify-center"
-            >
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-              </div>
-              <div>{selectedLeadData.city}</div>
-            </div>
-            <div
-              class="text-center opacity-50 flex items-center gap-3 justify-center"
-            >
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-              </div>
-              <div>{selectedLeadData.phonenumber}</div>
-            </div>
-            <div
-              class="text-center opacity-50 flex items-center gap-3 justify-center"
-            >
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                  />
-                </svg>
-              </div>
-              <div>{selectedLeadData.email}</div>
-            </div>
-          </div>
-          <div class="mt-10">
-            <div class="text-2xl font-semibold opacity-50">
-              Interested Courses
-            </div>
-            <div class="flex gap-3 overflow-auto">
-              {#each selectedLeadData.course as c}
-                <div class="p-3 border rounded-xl flex-none">{c}</div>
-              {/each}
-            </div>
-          </div>
-          <div class="mt-5">
-            <div class="text-2xl font-semibold opacity-50">Program</div>
-            <div
-              class="rounded-2xl p-3 font-bold flex items-center bg-blue-100 text-blue-500 gap-3 mt-3 justify-center"
-            >
-              {selectedLeadData.program}
-            </div>
-          </div>
-          <div class="mt-5">
-            <div class="text-2xl font-semibold opacity-50">Sources</div>
-            <div class="flex gap-3 overflow-auto">
-              {#each selectedLeadData.source as source}
-                <div class="p-3 border rounded-xl flex-none">{source}</div>
-              {/each}
-            </div>
-          </div>
-          <div class="mt-5">
-            <div class="text-2xl  font-bold opacity-50">Status</div>
-            <div
-              class="rounded-2xl p-3 flex items-center bg-blue-100 text-blue-500 gap-3 mt-3 justify-center"
-            >
-              {selectedLeadData.status}
-            </div>
-          </div>
-
-          <div class="flex gap-3 justify-center mt-auto">
-            <div class="my-10">
-              <label
-                for="addremarksmodal"
-                class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-              >
-                Add Call
-              </label>
-              <label
-                for="editmodal"
-                class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-              >
-                Edit Leads Info
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col">
-          <div class="text-2xl mt-5 font-semibold opacity-50">Calls</div>
-          <div class=" flex-1  flex flex-col overflow-auto">
-            <div class=" flex flex-col min-h-min p-3 gap-3 ">
-              {#each selectedLeadData.calls as call}
-                <RemarksCard remark={call} />
-              {/each}
-            </div>
-          </div>
-        </div>
-      {/if}
-    </div>
+    <label for="my-drawer2" class="drawer-overlay" />
+    <ul class="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
+      <!-- Sidebar content here -->
+      <Navbar />
+    </ul>
   </div>
 </div>
 

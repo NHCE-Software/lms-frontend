@@ -106,7 +106,7 @@
   </div>
 </div>
 
-<div class="bg-white p-5 flex flex-col   rounded-2xl shadow-xl">
+<div class="drawer bg-white p-5 flex flex-col   rounded-2xl shadow-xl">
   <div class="text-2xl my-4 text-center text-blue-500 font-bold">
     Lead Management System
   </div>

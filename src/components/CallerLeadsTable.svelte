@@ -1,12 +1,10 @@
 <script>
   import { onMount } from "svelte";
-
   export let selectedTableFormat = [];
   export let data = [];
   const capitalize = (s) => (s && s[0].toUpperCase() + s.slice(1)) || "";
   import { status, statusColor } from "../constants";
   let statusMap = {};
-
   export let selectedLeadID;
   let currentPage = 0;
   function splitArray(array, n) {
@@ -28,7 +26,6 @@
       return { ...item, index: index + 1 };
     });
     pages = splitArray(data, 25);
-    console.log("perfect", pages[currentPage]);
   }
   let overflowTitle, overflowContent;
 </script>
@@ -86,11 +83,6 @@
                 }  cursor-pointer`}
               >
                 {d[selectedTableFormat[j]] || "-"}
-                {#if column === "lastremark"}
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Veritatis suscipit quibusdam aperiam officia recusandae, hic
-                  atque eius illum doloremque,
-                {/if}
               </label>
             {/each}
             <div class="divTableCell truncate  max-w-[1em] gap-3">

@@ -7,10 +7,12 @@
     ApolloLink,
     InMemoryCache,
     concat,
+    from,
   } from "@apollo/client";
-  const httpLink = new HttpLink({ uri: BASEURL + "/api/graphql" });
-  import { setClient } from "svelte-apollo";
 
+  import { setClient } from "svelte-apollo";
+  import { onError } from "@apollo/client/link/error";
+  const httpLink = new HttpLink({ uri: BASEURL + "/api/graphql" });
   const authMiddleware = new ApolloLink((operation, forward) => {
     // add the authorization to the headers
     operation.setContext(({ headers = {} }) => ({
@@ -21,9 +23,22 @@
     }));
     return forward(operation);
   });
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.forEach(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+        )
+      );
+
+    if (networkError) {
+      console.log(`[Network error]: ${networkError}`);
+      swal("Error", "We are offline, please try again later", "error");
+    }
+  });
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: concat(authMiddleware, httpLink),
+    link: from([errorLink, concat(authMiddleware, httpLink)]),
   });
   setClient(client);
 </script>
