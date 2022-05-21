@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+
   export let selectedTableFormat = [];
   export let data = [];
   const capitalize = (s) => (s && s[0].toUpperCase() + s.slice(1)) || "";
@@ -7,6 +8,14 @@
   let statusMap = {};
   export let selectedLeadID;
   let currentPage = 0;
+
+  onMount(() => {
+    for (let i = 0; i < status.length; i++) {
+      statusMap[status[i].toLowerCase()] = statusColor[i];
+    }
+    console.log(statusMap);
+  });
+
   function splitArray(array, n) {
     if (array) {
       let [...arr] = array;
@@ -20,29 +29,12 @@
   }
   let pages;
   $: {
-    status.forEach((key, i) => (statusMap[key] = statusColor[i]));
-    statusMap = { ...statusMap };
     data = data.map((item, index) => {
       return { ...item, index: index + 1 };
     });
     pages = splitArray(data, 25);
   }
-  let overflowTitle, overflowContent;
 </script>
-
-<input type="checkbox" id="overflowmodal" class="modal-toggle" />
-<div class="modal">
-  <div class="modal-box relative">
-    <label
-      for="overflowmodal"
-      class="btn btn-sm btn-circle absolute right-2 top-2">✕</label
-    >
-    <h3 class="text-lg font-bold">{capitalize(overflowTitle)}</h3>
-    <p class="py-4">
-      {capitalize(overflowContent)}
-    </p>
-  </div>
-</div>
 
 <div class=" overflow-auto h-full min-h-screen flex flex-col">
   <div class="divTable">
@@ -66,11 +58,10 @@
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label
             on:click={() => (selectedLeadID = d["_id"])}
-            class={`divTableRow  ${statusMap[d["status"]]}  ${
-              d["_id"] === selectedLeadID ? `font-bold ` : ""
-            }`}
+            class={`divTableRow  ${statusMap[d["status"].toLowerCase()]}`}
           >
             <div class="divTableCell">{d["index"]}</div>
+
             <!-- on:click={() => {
               overflowTitle = column + " ( " + d["name"] + " )";
               overflowContent = d[selectedTableFormat[j]];
