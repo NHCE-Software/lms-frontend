@@ -51,6 +51,9 @@
         <div class="divTableCell cursor-pointer">actions</div>
       </div>
     </div>
+    <div class="bg-red-100" />
+    <div class="bg-yellow-100" />
+    <div class="bg-green-100" />
 
     <div class="divTableBody">
       {#if pages[currentPage]}
