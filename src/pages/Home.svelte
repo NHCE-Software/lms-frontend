@@ -203,7 +203,7 @@
   }
   $: {
     searchedLeads = filteredLeadData.filter((item) => {
-      return item.name.toLowerCase().includes(search.toLowerCase());
+      if (item) return item.name.toLowerCase().includes(search.toLowerCase());
     });
   }
   // -------------------------helper functions------------------------

@@ -6,12 +6,7 @@
   const capitalize = (s) => (s && s[0].toUpperCase() + s.slice(1)) || "";
   import { status, statusColor } from "../constants";
   let statusMap = {};
-  onMount(() => {
-    status.forEach((key, i) => (statusMap[key] = statusColor[i]));
-    statusMap = { ...statusMap };
-  });
 
-  //console.log(statusMap);
   export let selectedLeadID;
   let currentPage = 0;
   function splitArray(array, n) {
@@ -27,8 +22,13 @@
   }
   let pages;
   $: {
+    status.forEach((key, i) => (statusMap[key] = statusColor[i]));
+    statusMap = { ...statusMap };
+    data = data.map((item, index) => {
+      return { ...item, index: index + 1 };
+    });
     pages = splitArray(data, 25);
-    //console.log("perfect", pages[currentPage]);
+    console.log("perfect", pages[currentPage]);
   }
   let overflowTitle, overflowContent;
 </script>
@@ -69,22 +69,28 @@
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label
             on:click={() => (selectedLeadID = d["_id"])}
-            class={`divTableRow ${statusMap[d["status"]]}  ${
+            class={`divTableRow  ${statusMap[d["status"]]}  ${
               d["_id"] === selectedLeadID ? `font-bold ` : ""
             }`}
           >
-            <div class="divTableCell">{i + 1}</div>
-
+            <div class="divTableCell">{d["index"]}</div>
+            <!-- on:click={() => {
+              overflowTitle = column + " ( " + d["name"] + " )";
+              overflowContent = d[selectedTableFormat[j]];
+            }}
+            for="overflowmodal" -->
             {#each selectedTableFormat as column, j}
               <label
-                on:click={() => {
-                  overflowTitle = column + " ( " + d["name"] + " )";
-                  overflowContent = d[selectedTableFormat[j]];
-                }}
-                for="overflowmodal"
-                class="divTableCell truncate max-w-[1em] cursor-pointer"
+                class={`divTableCell overflow-auto ${
+                  column === "lastremark" ? " max-w-[3em]" : "max-w-[1em]"
+                }  cursor-pointer`}
               >
                 {d[selectedTableFormat[j]] || "-"}
+                {#if column === "lastremark"}
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Veritatis suscipit quibusdam aperiam officia recusandae, hic
+                  atque eius illum doloremque,
+                {/if}
               </label>
             {/each}
             <div class="divTableCell truncate  max-w-[1em] gap-3">
@@ -168,28 +174,6 @@
 </div>
 
 <style>
-  .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-  }
-  /* Tooltip text */
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    /* Position the tooltip text - see examples below! */
-    position: absolute;
-    z-index: 1;
-  }
-  /* Show the tooltip text when you mouse over the tooltip container */
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-  }
   .divTable {
     display: table;
     width: 100%;
