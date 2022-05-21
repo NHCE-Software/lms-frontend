@@ -5,7 +5,7 @@
 
   import { push, location, replace } from "svelte-spa-router";
   const role = localStorage.getItem("role");
-  console.log($location);
+  //console.log($location);
   let newpass, oldpass, newpassagain;
   const routes =
     role && role.toLowerCase() === "admin"

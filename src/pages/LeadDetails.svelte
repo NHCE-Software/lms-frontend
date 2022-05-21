@@ -55,6 +55,7 @@
   let GETLEADS_MUTATION = mutation(GETLEADS);
   async function getLeads() {
     try {
+      loading = true;
       let { error, data } = await GETLEADS_MUTATION();
       if (data) {
         //console.log("data from server", data);
@@ -77,6 +78,7 @@
             };
           else return item;
         });
+        loading = false;
         //console.log("this is getLeads", contextData.leads);
       }
       if (error) {
@@ -173,6 +175,8 @@
   let selectedLeadData;
   let searchby = "name";
   let search = "";
+  let loading = false;
+  let filterapplied = false;
   let andMode = false; // andMode = true means AND mode, false means OR mode
   let filters = {
     today: false,
@@ -329,6 +333,8 @@
   };
 
   // ----------------------------helper functions-----------------------------------------
+  const isEqual = (...objects) =>
+    objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
   function applyFilter() {
     filteredLeads = contextData.leads.filter((item) => {
       let allTrues = [];
@@ -380,7 +386,7 @@
     selectedLeadData = contextData.leads.find(
       (item) => item._id === selectedLeadID
     );
-    console.log("this is selectedLeadData", selectedLeadData);
+    //console.log("this is selectedLeadData", selectedLeadData);
   }
 
   $: {
@@ -398,6 +404,26 @@
       });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  $: {
+    let checkfilters = {
+      today: false,
+      course: [],
+      status: [],
+      ondate: "",
+      call1: false,
+      call2: false,
+      call3: false,
+      call4: false,
+      call5: false,
+      greaterthan5: false,
+    };
+    if (isEqual(filters, checkfilters)) {
+      filterapplied = false;
+    } else {
+      filterapplied = true;
     }
   }
 </script>
@@ -648,8 +674,10 @@
             on:change={(e) => {
               if (e.target.checked) {
                 filters.status.push(s);
+                filters = { ...filters };
               } else {
                 filters.status = filters.status.filter((item) => item !== s);
+                filters = { ...filters };
               }
             }}
             class="checkbox"
@@ -783,7 +811,11 @@
             </div>
             <label
               for="filtermodal"
-              class="px-4 rounded-full h-fit cursor-pointer hover:bg-blue-200 transition-all  w-fit py-2 font-semibold bg-blue-100 text-blue-500"
+              class={`px-4 rounded-full h-fit cursor-pointer  transition-all  w-fit py-2 font-semibold ${
+                filterapplied
+                  ? "hover:bg-blue-700 bg-blue-600 text-white"
+                  : "hover:bg-blue-200 bg-blue-100 text-blue-500"
+              }   `}
             >
               Filter
             </label>
@@ -830,11 +862,15 @@
           </form>
         </div>
         <div class=" mt-5">
-          <CallerLeadsTable
-            bind:selectedLeadID
-            {selectedTableFormat}
-            data={searchedLeads.length === 0 ? filteredLeads : searchedLeads}
-          />
+          {#if loading}
+            <div>Loading</div>
+          {:else}
+            <CallerLeadsTable
+              bind:selectedLeadID
+              {selectedTableFormat}
+              data={searchedLeads.length === 0 ? filteredLeads : searchedLeads}
+            />
+          {/if}
         </div>
       </div>
     </section>

@@ -1,7 +1,17 @@
 <script>
+  import { onMount } from "svelte";
+
   export let selectedTableFormat = [];
   export let data = [];
+  const capitalize = (s) => (s && s[0].toUpperCase() + s.slice(1)) || "";
+  import { status, statusColor } from "../constants";
+  let statusMap = {};
+  onMount(() => {
+    status.forEach((key, i) => (statusMap[key] = statusColor[i]));
+    statusMap = { ...statusMap };
+  });
 
+  //console.log(statusMap);
   export let selectedLeadID;
   let currentPage = 0;
   function splitArray(array, n) {
@@ -18,9 +28,24 @@
   let pages;
   $: {
     pages = splitArray(data, 25);
-    console.log("perfect", pages[currentPage]);
+    //console.log("perfect", pages[currentPage]);
   }
+  let overflowTitle, overflowContent;
 </script>
+
+<input type="checkbox" id="overflowmodal" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box relative">
+    <label
+      for="overflowmodal"
+      class="btn btn-sm btn-circle absolute right-2 top-2">✕</label
+    >
+    <h3 class="text-lg font-bold">{capitalize(overflowTitle)}</h3>
+    <p class="py-4">
+      {capitalize(overflowContent)}
+    </p>
+  </div>
+</div>
 
 <div class=" overflow-auto h-full min-h-screen flex flex-col">
   <div class="divTable">
@@ -30,7 +55,7 @@
         {#if selectedTableFormat}
           {#each selectedTableFormat as column}
             {#if column != "_id"}
-              <div class="divTableCell">{column}</div>
+              <div class="divTableCell">{capitalize(column)}</div>
             {/if}
           {/each}
         {/if}
@@ -44,20 +69,27 @@
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label
             on:click={() => (selectedLeadID = d["_id"])}
-            class={`divTableRow ${
-              d["_id"] === selectedLeadID ? "bg-blue-200" : ""
+            class={`divTableRow ${statusMap[d["status"]]}  ${
+              d["_id"] === selectedLeadID ? `font-bold ` : ""
             }`}
           >
             <div class="divTableCell">{i + 1}</div>
 
             {#each selectedTableFormat as column, j}
-              <div class="divTableCell truncate max-w-[1em]">
+              <label
+                on:click={() => {
+                  overflowTitle = column + " ( " + d["name"] + " )";
+                  overflowContent = d[selectedTableFormat[j]];
+                }}
+                for="overflowmodal"
+                class="divTableCell truncate max-w-[1em] cursor-pointer"
+              >
                 {d[selectedTableFormat[j]] || "-"}
-              </div>
+              </label>
             {/each}
             <div class="divTableCell truncate  max-w-[1em] gap-3">
-              <div class="flex items-center gap-3">
-                <label for="my-drawer">
+              <div class="flex items-center gap-3 flex-wrap">
+                <label class="cursor-pointer" for="my-drawer">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-6 w-6"
@@ -73,7 +105,7 @@
                     />
                   </svg>
                 </label>
-                <label for="addremarksmodal">
+                <label class="cursor-pointer" for="addremarksmodal">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-6 w-6"
@@ -89,7 +121,7 @@
                     />
                   </svg>
                 </label>
-                <label for="editmodal">
+                <label class="cursor-pointer" for="editmodal">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-6 w-6"
