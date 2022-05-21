@@ -51,9 +51,13 @@
         <div class="divTableCell cursor-pointer">actions</div>
       </div>
     </div>
-    <div class="bg-red-100" />
-    <div class="bg-yellow-100" />
-    <div class="bg-green-100" />
+
+    <div>
+      <!-- do not remove -->
+      <div class="bg-red-100" />
+      <div class="bg-yellow-100" />
+      <div class="bg-green-100" />
+    </div>
 
     <div class="divTableBody">
       {#if pages[currentPage]}
@@ -61,7 +65,9 @@
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label
             on:click={() => (selectedLeadID = d["_id"])}
-            class={`divTableRow  ${statusMap[d["status"].toLowerCase()]}`}
+            class={`divTableRow  ${statusMap[d["status"].toLowerCase()]} ${
+              statusMap[d["status"]]
+            }  ${d["_id"] === selectedLeadID ? `font-bold ` : ""}`}
           >
             <div class="divTableCell">{d["index"]}</div>
 

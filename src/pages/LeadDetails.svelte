@@ -335,14 +335,28 @@
   // ----------------------------helper functions-----------------------------------------
   const isEqual = (...objects) =>
     objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
+  const isSameDate = (dateA, dateB) => {
+    dateA.setHours(0, 0, 0, 0);
+    dateB.setHours(0, 0, 0, 0);
+    console.log(dateA.toISOString(), dateB.toISOString());
+    return dateA.toISOString() === dateB.toISOString();
+  };
   function applyFilter() {
     filteredLeads = contextData.leads.filter((item) => {
       let allTrues = [];
       let todayDate = new Date().toISOString().slice(0, 10);
       //console.log(todayDate);
       if (filters.today) allTrues.push(item.followup === todayDate);
-      if (filters.ondate.length != 0)
-        allTrues.push(item.calls.some((call) => call.date === filters.ondate));
+      if (filters.ondate.length != 0) {
+        let dateParts = item.createdAt.split("/");
+        allTrues.push(
+          isSameDate(
+            new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]),
+            new Date(filters.ondate)
+          )
+        );
+        //console.log("dates");
+      }
       if (filters.greaterthan5) allTrues.push(item.calls.length > 5);
       if (filters.call1) allTrues.push(item.calls.length === 1);
       if (filters.call2) allTrues.push(item.calls.length === 2);
@@ -602,7 +616,7 @@
   class="modal-toggle"
 />
 <label for="filtermodal" class="modal">
-  <div class="modal-box bg-white max-w-xl flex flex-col gap-2">
+  <div class="modal-box bg-white max-w-3xl flex flex-col  gap-2">
     <div class="flex items-center justify-between">
       <h3 class="text-2xl font-bold opacity-20 my-2">Advanced Filtering</h3>
       <div class="flex gap-3">
@@ -626,7 +640,7 @@
     </div>
 
     <div class="items-center gap-3">
-      <label class="flex-1" for=""> Calls Made on:</label>
+      <label class="flex-1" for=""> Calls Created on:</label>
       <input
         type="date"
         class="w-full border px-5 py-3 rounded-2xl"
