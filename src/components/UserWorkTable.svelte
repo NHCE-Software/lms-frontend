@@ -1,7 +1,25 @@
 <script>
   export let data = [];
   export let selectedStatusID = "";
-  data.sort((a, b) => (a.status > b.status ? 1 : b.status > a.status ? -1 : 0));
+  function splitArray(array, n) {
+    if (array) {
+      let [...arr] = array;
+      var res = [];
+      while (arr.length) {
+        res.push(arr.splice(0, n));
+      }
+      return res;
+    }
+    return [];
+  }
+  let pages = [];
+  let currentPage = 0;
+  $: {
+    data = data.map((item, index) => {
+      return { ...item, index: index + 1 };
+    });
+    pages = splitArray(data, 10);
+  }
 </script>
 
 <div class="divTable">
@@ -19,16 +37,15 @@
   </div>
 
   <div class="divTableBody">
-    {#each data as { _id, status, source, city, name, email, course, phonenumber }, i}
+    {#each pages[currentPage] as { _id, index, status, source, city, name, email, course, phonenumber }, i}
       <div class="divTableRow">
-        <div class="divTableCell">{i + 1}</div>
+        <div class="divTableCell">{index}</div>
         <div class="divTableCell">{name}</div>
         <div class="divTableCell">{phonenumber}</div>
         <div class="divTableCell">{email}</div>
         <div class="divTableCell">{city}</div>
         <div class="divTableCell">{source}</div>
         <div class="divTableCell">{course}</div>
-
         <label
           on:click={() => {
             selectedStatusID = _id;
@@ -38,6 +55,26 @@
         >
       </div>
     {/each}
+
+    <div class="flex gap-3 mt-5">
+      {#each pages as p, i}
+        {#if currentPage === i}
+          <div
+            class="font-bold bg-blue-600 text-white p-3 rounded-lg cursor-pointer"
+            on:click={() => (currentPage = i)}
+          >
+            {i + 1}
+          </div>
+        {:else}
+          <div
+            class=" p-3 rounded-lg border cursor-pointer"
+            on:click={() => (currentPage = i)}
+          >
+            {i + 1}
+          </div>
+        {/if}
+      {/each}
+    </div>
   </div>
 </div>
 

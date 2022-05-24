@@ -21,6 +21,7 @@
   let prnDt = "" + new Date().toLocaleTimeString("en-us", options);
 
   // --------------------State declaration-------------------------
+  let loading = false;
 
   let contextData = {
     users: [
@@ -181,9 +182,11 @@
   }
   async function getLeadData() {
     try {
+      loading = true;
       let { error, data } = await GETLEADDATA_QUERY.result();
       console.log(selectedStoryUID);
       console.log("lead data", data);
+      loading = false;
       if (data) {
         filteredLeadData = data.getLeads;
         selectedUserLeadData = data.getLeads;
@@ -203,7 +206,9 @@
   }
   $: {
     searchedLeads = filteredLeadData.filter((item) => {
-      if (item) return item.name.toLowerCase().includes(search.toLowerCase());
+      if (item.name != null)
+        return item.name.toLowerCase().includes(search.toLowerCase());
+      return;
     });
   }
   // -------------------------helper functions------------------------
@@ -257,7 +262,7 @@
 <!-- ----------------------------------html---------------------------------------- -->
 
 <input type="checkbox" id="assigned-modal" class="modal-toggle" />
-<div class="modal">
+<div class="modal" for="assigned-modal">
   <div class="modal-box bg-white max-w-6xl flex flex-col gap-5">
     <div class="flex gap-10">
       <div class="border w-full rounded-lg">
@@ -268,7 +273,6 @@
           placeholder="Search"
         />
       </div>
-      <label for="filtermodal-home" class="btn">Ultra Advanced Filter</label>
       <label
         for="assigned-modal"
         class="bg-blue-600 black-black px-5 py-3 rounded-xl text-white"
@@ -277,10 +281,14 @@
     </div>
 
     <div class="h-full">
-      <UserWorkTable
-        bind:selectedStatusID
-        data={search.length === 0 ? filteredLeadData : searchedLeads}
-      />
+      {#if loading}
+        <div>Loading</div>
+      {:else}
+        <UserWorkTable
+          bind:selectedStatusID
+          data={search.length === 0 ? filteredLeadData : searchedLeads}
+        />
+      {/if}
     </div>
 
     <div class="modal-action">
@@ -289,118 +297,6 @@
         class="bg-blue-600 black-black px-5 py-3 rounded-xl text-white"
         >Close</label
       >
-    </div>
-  </div>
-</div>
-
-<input type="checkbox" id="filtermodal-home" class="modal-toggle z-30" />
-<div class="modal">
-  <div class="modal-box bg-white max-w-xl flex flex-col gap-2">
-    <div class="flex items-center justify-between">
-      <h3 class="text-2xl font-bold opacity-50 my-2">Advanced Filtering</h3>
-      <div class="flex gap-3">
-        <label
-          class={andMode ? "opacity-50" : "text-blue-600 font-semibold"}
-          for="">Or Mode</label
-        >
-        <input type="checkbox" class="toggle" bind:checked={andMode} />
-        <label
-          class={!andMode ? "opacity-50 " : "text-blue-600 font-semibold"}
-          for="">And Mode</label
-        >
-      </div>
-    </div>
-    <div class="flex items-center justify-between">
-      <h3 class="text-xl font-bold opacity-50 my-2">Filter by date</h3>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.today} class="checkbox" />
-        <label for=""> Show Today's Calls</label>
-      </div>
-    </div>
-
-    <div class="items-center gap-3">
-      <label class="flex-1" for=""> Calls Made on:</label>
-      <input
-        type="date"
-        id="birthday"
-        class="w-full border px-5 py-3 rounded-2xl"
-        name="birthday"
-        bind:value={filters.ondate}
-      />
-    </div>
-    <h3 class="text-xl font-bold opacity-50 my-2">Filter by Calls</h3>
-    <div class="flex gap-3 items-center flex-wrap">
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.call1} class="checkbox" />
-        <label for="">1 call</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.call2} class="checkbox" />
-        <label for="">2 calls</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.call3} class="checkbox" />
-        <label for="">3 calls</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.call4} class="checkbox" />
-        <label for="">4 calls</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="checkbox" bind:checked={filters.call5} class="checkbox" />
-        <label for="">5 calls</label>
-      </div>
-      <div class="flex items-center gap-3">
-        <input
-          type="checkbox"
-          bind:checked={filters.greaterthan5}
-          class="checkbox"
-        />
-        <label for="">More than 5 calls</label>
-      </div>
-    </div>
-    <h3 class="text-xl font-bold opacity-50 my-2">Filter by Status</h3>
-    <div class=" flex justify-between items-center">
-      {#each status as s}
-        <div class="flex items-center gap-3">
-          <input
-            type="checkbox"
-            on:change={(e) => {
-              if (e.target.checked) {
-                filters.status.push(s);
-              } else {
-                filters.status = filters.status.filter((item) => item !== s);
-              }
-            }}
-            class="checkbox"
-          />
-          <label for="">{s}</label>
-        </div>
-      {/each}
-    </div>
-    <div class="flex flex-col">
-      <div class="text-xl font-bold opacity-50 my-2">Filter by Course</div>
-      <div class="flex gap-2 justify-between">
-        {#each courses as c}
-          <div class="flex items-center gap-3">
-            <input
-              type="checkbox"
-              on:change={(e) => {
-                if (e.target.checked) filters.course.push(c);
-                else
-                  filters.course = filters.course.filter((item) => item !== c);
-              }}
-              class="checkbox"
-            />
-            <label for="">{c}</label>
-          </div>
-        {/each}
-      </div>
-    </div>
-
-    <div class="modal-action">
-      <label for="" on:click={applyFilter} class="btn">Apply</label>
-      <label for="filtermodal-home" class="btn">Close</label>
     </div>
   </div>
 </div>
