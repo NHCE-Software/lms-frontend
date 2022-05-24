@@ -856,7 +856,15 @@
                         ...item,
                         __typename: undefined,
                         _id: undefined,
-                        calls: JSON.stringify(item.calls),
+                        calls: item.calls
+                          .map((call, index) => {
+                            return `(Call ${index + 1}::${
+                              call.updatedbyname
+                            }::${new Date(call.createdAt)
+                              .toJSON()
+                              .slice(0, 10)}) ${call.remark}`;
+                          })
+                          .join("\n"),
                       };
                     });
 
