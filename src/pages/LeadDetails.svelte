@@ -5,6 +5,7 @@
     courses,
     noauth,
     programs,
+    sources,
     status,
   } from "../constants";
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
@@ -59,9 +60,7 @@
       let { error, data } = await GETLEADS_MUTATION();
       if (data) {
         //console.log("data from server", data);
-
         contextData.leads = data.getLeads;
-
         contextData.leads = contextData.leads.map((item) => {
           if (item.calls.length > 0)
             return {
@@ -104,6 +103,7 @@
             remark: newCall.remark,
             followup: newCall.followup,
             leadid: selectedLeadID,
+            status: selectedLeadData.status,
           },
         },
       });
@@ -146,6 +146,7 @@
             name: selectedLeadData.name,
             email: selectedLeadData.email,
             city: selectedLeadData.city,
+            source: selectedLeadData.source,
             phonenumber: selectedLeadData.phonenumber,
             status: selectedLeadData.status,
             course: selectedLeadData.course,
@@ -548,6 +549,32 @@
             </div>
           {/each}
         </div>
+
+        <label for="" class="tracking-wide opacity-50">Source</label>
+        <div class="gap-3 grid grid-cols-3 ">
+          {#each sources as source}
+            <div class="flex item-center gap-3">
+              <input
+                checked={selectedLeadData.source.includes(source)}
+                type="checkbox"
+                on:change={(e) => {
+                  if (e.target.checked) {
+                    selectedLeadData.source.push(source);
+                    selectedLeadData.source = [...selectedLeadData.source];
+                  } else {
+                    selectedLeadData.source = selectedLeadData.source.filter(
+                      (item) => item !== source
+                    );
+                    selectedLeadData.source = [...selectedLeadData.source];
+                  }
+                }}
+                class="checkbox"
+              />
+              <div>{source}</div>
+            </div>
+          {/each}
+        </div>
+
         <label for="" class="tracking-wide  opacity-50">Status</label>
         <select
           bind:value={selectedLeadData.status}
@@ -750,7 +777,6 @@
         rows="10"
       />
       <label for="">Follow Up Call</label>
-
       <input
         type="date"
         bind:value={newCall.followup}
@@ -758,6 +784,19 @@
         name=""
         id=""
       />
+      <label for="" class="tracking-wide  opacity-50">Status</label>
+      {#if selectedLeadData}
+        <select
+          bind:value={selectedLeadData.status}
+          id="course"
+          class="select select-bordered bg-white text-black w-full"
+        >
+          <option disabled>Pick Status</option>
+          {#each status as s}
+            <option selected={selectedLeadData.status} value={s}>{s}</option>
+          {/each}
+        </select>
+      {/if}
     </form>
     <div class="modal-action">
       <div on:click={addCall} class="btn">Add Call</div>

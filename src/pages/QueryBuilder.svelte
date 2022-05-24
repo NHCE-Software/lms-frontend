@@ -41,13 +41,10 @@
       data = data.map((item) => {
         return { ...item, source: source };
       });
-      console.log( "this is what is getting sent", data);
+      //console.log("this is what is getting sent", data);
       let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
       console.log(res.data);
-      if (res.data.addleads === null) {
-        swal("Lead Exists", "No changes were made", "success");
-        replace("/lead-details");
-      } else if (res.data.addleads.message) {
+      if (res.data.addleads && res.data.addleads.message === "success") {
         swal("Added Lead", "We are good to go", "success");
         replace("/lead-details");
       } else {
@@ -75,7 +72,7 @@
       return newItem;
     });
     //console.log(data);
-    console.log("this is data2",data2);
+    console.log("this is data2", data2);
     data = [...data2];
     cols = Object.keys(data[0]);
     initChosen();
