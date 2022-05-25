@@ -204,6 +204,7 @@
         course: ["course"],
         source: ["source1"],
         loadedby: ["loadby1"],
+        createdAt: "",
         calls: [
           {
             remark: "remark",
@@ -223,6 +224,7 @@
         _id: "bro12",
         name: "asdasd",
         email: "email",
+        createdAt: "",
         phonenumber: "phone",
         city: "city2",
         status: "Cold",
@@ -286,6 +288,7 @@
         email: "email",
         phonenumber: "phone",
         city: "city",
+        createdAt: "",
         status: "Hot",
         course: ["course"],
         source: ["source1", "source2"],

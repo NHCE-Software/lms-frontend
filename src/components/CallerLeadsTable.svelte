@@ -3,6 +3,11 @@
 
   export let selectedTableFormat = [];
   export let data = [];
+  let sortedData = [];
+  let displayData = [];
+  let unSortedData = [];
+  let isSorted = false;
+
   const capitalize = (s) => (s && s[0].toUpperCase() + s.slice(1)) || "";
   import { status, statusColor } from "../constants";
   let statusMap = {};
@@ -28,15 +33,35 @@
     return [];
   }
   let pages;
+
   $: {
-    data = data.map((item, index) => {
+    unSortedData = [...data];
+
+    sortedData = unSortedData.sort((a, b) => {
+      let datePartsA = a.createdAt.split("/");
+      let datePartsB = b.createdAt.split("/");
+      let dateA = new Date(+datePartsA[2], datePartsA[1] - 1, +datePartsA[0]),
+        dateB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
+      return dateA - dateB;
+    });
+    unSortedData = [...data];
+    console.log("sorted Data:", sortedData);
+    console.log("unsorted data", unSortedData);
+
+    if (isSorted) {
+      displayData = [...sortedData];
+    } else {
+      displayData = [...unSortedData];
+    }
+    displayData = displayData.map((item, index) => {
       return { ...item, index: index + 1 };
     });
-    pages = splitArray(data, 25);
+    pages = splitArray(displayData, 25);
+    console.log("display data", pages);
   }
 </script>
 
-<div class=" overflow-auto h-full min-h-screen flex flex-col">
+<div class="overflow-auto h-full min-h-screen flex flex-col">
   <div class="divTable">
     <div class="divTableHeading">
       <div class="divTableRow font-bold">
@@ -44,7 +69,18 @@
         {#if selectedTableFormat}
           {#each selectedTableFormat as column}
             {#if column != "_id"}
-              <div class="divTableCell ">{capitalize(column)}</div>
+              {#if column == "createdAt"}
+                <div
+                  on:click={() => (isSorted = !isSorted)}
+                  class={`divTableCell cursor-pointer ${
+                    isSorted ? "bg-blue-500" : ""
+                  }`}
+                >
+                  {capitalize(column)}
+                </div>
+              {:else}
+                <div class="divTableCell ">{capitalize(column)}</div>
+              {/if}
             {/if}
           {/each}
         {/if}
