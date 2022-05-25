@@ -461,139 +461,174 @@
 <input
   type="checkbox"
   bind:checked={modals.editLead}
-  id="editmodal"
+  id="modalz"
   class="modal-toggle"
 />
 <div class="modal">
-  {#if selectedLeadData}
-    <div class="modal-box bg-white max-w-5xl">
-      <h3 class="font-bold text-lg">Edit Leads</h3>
-      <form class="gap-2 flex flex-col my-4">
-        <div class="flex gap-2 w-full">
-          <div class="flex-1">
-            <label for="" class="tracking-wide opacity-50">Name</label>
+  <div class="modal-box bg-white max-w-7xl relative">
+    <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"
+      >✕</label
+    >
+    <div class="grid grid-cols-2 gap-10">
+      <div>
+        {#if selectedLeadData}
+          <h3 class="font-bold text-lg">Edit Leads</h3>
+          <form class="gap-2 flex flex-col my-4">
+            <div class="flex gap-2 w-full">
+              <div class="flex-1">
+                <label for="" class="tracking-wide opacity-50">Name</label>
+                <input
+                  bind:value={selectedLeadData.name}
+                  type="text"
+                  class="w-full p-2  border rounded-lg"
+                  placeholder="Name"
+                  name=""
+                  id=""
+                />
+              </div>
+              <div>
+                <label for="" class="tracking-wide opacity-50">Email</label>
+                <input
+                  bind:value={selectedLeadData.email}
+                  type="text"
+                  class="w-full p-2  border rounded-lg"
+                  placeholder="Email"
+                  name=""
+                  id=""
+                />
+              </div>
+            </div>
+            <label for="" class="tracking-wide opacity-50">City</label>
             <input
-              bind:value={selectedLeadData.name}
+              bind:value={selectedLeadData.city}
               type="text"
               class="w-full p-2  border rounded-lg"
-              placeholder="Name"
+              placeholder="City"
               name=""
               id=""
             />
-          </div>
-          <div>
-            <label for="" class="tracking-wide opacity-50">Email</label>
+            <label for="" class="tracking-wide opacity-50">Phone</label>
             <input
-              bind:value={selectedLeadData.email}
+              bind:value={selectedLeadData.phonenumber}
               type="text"
               class="w-full p-2  border rounded-lg"
-              placeholder="Email"
+              placeholder="Phone"
               name=""
               id=""
             />
-          </div>
-        </div>
-        <label for="" class="tracking-wide opacity-50">City</label>
-        <input
-          bind:value={selectedLeadData.city}
-          type="text"
-          class="w-full p-2  border rounded-lg"
-          placeholder="City"
-          name=""
-          id=""
-        />
-        <label for="" class="tracking-wide opacity-50">Phone</label>
-        <input
-          bind:value={selectedLeadData.phonenumber}
-          type="text"
-          class="w-full p-2  border rounded-lg"
-          placeholder="Phone"
-          name=""
-          id=""
-        />
-        <label for="" class="tracking-wide opacity-50">Program</label>
-        <div class="flex gap-3 flex-wrap">
-          <select
-            bind:value={selectedLeadData.program}
-            id="course"
-            class="select select-bordered bg-white text-black w-full"
-          >
-            <option disabled>Pick Status</option>
-            {#each programs as s}
-              <option selected={selectedLeadData.program} value={s}>{s}</option>
-            {/each}
-          </select>
-        </div>
-        <label for="" class="tracking-wide opacity-50">Course</label>
-        <div class="gap-3 grid grid-cols-3 ">
-          {#each courses as course}
-            <div class="flex item-center gap-3">
-              <input
-                checked={selectedLeadData.course.includes(course)}
-                type="checkbox"
-                on:change={(e) => {
-                  if (e.target.checked) {
-                    selectedLeadData.course.push(course);
-                    selectedLeadData.course = [...selectedLeadData.course];
-                  } else {
-                    selectedLeadData.course = selectedLeadData.course.filter(
-                      (item) => item !== course
-                    );
-                    selectedLeadData.course = [...selectedLeadData.course];
-                  }
-                  console.log(selectedLeadData.course);
-                }}
-                class="checkbox"
-              />
-              <div>{course}</div>
+            <label for="" class="tracking-wide opacity-50">Program</label>
+            <div class="flex gap-3 flex-wrap">
+              <select
+                bind:value={selectedLeadData.program}
+                id="course"
+                class="select select-bordered bg-white text-black w-full"
+              >
+                <option disabled>Pick Status</option>
+                {#each programs as s}
+                  <option selected={selectedLeadData.program} value={s}
+                    >{s}</option
+                  >
+                {/each}
+              </select>
             </div>
-          {/each}
-        </div>
-
-        <label for="" class="tracking-wide opacity-50">Source</label>
-        <div class="gap-3 grid grid-cols-3 ">
-          {#each sources as source}
-            <div class="flex item-center gap-3">
-              <input
-                checked={selectedLeadData.source.includes(source)}
-                type="checkbox"
-                on:change={(e) => {
-                  if (e.target.checked) {
-                    selectedLeadData.source.push(source);
-                    selectedLeadData.source = [...selectedLeadData.source];
-                  } else {
-                    selectedLeadData.source = selectedLeadData.source.filter(
-                      (item) => item !== source
-                    );
-                    selectedLeadData.source = [...selectedLeadData.source];
-                  }
-                }}
-                class="checkbox"
-              />
-              <div>{source}</div>
+            <label for="" class="tracking-wide opacity-50">Course</label>
+            <div class="gap-3 grid grid-cols-3 ">
+              {#each courses as course}
+                <div class="flex item-center gap-3">
+                  <input
+                    checked={selectedLeadData.course.includes(course)}
+                    type="checkbox"
+                    on:change={(e) => {
+                      if (e.target.checked) {
+                        selectedLeadData.course.push(course);
+                        selectedLeadData.course = [...selectedLeadData.course];
+                      } else {
+                        selectedLeadData.course =
+                          selectedLeadData.course.filter(
+                            (item) => item !== course
+                          );
+                        selectedLeadData.course = [...selectedLeadData.course];
+                      }
+                      console.log(selectedLeadData.course);
+                    }}
+                    class="checkbox"
+                  />
+                  <div>{course}</div>
+                </div>
+              {/each}
             </div>
-          {/each}
-        </div>
-
-        <label for="" class="tracking-wide  opacity-50">Status</label>
-        <select
-          bind:value={selectedLeadData.status}
-          id="course"
-          class="select select-bordered bg-white text-black w-full"
-        >
-          <option disabled>Pick Status</option>
-          {#each status as s}
-            <option selected={selectedLeadData.status} value={s}>{s}</option>
-          {/each}
-        </select>
-      </form>
-
-      <div class="modal-action">
-        <label on:click={editLead} for="" class="btn">Save</label>
-        <label for="editmodal" class="btn">Close</label>
+            <label for="" class="tracking-wide opacity-50">Source</label>
+            <div class="gap-3 grid grid-cols-3 ">
+              {#each sources as source}
+                <div class="flex item-center gap-3">
+                  <input
+                    checked={selectedLeadData.source.includes(source)}
+                    type="checkbox"
+                    on:change={(e) => {
+                      if (e.target.checked) {
+                        selectedLeadData.source.push(source);
+                        selectedLeadData.source = [...selectedLeadData.source];
+                      } else {
+                        selectedLeadData.source =
+                          selectedLeadData.source.filter(
+                            (item) => item !== source
+                          );
+                        selectedLeadData.source = [...selectedLeadData.source];
+                      }
+                    }}
+                    class="checkbox"
+                  />
+                  <div>{source}</div>
+                </div>
+              {/each}
+            </div>
+            <label for="" class="tracking-wide  opacity-50">Status</label>
+            <select
+              bind:value={selectedLeadData.status}
+              id="course"
+              class="select select-bordered bg-white text-black w-full"
+            >
+              <option disabled>Pick Status</option>
+              {#each status as s}
+                <option selected={selectedLeadData.status} value={s}>{s}</option
+                >
+              {/each}
+            </select>
+          </form>
+        {/if}
+      </div>
+      <div>
+        <h3 class="font-bold text-lg">
+          Add Call for {selectedLeadData ? selectedLeadData["name"] : "-"}
+        </h3>
+        <form action="" class="gap-2 flex flex-col my-4">
+          <label for="">Remarks</label>
+          <textarea
+            bind:value={newCall.remark}
+            name=""
+            placeholder="Start typing here..."
+            class="border rounded-lg p-3"
+            id=""
+            cols="30"
+            rows="10"
+          />
+          <label for="">Follow Up Call</label>
+          <input
+            type="date"
+            bind:value={newCall.followup}
+            class="border rounded-xl p-3"
+            name=""
+            id=""
+          />
+        </form>
       </div>
     </div>
-  {/if}
+    <div class="modal-action">
+      <div on:click={addCall} class="btn">Add Call</div>
+      <div on:click={editLead} class="btn">Confirm Lead Edits</div>
+      <label for="modalz" class="btn">Close</label>
+    </div>
+  </div>
 </div>
 
 <input
@@ -753,57 +788,6 @@
     </div>
   </div></label
 >
-
-<input
-  type="checkbox"
-  bind:checked={modals.addremarksmodal}
-  id="addremarksmodal"
-  class="modal-toggle"
-/>
-<label for="addremarksmodal" class="modal">
-  <div class="modal-box bg-white">
-    <h3 class="font-bold text-lg">
-      Add Call for {selectedLeadData ? selectedLeadData["name"] : "-"}
-    </h3>
-    <form action="" class="gap-2 flex flex-col my-4">
-      <label for="">Remarks</label>
-      <textarea
-        bind:value={newCall.remark}
-        name=""
-        placeholder="Start typing here..."
-        class="border rounded-lg p-3"
-        id=""
-        cols="30"
-        rows="10"
-      />
-      <label for="">Follow Up Call</label>
-      <input
-        type="date"
-        bind:value={newCall.followup}
-        class="border rounded-xl p-3"
-        name=""
-        id=""
-      />
-      <label for="" class="tracking-wide  opacity-50">Status</label>
-      {#if selectedLeadData}
-        <select
-          bind:value={selectedLeadData.status}
-          id="course"
-          class="select select-bordered bg-white text-black w-full"
-        >
-          <option disabled>Pick Status</option>
-          {#each status as s}
-            <option selected={selectedLeadData.status} value={s}>{s}</option>
-          {/each}
-        </select>
-      {/if}
-    </form>
-    <div class="modal-action">
-      <div on:click={addCall} class="btn">Add Call</div>
-      <label for="addremarksmodal" class="btn">Close</label>
-    </div>
-  </div>
-</label>
 
 <div class="drawer">
   <input id="my-drawer2" type="checkbox" class="drawer-toggle" />

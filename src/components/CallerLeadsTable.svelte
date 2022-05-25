@@ -40,7 +40,7 @@
   <div class="divTable">
     <div class="divTableHeading">
       <div class="divTableRow font-bold">
-        <div class="divTableCell cursor-pointer">x</div>
+        <div class="divTableCell  cursor-pointer">x</div>
         {#if selectedTableFormat}
           {#each selectedTableFormat as column}
             {#if column != "_id"}
@@ -65,21 +65,21 @@
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label
             on:click={() => (selectedLeadID = d["_id"])}
-            class={`divTableRow  ${statusMap[d["status"].toLowerCase()]} ${
+            class={`divTableRow cell2 ${statusMap[d["status"].toLowerCase()]} ${
               statusMap[d["status"]]
             }  ${d["_id"] === selectedLeadID ? `font-bold ` : ""}`}
           >
             <div class="divTableCell">{d["index"]}</div>
             {#each selectedTableFormat as column, j}
               <label
-                class={`divTableCell ${
+                class={`divTableCell cell2 ${
                   column === "lastremark" ? " max-w-[3em]" : "max-w-[1em]"
                 }  cursor-pointer`}
               >
                 {d[selectedTableFormat[j]] || "-"}
               </label>
             {/each}
-            <div class="divTableCell truncate  max-w-[1em] gap-3">
+            <div class="divTableCell truncate max-w-[1em] gap-3">
               <div class="flex items-center gap-3 flex-wrap">
                 <label class="cursor-pointer" for="my-drawer">
                   <svg
@@ -97,7 +97,7 @@
                     />
                   </svg>
                 </label>
-                <label class="cursor-pointer" for="addremarksmodal">
+                <label class="cursor-pointer" for="modalz">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-6 w-6"
@@ -166,39 +166,43 @@
   }
   .divTableRow {
     display: table-row;
-    resize: both;
+    resize: horizontal;
     overflow: auto;
   }
   .divTableCell {
     border: 1px solid #e6e6e6;
     display: table-cell;
-    resize: both;
+    resize: horizontal;
     overflow: auto;
     @apply p-3;
   }
+  .cell2 {
+    resize: none;
+    overflow: none;
+  }
   .divTableHead {
     border: 0;
-    resize: both;
+    resize: horizontal;
     overflow: auto;
     display: table-cell;
     @apply m-0 rounded-lg;
   }
   .divTableHeading {
     @apply bg-blue-700 text-white  p-3;
-    resize: both;
+    resize: horizontal;
     overflow: auto;
     display: table-header-group;
   }
   .divTableFoot {
     background-color: #eee;
-    resize: both;
+    resize: horizontal;
     overflow: auto;
     display: table-footer-group;
     font-weight: bold;
   }
   .divTableBody {
     display: table-row-group;
-    resize: both;
+    resize: horizontal;
     overflow: auto;
   }
 </style>
