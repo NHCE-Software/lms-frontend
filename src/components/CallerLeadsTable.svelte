@@ -70,15 +70,9 @@
             }  ${d["_id"] === selectedLeadID ? `font-bold ` : ""}`}
           >
             <div class="divTableCell">{d["index"]}</div>
-
-            <!-- on:click={() => {
-              overflowTitle = column + " ( " + d["name"] + " )";
-              overflowContent = d[selectedTableFormat[j]];
-            }}
-            for="overflowmodal" -->
             {#each selectedTableFormat as column, j}
               <label
-                class={`divTableCell overflow-auto ${
+                class={`divTableCell ${
                   column === "lastremark" ? " max-w-[3em]" : "max-w-[1em]"
                 }  cursor-pointer`}
               >
@@ -172,27 +166,39 @@
   }
   .divTableRow {
     display: table-row;
+    resize: both;
+    overflow: auto;
   }
   .divTableCell {
     border: 1px solid #e6e6e6;
     display: table-cell;
+    resize: both;
+    overflow: auto;
     @apply p-3;
   }
   .divTableHead {
     border: 0;
+    resize: both;
+    overflow: auto;
     display: table-cell;
     @apply m-0 rounded-lg;
   }
   .divTableHeading {
     @apply bg-blue-700 text-white  p-3;
+    resize: both;
+    overflow: auto;
     display: table-header-group;
   }
   .divTableFoot {
     background-color: #eee;
+    resize: both;
+    overflow: auto;
     display: table-footer-group;
     font-weight: bold;
   }
   .divTableBody {
     display: table-row-group;
+    resize: both;
+    overflow: auto;
   }
 </style>
