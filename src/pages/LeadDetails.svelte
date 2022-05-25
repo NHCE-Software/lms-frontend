@@ -97,6 +97,7 @@
   let ADDCALL_MUTATION = mutation(ADDCALL);
   async function addCall() {
     try {
+      if (newCall.remark.length === 0) return swal("Please add remark");
       let { errors, data } = await ADDCALL_MUTATION({
         variables: {
           record: {
@@ -466,7 +467,7 @@
 />
 <div class="modal">
   <div class="modal-box bg-white max-w-7xl relative">
-    <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"
+    <label for="modalz" class="btn btn-sm btn-circle absolute right-2 top-2"
       >✕</label
     >
     <div class="grid grid-cols-2 gap-10">
