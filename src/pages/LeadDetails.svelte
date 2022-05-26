@@ -140,52 +140,52 @@
     }
   }
 
-  let EDITLEAD = gql`
-    mutation Mutation(
-      $record: UpdateOneLeadInput!
-      $filter: FilterUpdateOneLeadInput
-    ) {
-      leadUpdateOne(record: $record, filter: $filter) {
-        record {
-          name
-        }
-      }
-    }
-  `;
-  let EDITLEAD_MUTATION = mutation(EDITLEAD);
-  async function editLead() {
-    try {
-      let { errors, data } = await EDITLEAD_MUTATION({
-        variables: {
-          record: {
-            name: selectedLeadData.name,
-            email: selectedLeadData.email,
-            city: selectedLeadData.city,
-            source: selectedLeadData.source,
-            phonenumber: selectedLeadData.phonenumber,
-            status: selectedLeadData.status,
-            course: selectedLeadData.course,
-            program: selectedLeadData.program,
-          },
-          filter: {
-            _id: selectedLeadID,
-          },
-        },
-      });
-      if (errors) {
-        swal("Error", "Something went wrong", "error");
-        return console.log(errors);
-      }
-      if (data && data.leadUpdateOne.record.name === selectedLeadData.name) {
-        swal("Done", "Lead updated successfully", "success");
-      } else {
-        swal("Error", "Something went wrong", "error");
-      }
-      getLeads();
-    } catch (error) {
-      if (error && error.message === "You must be an admin") noauth();
-    }
-  }
+  // let EDITLEAD = gql`
+  //   mutation Mutation(
+  //     $record: UpdateOneLeadInput!
+  //     $filter: FilterUpdateOneLeadInput
+  //   ) {
+  //     leadUpdateOne(record: $record, filter: $filter) {
+  //       record {
+  //         name
+  //       }
+  //     }
+  //   }
+  // `;
+  // let EDITLEAD_MUTATION = mutation(EDITLEAD);
+  // async function editLead() {
+  //   try {
+  //     let { errors, data } = await EDITLEAD_MUTATION({
+  //       variables: {
+  //         record: {
+  //           name: selectedLeadData.name,
+  //           email: selectedLeadData.email,
+  //           city: selectedLeadData.city,
+  //           source: selectedLeadData.source,
+  //           phonenumber: selectedLeadData.phonenumber,
+  //           status: selectedLeadData.status,
+  //           course: selectedLeadData.course,
+  //           program: selectedLeadData.program,
+  //         },
+  //         filter: {
+  //           _id: selectedLeadID,
+  //         },
+  //       },
+  //     });
+  //     if (errors) {
+  //       swal("Error", "Something went wrong", "error");
+  //       return console.log(errors);
+  //     }
+  //     if (data && data.leadUpdateOne.record.name === selectedLeadData.name) {
+  //       swal("Done", "Lead updated successfully", "success");
+  //     } else {
+  //       swal("Error", "Something went wrong", "error");
+  //     }
+  //     getLeads();
+  //   } catch (error) {
+  //     if (error && error.message === "You must be an admin") noauth();
+  //   }
+  // }
   // ----------------------------state declaration-----------------------------------------
 
   let selectedLeadData;
@@ -644,7 +644,7 @@
       </div>
     </div>
     <div class="modal-action">
-      <div on:click={addCall} class="btn">Save Changes</div>
+      <label for="modalz" on:click={addCall} class="btn">Save Changes</label>
     </div>
   </div>
 </div>
@@ -852,12 +852,14 @@
                 <label
                   for=""
                   on:click={() => {
-                    console.log(contextData);
+                    //console.log(contextData);
                     let csvdata = contextData.leads.map((item) => {
                       return {
                         ...item,
+                        loadedby: undefined,
                         __typename: undefined,
                         _id: undefined,
+                        createdByUser: undefined,
                         calls: item.calls
                           .map((call, index) => {
                             return `(Call ${index + 1}::${
