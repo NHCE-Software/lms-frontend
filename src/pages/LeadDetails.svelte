@@ -8,7 +8,7 @@
     sources,
     status,
   } from "../constants";
-  import isEqual from "lodash.isequal";
+
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
   import { push } from "svelte-spa-router";
@@ -70,14 +70,19 @@
               followup: item.calls[item.calls.length - 1].followup,
               lastremark: item.calls[item.calls.length - 1].remark,
               callquantity: item.calls.length,
-              createdAt: new Date(item.createdAt)
-                .toJSON()
-                .slice(0, 10)
-                .split("-")
-                .reverse()
-                .join("/"),
             };
           else return item;
+        });
+        contextData.leads = contextData.leads.map((item) => {
+          return {
+            ...item,
+            createdAt: new Date(item.createdAt)
+              .toJSON()
+              .slice(0, 10)
+              .split("-")
+              .reverse()
+              .join("/"),
+          };
         });
         loading = false;
         //console.log("this is getLeads", contextData.leads);

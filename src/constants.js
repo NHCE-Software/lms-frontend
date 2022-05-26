@@ -4,6 +4,7 @@ const status = ["Hot","Warm", "Cold", "Admitted", "Visited" , "Wrong No.","Not A
 const statusColor = ["bg-red-100","bg-yellow-100", "bg-slate-100", "bg-green-100", "bg-green-100" , "bg-slate-100","bg-slate-100","bg-slate-100"];
 const roles = ["caller", "admin"];
 const sources = ["Siksha", "Careers 360", "College Dunia","NHCM Website Application","NHCM Website Enquiry","NHCE Website Application","NHCE Website Enquiry","Facebook","Google Adwords","Landline","Incoming"];
+
 const predef = ["name", "phonenumber", "email", "city", "course","program"]; // for manual map
 const references = ["Relatives", "Friends staying in Bangalore", "Staff","Student","Shiksha", "Careers 360", "College Dunia","Alumini", "Social Media", "Website"]
 
