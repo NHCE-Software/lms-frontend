@@ -72,14 +72,14 @@
               {#if column == "createdAt"}
                 <div
                   on:click={() => (isSorted = !isSorted)}
-                  class={`divTableCell cursor-pointer ${
+                  class={`divTableCell cursor-pointer max-w-4 ${
                     isSorted ? "bg-blue-500" : ""
                   }`}
                 >
                   {capitalize(column)}
                 </div>
               {:else}
-                <div class="divTableCell ">{capitalize(column)}</div>
+                <div class="divTableCell  ">{capitalize(column)}</div>
               {/if}
             {/if}
           {/each}
@@ -107,7 +107,11 @@
           >
             <div class="divTableCell">{d["index"]}</div>
             {#each selectedTableFormat as column, j}
-              <label class={`divTableCell cell2 max-h-4 cursor-pointer`}>
+              <label
+                class={`divTableCell cell2 ${
+                  column === "lastremark" ? "max-w-[3em]" : "max-w-[1em]"
+                } max-h-4 cursor-pointer`}
+              >
                 {d[selectedTableFormat[j]] || "-"}
               </label>
             {/each}
