@@ -1,6 +1,5 @@
 <script>
   export let remark;
-  console.log(remark);
   // remarks:
   //     {
   //       remark: "remark",

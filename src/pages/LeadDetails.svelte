@@ -8,6 +8,7 @@
     sources,
     status,
   } from "../constants";
+  import isEqual from "lodash.isequal";
   import CallerLeadsTable from "../components/CallerLeadsTable.svelte";
   import Navbar from "../components/Navbar.svelte";
   import { push } from "svelte-spa-router";
@@ -15,6 +16,7 @@
   import { mutation } from "svelte-apollo";
   import { onMount } from "svelte";
   import papaparse from "papaparse";
+  import swal from "sweetalert";
   export let params = {};
   export let selectedLeadID = params.selectedLeadID || "";
   onMount(async () => {
@@ -97,14 +99,21 @@
   let ADDCALL_MUTATION = mutation(ADDCALL);
   async function addCall() {
     try {
-      if (newCall.remark.length === 0) return swal("Please add remark");
       let { errors, data } = await ADDCALL_MUTATION({
         variables: {
           record: {
             remark: newCall.remark,
+            calladded: newCall.remark === "" ? false : true,
             followup: newCall.followup,
             leadid: selectedLeadID,
             status: selectedLeadData.status,
+            name: selectedLeadData.name,
+            email: selectedLeadData.email,
+            city: selectedLeadData.city,
+            source: selectedLeadData.source,
+            phonenumber: selectedLeadData.phonenumber,
+            course: selectedLeadData.course,
+            program: selectedLeadData.program,
           },
         },
       });
@@ -338,7 +347,7 @@
   };
 
   // ----------------------------helper functions-----------------------------------------
-  const isEqual = (...objects) =>
+  const isEqual1 = (...objects) =>
     objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
   const isSameDate = (dateA, dateB) => {
     dateA.setHours(0, 0, 0, 0);
@@ -396,11 +405,13 @@
     let textFile = URL.createObjectURL(data);
     return textFile;
   }
+
   // ----------------------------reactive changes-----------------------------------------
 
   $: {
     filteredLeads = contextData.leads;
   }
+
   $: {
     selectedLeadData = contextData.leads.find(
       (item) => item._id === selectedLeadID
@@ -439,7 +450,7 @@
       call5: false,
       greaterthan5: false,
     };
-    if (isEqual(filters, checkfilters)) {
+    if (isEqual1(filters, checkfilters)) {
       filterapplied = false;
     } else {
       filterapplied = true;
@@ -628,9 +639,7 @@
       </div>
     </div>
     <div class="modal-action">
-      <div on:click={addCall} class="btn">Add Call</div>
-      <div on:click={editLead} class="btn">Confirm Lead Edits</div>
-      <label for="modalz" class="btn">Close</label>
+      <div on:click={addCall} class="btn">Save Changes</div>
     </div>
   </div>
 </div>
