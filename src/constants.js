@@ -42,7 +42,7 @@ const preloadedMapsCourses = {
               "Student interested in MCA courses" : "MCA"
 
 },
-    "career 360": {},
+    "careers 360": {},
     "college dunia":  {"BBA/BBM" : "BBA", "MBA/PGDM": "MBA" },
     "nhcm website application" :{
         "Civil Engineering (CIV)" : "CIVIL",
