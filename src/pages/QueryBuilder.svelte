@@ -10,10 +10,10 @@
     Siksha: "sk",
     "Careers 360": "c360",
     "College Dunia": "cd",
-    "NHCE Website Enquiry": "nhcewe",
-    "NHCM Website Enquiry": "nhcmwe",
-    "NHCE Website Application": "nhcewa",
-    "NHCM Website Application": "nhcmwa",
+    "NHCE Website Enquiry": "we",
+    "NHCM Website Enquiry": "we",
+    "NHCE Website Application": "wa",
+    "NHCM Website Application": "wa",
   };
   let files = [];
   let data = [];
@@ -50,7 +50,7 @@
     formData.append("source", sources[source]);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post(BASEURL+"/qb/upload", formData).then((res) => {
+      axios.post(BASEURL + "/qb/upload", formData).then((res) => {
         console.log(res.data);
         data = res.data.data;
         cols = res.data.cols;
