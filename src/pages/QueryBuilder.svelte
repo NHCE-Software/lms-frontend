@@ -50,7 +50,7 @@
     formData.append("source", sources[source]);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post("http://localhost:5000/upload", formData).then((res) => {
+      axios.post(BASEURL+"/qb/upload", formData).then((res) => {
         console.log(res.data);
         data = res.data.data;
         cols = res.data.cols;
