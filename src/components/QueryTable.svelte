@@ -18,6 +18,12 @@
 
   $: {
     console.log(data, cols);
+    data = data.map((item, i) => {
+      return {
+        ...item,
+        index: i + 1,
+      };
+    });
     pages = splitArray(data, 25);
   }
 </script>
@@ -26,6 +32,7 @@
   <div class="divTable">
     <div class="divTableHeading">
       <div class="divTableRow font-bold">
+        <div class="divTableCell" />
         {#each cols as col}
           <div class="divTableCell">{col}</div>
         {/each}
@@ -35,6 +42,7 @@
       {#if pages[currentPage]}
         {#each pages[currentPage] as p}
           <div class="divTableRow ">
+            <div class="divTableCell">{p["index"]}</div>
             {#each cols as col}
               <div class="divTableCell">{p[col]}</div>
             {/each}

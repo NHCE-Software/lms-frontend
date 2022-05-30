@@ -45,8 +45,8 @@
       return dateA - dateB;
     });
     unSortedData = [...data];
-    console.log("sorted Data:", sortedData);
-    console.log("unsorted data", unSortedData);
+    // console.log("sorted Data:", sortedData);
+    // console.log("unsorted data", unSortedData);
 
     if (isSorted) {
       displayData = [...sortedData];
@@ -57,7 +57,7 @@
       return { ...item, index: index + 1 };
     });
     pages = splitArray(displayData, 25);
-    console.log("display data", pages);
+    //console.log("display data", pages);
   }
 </script>
 

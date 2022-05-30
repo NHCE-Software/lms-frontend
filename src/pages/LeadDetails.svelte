@@ -1052,7 +1052,7 @@
                 <div class="text-2xl font-semibold opacity-50">
                   Interested Courses
                 </div>
-                <div class="flex gap-3 overflow-auto">
+                <div class="flex gap-2 flex-wrap">
                   {#each selectedLeadData.course as c}
                     <div class="p-3 border rounded-xl flex-none">{c}</div>
                   {/each}
@@ -1080,23 +1080,6 @@
                   class="rounded-2xl p-3 flex items-center bg-blue-100 text-blue-500 gap-3 mt-3 justify-center"
                 >
                   {selectedLeadData.status}
-                </div>
-              </div>
-
-              <div class="flex gap-3 justify-center mt-auto">
-                <div class="my-10">
-                  <label
-                    for="addremarksmodal"
-                    class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-                  >
-                    Add Call
-                  </label>
-                  <label
-                    for="editmodal"
-                    class="border rounded-lg p-3 bg-blue-100 text-blue-500 font-semibold"
-                  >
-                    Edit Leads Info
-                  </label>
                 </div>
               </div>
             </div>
