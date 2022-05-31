@@ -85,7 +85,7 @@
   let INSERTLEAD_MUTATION = mutation(INSERTLEAD);
   async function insertAllLeads() {
     if (confirm("Confirm transformation? This cannot be undone.")) {
-      console.log("broooo in bto");
+      //console.log("broooo in bto");
       data = data.map((item) => {
         return { ...item, source: source };
       });
@@ -139,11 +139,13 @@
     formData.append("source", sources1[source]);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post(BASEURL + "/qb/upload", formData).then((res) => {
-        console.log(res.data);
-        data = res.data.data;
-        cols = res.data.cols;
-      });
+      axios
+        .post("http://localhost:3369" + "/qb/upload", formData)
+        .then((res) => {
+          console.log(res.data);
+          data = res.data.data;
+          cols = res.data.cols;
+        });
     }
   }
   function loadDataCus() {
@@ -153,11 +155,13 @@
     formData.append("source", csource);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post(BASEURL + "/qb/cupload", formData).then((res) => {
-        console.log(res.data);
-        data = res.data.data;
-        cols = res.data.cols;
-      });
+      axios
+        .post("http://localhost:3369" + "/qb/cupload", formData)
+        .then((res) => {
+          console.log(res.data);
+          data = res.data.data;
+          cols = res.data.cols;
+        });
     }
   }
 </script>

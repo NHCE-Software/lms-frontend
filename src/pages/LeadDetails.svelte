@@ -17,6 +17,7 @@
   import { onMount } from "svelte";
   import papaparse from "papaparse";
   import swal from "sweetalert";
+  import { currentPage } from "../stores/store";
   export let params = {};
   export let selectedLeadID = params.selectedLeadID || "";
   onMount(async () => {
@@ -359,6 +360,7 @@
     "city",
     "state",
     "createdAt",
+    "program",
     "course",
     "status",
     "lastremark",
@@ -381,7 +383,7 @@
     return dateA.toISOString() === dateB.toISOString();
   };
   function applyFilter() {
-    currentPage = 0;
+    currentPage.set(0);
     filteredLeads = contextData.leads.filter((item) => {
       let allTrues = [];
       let todayDate = new Date().toISOString().slice(0, 10);
@@ -936,6 +938,11 @@
             <div class="mt-5 flex  justify-between items-center">
               <input
                 bind:value={search}
+                on:change={() => {
+                  console.log("BROOOOOOO search");
+                  currentPage.set(0);
+                  console.log($currentPage);
+                }}
                 type="text"
                 placeholder="🔭 Search"
                 class="p-3 rounded-xl border w-2/3"
@@ -955,6 +962,22 @@
                   value={"name"}
                 />
                 Name
+                <input
+                  type="radio"
+                  name="searchby"
+                  class="radio"
+                  bind:group={searchby}
+                  value={"state"}
+                />
+                State
+                <input
+                  type="radio"
+                  name="searchby"
+                  class="radio"
+                  bind:group={searchby}
+                  value={"city"}
+                />
+                City
                 <input
                   type="radio"
                   class="radio"

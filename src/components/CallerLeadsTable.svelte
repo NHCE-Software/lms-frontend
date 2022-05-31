@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { currentPage } from "../stores/store";
 
   export let selectedTableFormat = [];
   export let deleteLead = () => {};
@@ -13,7 +14,6 @@
   import { status, statusColor } from "../constants";
   let statusMap = {};
   export let selectedLeadID;
-  let currentPage = 0;
 
   onMount(() => {
     for (let i = 0; i < status.length; i++) {
@@ -97,8 +97,8 @@
     </div>
 
     <div class="divTableBody">
-      {#if pages[currentPage]}
-        {#each pages[currentPage] as d, i}
+      {#if pages[$currentPage]}
+        {#each pages[$currentPage] as d, i}
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label
             on:click={() => (selectedLeadID = d["_id"])}
@@ -182,16 +182,16 @@
     class="btn-group mt-auto flex items-center justify-end  py-2  rounded-3xl"
   >
     {#each pages as page, i}
-      {#if i == currentPage}
+      {#if i == $currentPage}
         <button
-          on:click={() => (currentPage = i)}
+          on:click={() => ($currentPage = i)}
           class="btn  btn-outline-primary btn-active"
         >
           {i + 1}
         </button>
       {:else}
         <button
-          on:click={() => (currentPage = i)}
+          on:click={() => ($currentPage = i)}
           class="btn  btn-outline-primary "
         >
           {i + 1}
