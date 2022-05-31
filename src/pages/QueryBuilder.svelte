@@ -100,6 +100,37 @@
       }
     }
   }
+  let INSERTCLEAD = gql`
+    mutation Mutation($record: [JSON]) {
+      addCustomLeads(record: $record)
+    }
+  `;
+  let INSERTCLEAD_MUTATION = mutation(INSERTCLEAD);
+
+  async function insertAllCLeads() {
+    if (confirm("Confirm transformation? This cannot be undone.")) {
+      data = data.map((item) => {
+        let c = item.calls;
+        delete item.calls;
+        return {
+          ...item,
+          source: csource,
+          remark: c,
+        };
+      });
+      console.log("country roads  ", data);
+      let res = await INSERTCLEAD_MUTATION({ variables: { record: data } });
+      if (
+        res.data.addCustomLeads &&
+        res.data.addCustomLeads.message === "success"
+      ) {
+        swal("Added Lead", "We are good to go", "success");
+        replace("/lead-details");
+      } else {
+        swal("Oops", "Something went wrong", "error");
+      }
+    }
+  }
 
   function loadData() {
     csource = "";
@@ -157,7 +188,9 @@
         </div>
       {/if}
       {#if csource !== ""}
-        <div on:click={insertAllLeads} class="btn mb-10">Load Custom leads</div>
+        <div on:click={insertAllCLeads} class="btn mb-10">
+          Load Custom leads
+        </div>
       {/if}
 
       <div class="w-full">

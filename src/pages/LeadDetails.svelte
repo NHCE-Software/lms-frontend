@@ -31,6 +31,7 @@
         loadedbyname
         email
         city
+        state
         phonenumber
         status
         program
@@ -140,52 +141,38 @@
     }
   }
 
-  // let EDITLEAD = gql`
-  //   mutation Mutation(
-  //     $record: UpdateOneLeadInput!
-  //     $filter: FilterUpdateOneLeadInput
-  //   ) {
-  //     leadUpdateOne(record: $record, filter: $filter) {
-  //       record {
-  //         name
-  //       }
-  //     }
-  //   }
-  // `;
-  // let EDITLEAD_MUTATION = mutation(EDITLEAD);
-  // async function editLead() {
-  //   try {
-  //     let { errors, data } = await EDITLEAD_MUTATION({
-  //       variables: {
-  //         record: {
-  //           name: selectedLeadData.name,
-  //           email: selectedLeadData.email,
-  //           city: selectedLeadData.city,
-  //           source: selectedLeadData.source,
-  //           phonenumber: selectedLeadData.phonenumber,
-  //           status: selectedLeadData.status,
-  //           course: selectedLeadData.course,
-  //           program: selectedLeadData.program,
-  //         },
-  //         filter: {
-  //           _id: selectedLeadID,
-  //         },
-  //       },
-  //     });
-  //     if (errors) {
-  //       swal("Error", "Something went wrong", "error");
-  //       return console.log(errors);
-  //     }
-  //     if (data && data.leadUpdateOne.record.name === selectedLeadData.name) {
-  //       swal("Done", "Lead updated successfully", "success");
-  //     } else {
-  //       swal("Error", "Something went wrong", "error");
-  //     }
-  //     getLeads();
-  //   } catch (error) {
-  //     if (error && error.message === "You must be an admin") noauth();
-  //   }
-  // }
+  let DELETELEAD = gql`
+    mutation DeleteLead($record: JSON) {
+      deleteLead(record: $record)
+    }
+  `;
+  let DELETELEAD_MUTATION = mutation(DELETELEAD);
+  async function deleteLead() {
+    console.log("delete lead", selectedLeadID);
+    // try {
+    //   let { errors, data } = await DELETELEAD_MUTATION({
+    //     variables: {
+    //       record: {
+    //         _id: selectedLeadID,
+    //       },
+    //     },
+    //   });
+    //   //console.log(data);
+    //   if (errors) {
+    //     swal("Error", "Something went wrong", "error");
+    //     return console.log(errors);
+    //   }
+    //   if (data && data.deleteLead.message === "success") {
+    //     swal("Done", "Deleted lead successfully", "success");
+    //   } else {
+    //     swal("Error", "Something went wrong", "error");
+    //   }
+    //   getLeads();
+    // } catch (error) {
+    //   if (error && error.message === "You must be an admin") noauth();
+    // }
+  }
+
   // ----------------------------state declaration-----------------------------------------
 
   let selectedLeadData;
@@ -338,6 +325,7 @@
     "email",
     "phonenumber",
     "city",
+    "state",
     "createdAt",
     "course",
     "status",
@@ -361,6 +349,7 @@
     return dateA.toISOString() === dateB.toISOString();
   };
   function applyFilter() {
+    currentPage = 0;
     filteredLeads = contextData.leads.filter((item) => {
       let allTrues = [];
       let todayDate = new Date().toISOString().slice(0, 10);
@@ -959,6 +948,7 @@
                 <CallerLeadsTable
                   bind:selectedLeadID
                   {selectedTableFormat}
+                  {deleteLead}
                   data={searchedLeads.length === 0
                     ? filteredLeads
                     : searchedLeads}

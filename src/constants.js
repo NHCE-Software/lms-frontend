@@ -1,6 +1,6 @@
 const programs = ["MCA", "BE/B.Tech", "MBA", "B.Com", "BBA", "BCA", "PhD"]
 const courses = ["CSE","CSE in Data Science","AI/ML","CE", "ISE", "MECH","BCA","BBA","MCA","B.Com","ME/M.Tech","MBA", "ECE", "EEE", "CIVIL","BE/B.Tech Courses","Others"];
-const status = ["Hot","Warm", "Cold", "Admitted", "Visited" , "Wrong No.","Not Answering","Not Interested","Switched Off", "Test Lead","Not Enquired","RNR","Disconnected Call","Not Reachable","Repeated/Duplicate Enquiry","No Incoming"];
+const status = ["Hot","Warm", "Cold", "Admitted", "Visited" , "Wrong No.","Not Answering","Not Interested","Switched Off", "Test Lead","Not Enquired","RNR","Disconnected Call","Not Reachable","Repeated/Duplicate Enquiry","No Incoming", "Admitted in Other College", "Others", "Not Eligible","NH Student"];
 const statusColor = ["bg-red-100","bg-yellow-100", "bg-slate-100", "bg-green-100", "bg-green-100" , "bg-slate-100","bg-slate-100","bg-slate-100"];
 const roles = ["caller", "admin"];
 const sources = ["Siksha", "Careers 360", "College Dunia","NHCM Website Application","NHCM Website Enquiry","NHCE Website Application","NHCE Website Enquiry","Facebook","Google Adwords","Landline","Incoming"];
@@ -103,7 +103,7 @@ const preloadedMapsCourses = {
     },
 }
 
-const availableColumns = ["name", "createdAt",  "loadedbyname", "email", "city", "phonenumber", "status", "course", "source", "callquantity", "followup", "lastremark", "program"]
+const availableColumns = ["name",  "createdAt",  "loadedbyname", "email", "city","state", "phonenumber", "status", "course", "source", "callquantity", "followup", "lastremark", "program"]
 const availableColors = ["bg-green-100", "bg-green-200", "bg-blue-100", "bg-blue-200", "bg-yellow-100", "bg-yellow-200", "bg-red-100", "bg-red-200"]
 function noauth() {
     window.location.replace("/#/noauth")

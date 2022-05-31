@@ -18,6 +18,7 @@
   let sphno = "";
   let email = "";
   let source = "";
+  let state = "";
   let category = "";
   let leadStatus = "Not Contacted";
   let remarks = "";
@@ -45,6 +46,7 @@
             email,
             program,
             city,
+            state,
             source,
             phonenumber: pphno,
             status: leadStatus,
@@ -77,6 +79,7 @@
   }
 </script>
 
+<!-- 
 <input
   type="checkbox"
   checked={userExists}
@@ -105,7 +108,7 @@
             placeholder="Type here"
             class="input w-full input-bordered bg-white "
             required
-            />
+          />
         </div>
       </div>
       <div class="flex justify-between items-center">
@@ -124,7 +127,7 @@
       </div>
     </form>
   </div>
-</div>
+</div> -->
 
 <section class="grid min-h-screen p-5 h-full grid-cols-5">
   <Navbar />
@@ -197,7 +200,16 @@
           placeholder="Type here"
           class="input input-bordered w-full bg-white shadow-md "
         />
-
+        <label for="city" class="label">
+          <span class="label-text">State</span>
+        </label>
+        <input
+          id="state"
+          bind:value={state}
+          type="text"
+          placeholder="Type here"
+          class="input input-bordered w-full bg-white shadow-md "
+        />
         <label for="address" class="label">
           <span class="label-text">Address</span>
         </label>
@@ -236,6 +248,7 @@
           bind:value={pphno}
           id="pphno"
           type="text"
+          required
           placeholder="Type here"
           class="input input-bordered w-full bg-white shadow-md"
         />
@@ -311,7 +324,11 @@
         <label for="source" class="label">
           <span class="label-text">Source</span>
         </label>
-        <select bind:value={source} id="source" class="select w-full bg-white shadow-md ">
+        <select
+          bind:value={source}
+          id="source"
+          class="select w-full bg-white shadow-md "
+        >
           <option disabled selected>Pick Source</option>
           {#each sources as s}
             <option value={s}>{s}</option>
