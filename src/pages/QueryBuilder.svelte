@@ -139,13 +139,11 @@
     formData.append("source", sources1[source]);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios
-        .post("http://localhost:3369" + "/qb/upload", formData)
-        .then((res) => {
-          console.log(res.data);
-          data = res.data.data;
-          cols = res.data.cols;
-        });
+      axios.post(BASEURL + "/qb/upload", formData).then((res) => {
+        console.log(res.data);
+        data = res.data.data;
+        cols = res.data.cols;
+      });
     }
   }
   function loadDataCus() {
@@ -155,13 +153,11 @@
     formData.append("source", csource);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios
-        .post("http://localhost:3369" + "/qb/cupload", formData)
-        .then((res) => {
-          console.log(res.data);
-          data = res.data.data;
-          cols = res.data.cols;
-        });
+      axios.post(BASEURL + "/qb/cupload", formData).then((res) => {
+        console.log(res.data);
+        data = res.data.data;
+        cols = res.data.cols;
+      });
     }
   }
 </script>
