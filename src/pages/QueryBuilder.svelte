@@ -287,7 +287,17 @@
 
                     When loading custom data, please follow the below format
                     (column names and value can be anything, but must follow the
-                    order):
+                    order):<br />
+                    <ul>
+                      <li>Lead Name</li>
+                      <li>Email</li>
+                      <li>Phone No</li>
+                      <li>City</li>
+                      <li>State</li>
+                      <li>Program</li>
+                      <li>Course</li>
+                      <li>Remarks</li>
+                    </ul>
                   </div>
                 </li>
               </ol>
