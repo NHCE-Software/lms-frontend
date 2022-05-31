@@ -142,12 +142,44 @@
   }
 
   let DELETELEAD = gql`
-    mutation DeleteLead($record: JSON) {
-      deleteLead(record: $record)
+    mutation Mutation($filter: FilterRemoveOneLeadInput) {
+      leadRemoveOne(filter: $filter) {
+        error {
+          message
+        }
+        recordId
+      }
     }
   `;
   let DELETELEAD_MUTATION = mutation(DELETELEAD);
-  async function deleteLead() {
+  async function deleteLead(leadid) {
+    if (
+      confirm("Proceed with caution. This will delete the lead permanently")
+    ) {
+      try {
+        console.log(leadid);
+        let { errors, data } = await DELETELEAD_MUTATION({
+          variables: {
+            filter: {
+              _id: leadid,
+            },
+          },
+        });
+        //console.log(data);
+        if (errors) {
+          swal("Error", "Something went wrong", "error");
+          return console.log(errors);
+        }
+        if (data && data.leadRemoveOne.recordId) {
+          swal("Done", "Deleted lead successfully", "success");
+        } else {
+          swal("Error", "Something went wrong", "error");
+        }
+        getLeads();
+      } catch (error) {
+        if (error && error.message === "You must be an admin") noauth();
+      }
+    }
     console.log("delete lead", selectedLeadID);
     // try {
     //   let { errors, data } = await DELETELEAD_MUTATION({
