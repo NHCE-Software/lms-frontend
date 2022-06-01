@@ -87,6 +87,7 @@
           };
         });
         loading = false;
+
         //console.log("this is getLeads", contextData.leads);
       }
       if (error) {
@@ -132,7 +133,16 @@
       if (data && data.addCall.message === "success") {
         newCall.followup = "";
         newCall.remark = "";
-        swal("Done", "Added call remark to lead successfully", "success");
+        swal("Done", "Added call remark to lead successfully", "success", {
+          buttons: {
+            ok: {
+              text: "OK",
+              value: "ok",
+            },
+          },
+        }).then((val) => {
+          applyFilter("keeppage");
+        });
       } else {
         swal("Error", "Something went wrong", "error");
       }
@@ -382,8 +392,10 @@
     console.log(dateA.toISOString(), dateB.toISOString());
     return dateA.toISOString() === dateB.toISOString();
   };
-  function applyFilter() {
-    currentPage.set(0);
+  function applyFilter(mode) {
+    if (mode != "keeppage") currentPage.set(0);
+    console.log("these are tjr fileters applied", filters);
+
     filteredLeads = contextData.leads.filter((item) => {
       let allTrues = [];
       let todayDate = new Date().toISOString().slice(0, 10);
