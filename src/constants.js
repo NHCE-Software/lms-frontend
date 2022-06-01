@@ -1,6 +1,6 @@
 const programs = ["MCA", "BE/B.Tech", "MBA", "B.Com", "BBA", "BCA", "PhD"]
 const courses = ["CSE","CSE in Data Science","AI/ML","CE", "ISE", "MECH","BCA","BBA","MCA","B.Com","ME/M.Tech","MBA", "ECE", "EEE", "CIVIL","BE/B.Tech Courses","Others"];
-const status = ["Hot","Warm", "Cold", "Admitted", "Visited" , "Wrong No.","Not Answering","Not Interested","Switched Off", "Test Lead","Not Enquired","RNR","Disconnected Call","Not Reachable","Repeated/Duplicate Enquiry","No Incoming", "Admitted in Other College", "Others", "Not Eligible","NH Student"];
+const status = ["Hot","Warm", "Cold","Not Contacted", "Admitted", "Visited" , "Wrong No.","Not Answering","Not Interested","Switched Off", "Test Lead","Not Enquired","RNR","Disconnected Call","Not Reachable","Repeated/Duplicate Enquiry","No Incoming", "Admitted in Other College", "Others", "Not Eligible","NH Student"];
 const statusColor = ["bg-red-100","bg-yellow-100", "bg-slate-100", "bg-green-100", "bg-green-100" , "bg-slate-100","bg-slate-100","bg-slate-100"];
 const roles = ["caller", "admin"];
 const sources = ["Siksha", "Careers 360", "College Dunia","NHCM Website Application","NHCM Website Enquiry","NHCE Website Application","NHCE Website Enquiry","Facebook","Google Adwords","Landline","Incoming"];

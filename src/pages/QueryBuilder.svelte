@@ -116,6 +116,7 @@
           ...item,
           source: csource,
           remark: c,
+          createdAt: formatDate(item["createdAt"]),
         };
       });
       console.log("country roads  ", data);
@@ -159,6 +160,13 @@
         cols = res.data.cols;
       });
     }
+  }
+  function formatDate(date) {
+    console.log(date);
+    let day = date.split("-")[0];
+    let month = date.split("-")[1];
+    let year = date.split("-")[2];
+    return `${year}-${month}-${day}`;
   }
 </script>
 
@@ -289,14 +297,15 @@
                     (column names and value can be anything, but must follow the
                     order):<br />
                     <ul>
-                      <li>Lead Name</li>
-                      <li>Email</li>
-                      <li>Phone No</li>
-                      <li>City</li>
-                      <li>State</li>
-                      <li>Program</li>
-                      <li>Course</li>
-                      <li>Remarks</li>
+                      <li>1. Lead Name</li>
+                      <li>2. Email</li>
+                      <li>3. Phone No</li>
+                      <li>4. City</li>
+                      <li>5. State</li>
+                      <li>6. Program</li>
+                      <li>7. Course</li>
+                      <li>8. Remarks</li>
+                      <li>9. CreatedAt</li>
                     </ul>
                   </div>
                 </li>

@@ -444,7 +444,10 @@
     selectedLeadData = contextData.leads.find(
       (item) => item._id === selectedLeadID
     );
+
     console.log("this is selectedLeadData", selectedLeadData);
+    if (selectedLeadData)
+      console.log(new Date(selectedLeadData["createdAt"] || ""));
   }
 
   $: {
