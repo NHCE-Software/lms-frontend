@@ -245,7 +245,7 @@
               id="file_input"
               type="file"
             />
-            <h3 class=" mt-5 font-bold opacity-50">2. Choose Source</h3>
+            <h3 class=" mt-5 font-bold opacity-50 mb-5">2. Choose Source</h3>
             <select
               bind:value={csource}
               required
@@ -257,8 +257,15 @@
                 <option value={s}>{s}</option>
               {/each}
             </select>
-            <div class="mt-5">
+            <div class="mt-5 flex justify-between items-center">
               <button type="submit" class="btn bg-blue-700"> Upload </button>
+              <button
+                type="submit"
+                class="text-sm text-red-500 max-w-md text-left"
+              >
+                * if the file is not getting uploaded, please ensure that the
+                data is being uploaded in the correct order
+              </button>
             </div>
           </form>
         </div>
@@ -310,6 +317,15 @@
                   </div>
                 </li>
               </ol>
+              <div>
+                Please ensure that when loading custom leads, the data complies
+                to the mentioned format. In case of missing data, follow the
+                format and leave the remaining columns empty. <span
+                  class="font-bold"
+                  >BUT MAKE SURE THE COLUMNS EXIST IN THE SAME ORDER.
+                </span>
+                <br />
+              </div>
             </div>
           {/if}
         </div>

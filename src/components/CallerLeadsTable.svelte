@@ -57,7 +57,7 @@
     displayData = displayData.map((item, index) => {
       return { ...item, index: index + 1 };
     });
-    pages = splitArray(displayData, 25);
+    pages = splitArray(displayData, 10);
     //console.log("display data", pages);
   }
 </script>
