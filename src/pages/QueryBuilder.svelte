@@ -87,7 +87,7 @@
     if (confirm("Confirm transformation? This cannot be undone.")) {
       //console.log("broooo in bto");
       data = data.map((item) => {
-        return { ...item, source: source };
+        return { ...item, source: source, phonenumber: [item.phonenumber] };
       });
       console.log("this is what is getting sent", data);
       let res = await INSERTLEAD_MUTATION({ variables: { record: data } });
@@ -108,7 +108,7 @@
   let INSERTCLEAD_MUTATION = mutation(INSERTCLEAD);
 
   async function insertAllCLeads() {
-    if (confirm("Confirm transformation? This cannot be undone.")) {
+    if (confirm("Confirm Custom transformation? This cannot be undone.")) {
       data = data.map((item) => {
         let c = item.calls;
         delete item.calls;
@@ -117,6 +117,7 @@
           source: csource,
           remark: c,
           createdAt: formatDate(item["createdAt"]),
+          phonenumber: [item.phonenumber],
         };
       });
       console.log("country roads  ", data);
@@ -140,7 +141,7 @@
     formData.append("source", sources1[source]);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post(BASEURL + "/qb/upload", formData).then((res) => {
+      axios.post(BASEURLQB + "/qb/upload", formData).then((res) => {
         console.log(res.data);
         data = res.data.data;
         cols = res.data.cols;
@@ -154,7 +155,7 @@
     formData.append("source", csource);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post(BASEURL + "/qb/cupload", formData).then((res) => {
+      axios.post(BASEURLQB + "/qb/cupload", formData).then((res) => {
         console.log(res.data);
         data = res.data.data;
         cols = res.data.cols;

@@ -72,20 +72,37 @@
               followup: item.calls[item.calls.length - 1].followup,
               lastremark: item.calls[item.calls.length - 1].remark,
               callquantity: item.calls.length,
+              source: item.source.filter((item) => {
+                if (item) return item;
+              }),
+              course: item.course.filter((item) => {
+                if (item) return item;
+              }),
+              createdAt: new Date(item.createdAt)
+                .toJSON()
+                .slice(0, 10)
+                .split("-")
+                .reverse()
+                .join("/"),
             };
-          else return item;
+          else
+            return {
+              ...item,
+              source: item.source.filter((item) => {
+                if (item) return item;
+              }),
+              course: item.course.filter((item) => {
+                if (item) return item;
+              }),
+              createdAt: new Date(item.createdAt)
+                .toJSON()
+                .slice(0, 10)
+                .split("-")
+                .reverse()
+                .join("/"),
+            };
         });
-        contextData.leads = contextData.leads.map((item) => {
-          return {
-            ...item,
-            createdAt: new Date(item.createdAt)
-              .toJSON()
-              .slice(0, 10)
-              .split("-")
-              .reverse()
-              .join("/"),
-          };
-        });
+
         loading = false;
 
         //console.log("this is getLeads", contextData.leads);
@@ -221,6 +238,7 @@
   let selectedLeadData;
   let searchby = "name";
   let search = "";
+  let searchFound = false;
   let loading = false;
   let filterapplied = false;
   let andMode = false; // andMode = true means AND mode, false means OR mode
@@ -242,7 +260,7 @@
         _id: "bro1",
         name: "123",
         email: "email",
-        phonenumber: "phone",
+        phonenumber: ["phone"],
         city: "city2",
         status: "Cold",
         course: ["course"],
@@ -260,94 +278,6 @@
             remark: "remark",
             date: "date",
             followup: "Today",
-            updatedby: "user",
-          },
-        ],
-      },
-      {
-        _id: "bro12",
-        name: "asdasd",
-        email: "email",
-        createdAt: "",
-        phonenumber: "phone",
-        city: "city2",
-        status: "Cold",
-        course: ["course"],
-        source: ["source1"],
-        loadedby: ["loadby1"],
-        calls: [
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Toda2y",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Toda2y",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Toda2y",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Toda2y",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Toda2y",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Toda2y",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Toda2y",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Today",
-            updatedby: "user",
-          },
-        ],
-      },
-      {
-        _id: "bro",
-        name: "123",
-        email: "email",
-        phonenumber: "phone",
-        city: "city",
-        createdAt: "",
-        status: "Hot",
-        course: ["course"],
-        source: ["source1", "source2"],
-        loadedby: ["loadby1", "loadby2"],
-        calls: [
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Today",
-            updatedby: "user",
-          },
-          {
-            remark: "remark",
-            date: "date",
-            followup: "Tomorrow",
             updatedby: "user",
           },
         ],
@@ -475,6 +405,11 @@
         //console.log(search, "==", item[searchby], search === item[searchby]);
         //console.log(item[searchby].trim());
       });
+      if (searchedLeads.length === 0) {
+        searchFound = false;
+      } else {
+        searchFound = true;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -566,14 +501,55 @@
               id=""
             />
             <label for="" class="tracking-wide opacity-50">Phone</label>
-            <input
-              bind:value={selectedLeadData.phonenumber}
-              type="text"
-              class="w-full p-2  border rounded-lg"
-              placeholder="Phone"
-              name=""
-              id=""
-            />
+
+            <div class="grid grid-cols-2 gap-3 ">
+              {#each selectedLeadData.phonenumber as phno, index}
+                <input
+                  on:change={(e) => {
+                    selectedLeadData.phonenumber[index] = e.target.value;
+                    console.log(selectedLeadData);
+                  }}
+                  value={phno}
+                  type="text"
+                  class="w-full p-2  border rounded-lg"
+                  placeholder="Phone"
+                  name=""
+                  id=""
+                />
+              {/each}
+              <div
+                class="flex items-center justify-center gap-2 p-3 rounded-full border"
+                on:click={() => {
+                  swal("Enter Phone Number", {
+                    content: "input",
+                  }).then((value) => {
+                    console.log(value);
+                    if (value) {
+                      selectedLeadData.phonenumber.push(value);
+                      selectedLeadData = { ...selectedLeadData };
+                      console.log(selectedLeadData.phonenumber);
+                    }
+                  });
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Add Number
+              </div>
+            </div>
+
             <label for="" class="tracking-wide opacity-50">Program</label>
             <div class="flex gap-3 flex-wrap">
               <select
@@ -659,6 +635,36 @@
         <h3 class="font-bold text-lg">
           Add Call for {selectedLeadData ? selectedLeadData["name"] : "-"}
         </h3>
+        <div>
+          Choose Phone Number to add remark:
+          <div class="flex gap-3">
+            {#if selectedLeadData}
+              {#each selectedLeadData.phonenumber as phno, index}
+                <div class="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="phone"
+                    class="radio"
+                    value={phno}
+                    checked={selectedLeadData.phonenumber[index] === phno}
+                    on:change={(e) => {
+                      selectedLeadData.phonenumber[index] = e.target.value;
+                      if (newCall.remark) {
+                        newCall.remark =
+                          "Call with " + phno + ":\n" + newCall.remark;
+                      } else {
+                        newCall.remark = "Call with " + phno + ":";
+                      }
+
+                      console.log(selectedLeadData);
+                    }}
+                  />
+                  <div>{phno}</div>
+                </div>
+              {/each}
+            {/if}
+          </div>
+        </div>
         <form action="" class="gap-2 flex flex-col my-4">
           <label for="">Remarks</label>
           <textarea
@@ -1014,6 +1020,8 @@
             <div class=" mt-5">
               {#if loading}
                 <div>Loading</div>
+              {:else if !searchFound}
+                <div>No Results Found</div>
               {:else}
                 <CallerLeadsTable
                   bind:selectedLeadID

@@ -17,7 +17,6 @@
   }
 
   $: {
-    console.log(data, cols);
     data = data.map((item, i) => {
       return {
         ...item,
@@ -25,6 +24,7 @@
       };
     });
     pages = splitArray(data, 25);
+    console.log(data, cols);
   }
 </script>
 

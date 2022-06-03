@@ -42,8 +42,8 @@ export default {
 	},
 	plugins: [
 		replace({
-			BASEURL: JSON.stringify(dotenv.config().parsed.BASEURL)
-			,
+			BASEURL: JSON.stringify(dotenv.config().parsed.BASEURL),
+			BASEURLQB: JSON.stringify(dotenv.config().parsed.BASEURLQB),
 		}),
 		svelte({
 			compilerOptions: {

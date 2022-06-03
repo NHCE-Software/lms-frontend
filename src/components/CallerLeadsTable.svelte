@@ -19,7 +19,7 @@
     for (let i = 0; i < status.length; i++) {
       statusMap[status[i].toLowerCase()] = statusColor[i];
     }
-    console.log(statusMap);
+    //console.log(statusMap);
   });
 
   function splitArray(array, n) {
@@ -36,29 +36,36 @@
   let pages;
 
   $: {
-    unSortedData = [...data];
-
-    sortedData = unSortedData.sort((a, b) => {
-      let datePartsA = a.createdAt.split("/");
-      let datePartsB = b.createdAt.split("/");
-      let dateA = new Date(+datePartsA[2], datePartsA[1] - 1, +datePartsA[0]),
-        dateB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
-      return dateA - dateB;
+    console.log("data", data);
+    data = data.map((item, i) => {
+      console.log("item.phone", item.phonenumber);
+      return {
+        ...item,
+        index: i + 1,
+        phonenumber: item.phonenumber.join(",\n"),
+      };
     });
-    unSortedData = [...data];
-    // console.log("sorted Data:", sortedData);
-    // console.log("unsorted data", unSortedData);
+    // unSortedData = [...data];
 
-    if (isSorted) {
-      displayData = [...sortedData];
-    } else {
-      displayData = [...unSortedData];
-    }
-    displayData = displayData.map((item, index) => {
-      return { ...item, index: index + 1 };
-    });
-    pages = splitArray(displayData, 25);
-    //console.log("display data", pages);
+    // sortedData = unSortedData.sort((a, b) => {
+    //   let datePartsA = a.createdAt.split("/");
+    //   let datePartsB = b.createdAt.split("/");
+    //   let dateA = new Date(+datePartsA[2], datePartsA[1] - 1, +datePartsA[0]),
+    //     dateB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
+    //   return dateA - dateB;
+    // });
+    // unSortedData = [...data];
+    // // console.log("sorted Data:", sortedData);
+    // // console.log("unsorted data", unSortedData);
+
+    // if (isSorted) {
+    //   displayData = [...sortedData];
+    // } else {
+    //   displayData = [...unSortedData];
+    // }
+
+    pages = splitArray(data, 25);
+    console.log("display data", pages);
   }
 </script>
 
