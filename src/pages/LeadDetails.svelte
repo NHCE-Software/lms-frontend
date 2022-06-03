@@ -192,28 +192,6 @@
       }
     }
     console.log("delete lead", selectedLeadID);
-    // try {
-    //   let { errors, data } = await DELETELEAD_MUTATION({
-    //     variables: {
-    //       record: {
-    //         _id: selectedLeadID,
-    //       },
-    //     },
-    //   });
-    //   //console.log(data);
-    //   if (errors) {
-    //     swal("Error", "Something went wrong", "error");
-    //     return console.log(errors);
-    //   }
-    //   if (data && data.deleteLead.message === "success") {
-    //     swal("Done", "Deleted lead successfully", "success");
-    //   } else {
-    //     swal("Error", "Something went wrong", "error");
-    //   }
-    //   getLeads();
-    // } catch (error) {
-    //   if (error && error.message === "You must be an admin") noauth();
-    // }
   }
 
   // ----------------------------state declaration-----------------------------------------
@@ -458,8 +436,7 @@
     );
 
     console.log("this is selectedLeadData", selectedLeadData);
-    if (selectedLeadData)
-      console.log(new Date(selectedLeadData["createdAt"] || ""));
+    if (selectedLeadData) console.log(selectedLeadData["createdAt"]);
   }
 
   $: {

@@ -2,6 +2,7 @@ import Authentication from "./pages/Authentication.svelte";
 import Home from "./pages/Home.svelte";
 import QueryBuilder from "./pages/QueryBuilder.svelte";
 import LeadDetails from "./pages/LeadDetails.svelte";
+import LeadDetails2 from "./pages/LeadDetails2.svelte";
 import AddUser from "./pages/AddUser.svelte";
 import AddLead from "./pages/AddLead.svelte";
 import FillForm from "./pages/FillForm.svelte";
@@ -26,6 +27,7 @@ const routes = {
   "/query-builder": QueryBuilder,
   "/lead-details/:selectedLeadID": LeadDetails,
   "/lead-details": LeadDetails,
+  "/lead-details2": LeadDetails2,
   "/fill-form": FillForm,
   "/notification": Notification,
   "/home": Home,

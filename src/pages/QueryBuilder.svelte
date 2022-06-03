@@ -140,7 +140,7 @@
     formData.append("source", sources1[source]);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post(BASEURL + "/qb/upload", formData).then((res) => {
+      axios.post(BASEURLQB + "/qb/upload", formData).then((res) => {
         console.log(res.data);
         data = res.data.data;
         cols = res.data.cols;
@@ -154,7 +154,7 @@
     formData.append("source", csource);
     console.log(source);
     if (files.length > 0 && data.length === 0) {
-      axios.post(BASEURL + "/qb/cupload", formData).then((res) => {
+      axios.post(BASEURLQB + "/qb/cupload", formData).then((res) => {
         console.log(res.data);
         data = res.data.data;
         cols = res.data.cols;
