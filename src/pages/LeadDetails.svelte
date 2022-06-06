@@ -635,36 +635,7 @@
         <h3 class="font-bold text-lg">
           Add Call for {selectedLeadData ? selectedLeadData["name"] : "-"}
         </h3>
-        <div>
-          Choose Phone Number to add remark:
-          <div class="flex gap-3">
-            {#if selectedLeadData}
-              {#each selectedLeadData.phonenumber as phno, index}
-                <div class="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="phone"
-                    class="radio"
-                    value={phno}
-                    checked={selectedLeadData.phonenumber[index] === phno}
-                    on:change={(e) => {
-                      selectedLeadData.phonenumber[index] = e.target.value;
-                      if (newCall.remark) {
-                        newCall.remark =
-                          "Call with " + phno + ":\n" + newCall.remark;
-                      } else {
-                        newCall.remark = "Call with " + phno + ":";
-                      }
 
-                      console.log(selectedLeadData);
-                    }}
-                  />
-                  <div>{phno}</div>
-                </div>
-              {/each}
-            {/if}
-          </div>
-        </div>
         <form action="" class="gap-2 flex flex-col my-4">
           <label for="">Remarks</label>
           <textarea
