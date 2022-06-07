@@ -313,7 +313,7 @@
                       <li>6. Program</li>
                       <li>7. Course</li>
                       <li>8. Remarks</li>
-                      <li>9. CreatedAt</li>
+                      <li>9. CreatedAt(dd-mm-yyyy)</li>
                     </ul>
                   </div>
                 </li>
